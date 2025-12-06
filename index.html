@@ -4,10 +4,9 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Chirag Rakani — Accessible Tools & Games Hub</title>
-  <meta name="description" content="Accessible tools by Chirag Rakani — typing, OCR (PDF/Image), games, location & social links.">
+  <meta name="description" content="Accessible tools by Chirag Rakani typing OCR PDF/Image games location & social links">
   <meta name="theme-color" content="#2c3e50">
 
-  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
@@ -38,22 +37,21 @@
       <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
       <div>
         <h1 style="font-size:1.05rem;margin:0">Chirag's Accessible Tools & Games Hub</h1>
-        <div class="small">Typing practice · OCR (PDF/Image) · Games · Location · Social</div>
+        <div class="small">Typing practice OCR PDF/Image Games Location Social</div>
       </div>
     </div>
   </header>
 
   <main class="container">
     <div class="grid">
-      <!-- Sidebar -->
       <aside class="card">
         <h2>About Me</h2>
-        <p class="small"><strong>Chirag Rakani</strong> — Gharana, Kutch, Gujarat. I build accessible tools for visually impaired users. Fluent in Hindi, Gujarati & English.</p>
+        <p class="small">Chirag Rakani Gharana Kutch Gujarat I build accessible tools for visually impaired users Fluent in Hindi Gujarati & English</p>
 
         <h3>Buy my books</h3>
         <p class="small">
           <a class="social" href="https://amzn.to/48Tnv7r" target="_blank" rel="noopener noreferrer">Amazon Link 1</a><br>
-          <a class="social" href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank" rel="noopener noreferrer">Amazon Book (Buy)</a>
+          <a class="social" href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank" rel="noopener noreferrer">Amazon Book Buy</a>
         </p>
 
         <h3>Contact & Social</h3>
@@ -65,12 +63,10 @@
         </div>
       </aside>
 
-      <!-- Main content -->
       <section>
-        <!-- Typing Practice -->
         <article class="card" id="typing-card">
-          <h2>Typing Practice — Endless Spelling</h2>
-          <p class="small">If you get a word correct on the first try → it automatically moves to the next word. If you type it wrongly once, you must type it correctly 3 times to move on. Press <strong>Spell</strong> to hear letter-by-letter.</p>
+          <h2>Typing Practice Endless Spelling</h2>
+          <p class="small">If you get a word correct on the first try → it automatically moves to the next word If you type it wrongly once you must type it correctly 3 times to move on Use **F2** to repeat spelling letter by letter and **Double F2** to repeat the full word</p>
 
           <div id="practiceWord" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px">Press Next to start</div>
 
@@ -78,16 +74,15 @@
 
           <div class="typing-controls" style="margin-top:8px">
             <button id="nextWordBtn" class="btn">🔄 Next</button>
-            <button id="listenBtn" class="btn">🔊 Listen</button>
-            <button id="spellBtn" class="btn btn-alt">🔡 Spell</button>
+            <button id="listenBtn" class="btn">🔊 Listen Word</button>
+            <button id="spellBtn" class="btn btn-alt">🔡 Spell Letter by Letter</button>
             <div id="spellFeedback" aria-live="assertive" style="font-weight:600;margin-left:8px"></div>
           </div>
         </article>
 
-        <!-- Document Reader -->
         <article class="card" style="margin-top:12px">
-          <h2>Document Reader (Image / PDF)</h2>
-          <p class="small">Upload an image or PDF. For PDF use the page box to jump to any page number and press Go.</p>
+          <h2>Document Reader Image / PDF</h2>
+          <p class="small">Upload an image or PDF For PDF use the page box to jump to any page number and press Go</p>
 
           <input id="fileInput" type="file" accept="image/*, .pdf" style="margin-top:8px">
           <div style="margin-top:8px" class="typing-controls">
@@ -102,7 +97,7 @@
           </div>
 
           <h3 style="margin-top:12px">Result:</h3>
-          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Text will appear here...</div>
+          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Text will appear here</div>
 
           <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
             <label><input id="autoLang" type="checkbox" checked> Auto-detect language</label>
@@ -120,21 +115,19 @@
           </div>
         </article>
 
-        <!-- Location -->
         <article class="card" style="margin-top:12px">
-          <h2>Where Am I? (Location)</h2>
-          <p class="small">Tap the button and allow browser location permission.</p>
+          <h2>Where Am I Location</h2>
+          <p class="small">Tap the button and allow browser location permission</p>
           <div style="display:flex;gap:8px;align-items:center">
             <button id="locBtn" class="btn">📍 Get Current Location</button>
             <div id="locationOutput" class="small" style="margin-left:8px"></div>
           </div>
         </article>
 
-        <!-- Games -->
         <article class="card" style="margin-top:12px">
           <h2>Games</h2>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess (Lichess)</button>
+            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess Lichess</button>
 
             <div>
               <button id="handBtn" class="btn">🏏 Hand Cricket</button>
@@ -180,7 +173,7 @@
     </div>
   </main>
 
-  <footer>© 2025 Chirag Rakani — Accessible Tools Hub</footer>
+  <footer>© 2025 Chirag Rakani Accessible Tools Hub</footer>
 
   <div id="ann" class="sr-only" aria-live="assertive"></div>
 
@@ -196,17 +189,55 @@ function speak(text, lang='en-IN', rate=0.95){
 }
 
 /* ==================== Typing Practice ==================== */
-const words = [
-  "accessibility","computer","keyboard","software","screenreader","braille","typing",
-  "success","motivation","efficiency","communication","technology","challenge","dedication",
-  "confidence","amazing","support","document","location","internet","navigation","paragraph",
-  "proficiency","essential","accurate","experience","organization","solution","applicant",
-  "objective","multilingual","approachable","customer","service","position","utilize","contribute","gujarat"
-];
+const wordsWithUsage = {
+    "accessibility": "We are designing this tool for better web accessibility",
+    "computer": "I use the computer for all my data entry tasks",
+    "keyboard": "My typing speed is fast because I use the keyboard efficiently",
+    "software": "I am competent in using Microsoft Office software",
+    "screenreader": "A screenreader is essential for navigating the internet",
+    "braille": "I learned to read using the braille system in school",
+    "typing": "I am seeking a typing related position",
+    "success": "Success requires dedication and consistent practice",
+    "motivation": "I have high motivation to learn new skills",
+    "efficiency": "Typing proficiency ensures high efficiency",
+    "communication": "Strong communication skills are needed for chat support",
+    "technology": "Assistive technology helps visually impaired people work effectively",
+    "challenge": "I enjoy solving puzzles and logical challenges",
+    "dedication": "Dedication and consistent practice are important",
+    "confidence": "My confidence in my skills is very high",
+    "amazing": "This accessibility feature is truly amazing",
+    "support": "I can provide excellent customer support",
+    "document": "Please review the document before printing",
+    "location": "I am trying to find my current location",
+    "internet": "Internet access is required for online work",
+    "navigation": "Website navigation must be simple and clear",
+    "paragraph": "I will type the entire paragraph quickly",
+    "proficiency": "I have high proficiency in multilingual communication",
+    "essential": "Attention to detail is essential for data entry",
+    "accurate": "I ensure fast and accurate typing",
+    "experience": "I have customer interaction experience",
+    "organization": "I wish to contribute to the organization's success",
+    "solution": "The problem solving team found a perfect solution",
+    "applicant": "The job applicant submitted a strong resume",
+    "objective": "My career objective is to work in tech support",
+    "multilingual": "I am fluent making me a multilingual candidate",
+    "approachable": "I am a friendly and approachable person",
+    "customer": "I focus on helping every customer resolve their issues",
+    "service": "I am passionate about customer service",
+    "position": "I am seeking a data entry position",
+    "utilize": "I will utilize my skills effectively",
+    "contribute": "I am eager to contribute to the team",
+    "gujarat": "I am currently living in Gujarat",
+    "make": "I want to make me happy" // User requested example
+};
+
+const words = Object.keys(wordsWithUsage);
 
 let curr = "";
 let madeWrong = false;
 let streak = 0;
+let lastF2Press = 0;
+const F2_TIMEOUT = 500; // 500ms for double F2 detection
 
 const practiceInput = document.getElementById('practiceInput');
 const practiceWord = document.getElementById('practiceWord');
@@ -219,73 +250,116 @@ function nextWord(){
   madeWrong = false;
   streak = 0;
   curr = words[Math.floor(Math.random()*words.length)];
-  practiceWord.innerText = "🔊 Listen: " + curr;
-  feedback.innerText = "Type the word.";
+  let usage = wordsWithUsage[curr];
+
+  practiceWord.innerText = `🔊 Word ${curr} | 📖 Usage ${usage}`;
+  feedback.innerText = "Word loaded Type the word";
   practiceInput.value = "";
   practiceInput.focus();
-  // speak after user action (we call on button click)
-  setTimeout(()=> speak(curr), 200);
+
+  // 1 Speak word and usage
+  speak(`The word is ${curr}`);
+  setTimeout(() => speak(`Use in a sentence ${usage}`, 'en-IN', 0.8), 1500);
 }
 
 function spellOut(word){
   if(!word) return;
-  const s = word.toUpperCase().split('').join('. ');
-  speak("Spelling: " + s);
-  feedback.innerText = `Spelling: ${word.toUpperCase().split('').join(' · ')}`;
+  const s = word.toUpperCase().split('').join(' '); // Using space instead of dot for no punctuation
+  speak("Spelling " + s);
+  feedback.innerText = `Spelling ${word.toUpperCase().split('').join(' · ')}`;
 }
 
 function onType(e){
   const typed = practiceInput.value.trim().toLowerCase();
+  
   if(e.type === 'keydown'){
-    if(e.key === 'F2'){ e.preventDefault(); spellOut(curr); return;}
-    if(e.key === 'Enter'){ e.preventDefault();
-      // allow enter to proceed only if conditions satisfied
+    if(e.key === 'F2'){ 
+      e.preventDefault(); 
+      const now = new Date().getTime();
+
+      if (now - lastF2Press < F2_TIMEOUT) {
+        // Double F2 detected -> Speak the full word
+        speak(curr);
+        feedback.innerText = `🔊 Repeating full word ${curr}`;
+        lastF2Press = 0; // Reset
+      } else {
+        // Single F2 detected -> Spell out the word (letter by letter)
+        spellOut(curr);
+        lastF2Press = now;
+      }
+      return;
+    }
+
+    if(e.key === 'Enter'){ 
+      e.preventDefault();
+      // Allow enter to proceed only if conditions satisfied
       if(!madeWrong){
-        if(typed === curr.toLowerCase()) nextWord();
-        else { feedback.innerText = "Type the word correctly."; speak("Type the word correctly."); }
+        if(typed === curr.toLowerCase()) {
+            feedback.innerHTML = '<span style="color:green">✅ Correct — next word</span>';
+            speak("Correct Next word");
+            setTimeout(nextWord, 600);
+        } else { 
+            // If user types word and presses Enter, but it is still wrong (after being marked wrong once)
+            feedback.innerText = "Type the word correctly"; 
+            speak("Type the word correctly"); 
+        }
       } else {
-        if(streak >= 3) nextWord();
-        else { feedback.innerText = `Need ${3-streak} more correct attempt(s)`; speak(`Need ${3-streak} more correct attempts`); }
+        if(typed === curr.toLowerCase()){
+            if(streak < 3){
+                streak++;
+                practiceInput.value = "";
+                if(streak >= 3){
+                    feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct — next word</span>';
+                    speak("Excellent Next word");
+                    setTimeout(nextWord,700);
+                } else {
+                    feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3 Type again</span>`;
+                    speak(`Correct ${streak} of 3`);
+                }
+            }
+        } else {
+            // Wrong on Enter when attempting 3 times
+            streak = 0; // Reset streak
+            practiceInput.value = "";
+            feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+            setTimeout(()=> spellOut(curr), 200);
+            setTimeout(()=> speak("Now type the correct word three times"), 1000);
+        }
       }
       return;
     }
   }
+
   if(e.type !== 'input') return;
-  if(!curr){ feedback.innerText = "Press Next to start."; return; }
-  if(typed === curr.toLowerCase()){
-    if(!madeWrong){
-      // first attempt correct -> auto next
-      feedback.innerHTML = '<span style="color:green">✅ Correct — next word.</span>';
-      speak("Correct. Next word.");
-      setTimeout(nextWord, 600);
-      return;
-    } else {
-      // made wrong earlier -> need 3 correct typings
-      streak++;
-      practiceInput.value = "";
-      if(streak >= 3){
-        feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct — next word.</span>';
-        speak("Excellent. Next word.");
-        setTimeout(nextWord,700);
-      } else {
-        feedback.innerHTML = `<span style="color:green">✅ Correct (${streak}/3). Type again.</span>`;
-        speak(`Correct. ${streak} of 3.`);
-      }
-      return;
-    }
+  if(!curr){ feedback.innerText = "Press Next to start"; return; }
+  
+  // 2 Auto-change on first attempt correct
+  if(!madeWrong && typed === curr.toLowerCase()){
+    feedback.innerHTML = '<span style="color:green">✅ Correct — next word</span>';
+    speak("Correct Next word");
+    setTimeout(nextWord, 600);
+    return;
   }
-  // typed non-empty and not prefix -> wrong
+
+  // 3 Check for wrong typing
   if(typed.length > 0 && !curr.toLowerCase().startsWith(typed)){
     madeWrong = true;
     streak = 0;
     practiceInput.value = "";
-    feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect — attempts reset. Listening spelling now.</span>`;
+    feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+    
+    // Speak spelling for the wrong word
     setTimeout(()=> spellOut(curr), 200);
-    setTimeout(()=> speak("Now type the correct word three times."), 1000);
+    setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
     return;
   }
-  // partial prefix
-  feedback.innerText = `Keep typing...`;
+  
+  // Partial prefix
+  if(typed.length > 0) {
+      feedback.innerText = madeWrong ? `Keep typing ${streak}/3 attempts done` : `Keep typing`;
+  } else {
+      feedback.innerText = madeWrong ? `Start typing The word is ${curr}` : `Type the word`;
+  }
 }
 
 // hooks
@@ -295,8 +369,9 @@ spellBtn.addEventListener('click', ()=> spellOut(curr));
 practiceInput.addEventListener('input', onType);
 practiceInput.addEventListener('keydown', onType);
 
-// initialize first word only after user interacts to allow speech
-// We call nextWord() after first Next click (user will click it).
+// Initialize with the first word
+// I removed the initial nextWord() call on load to wait for user interaction per best practice for speech.
+// The user will click "Next" or "Listen" which will call nextWord()
 
 /* ==================== OCR & PDF ==================== */
 if(typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -313,17 +388,17 @@ const goPageBtn = document.getElementById('goPageBtn');
 const pageInfo = document.getElementById('pageInfo');
 
 async function displayPdfPage(pageNum){
-  if(!pdfDoc){ docOutput.innerText = 'No PDF loaded.'; return; }
-  if(pageNum < 1 || pageNum > totalPages){ docOutput.innerText = 'Invalid page number.'; return; }
+  if(!pdfDoc){ docOutput.innerText = 'No PDF loaded'; return; }
+  if(pageNum < 1 || pageNum > totalPages){ docOutput.innerText = 'Invalid page number'; return; }
   docOutput.innerText = 'Loading page...';
   try{
     const page = await pdfDoc.getPage(pageNum);
     const txt = await page.getTextContent();
     const pageText = txt.items.map(i=>i.str).join(' ');
-    docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (pageText || `Page ${pageNum} seems empty.`);
+    docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (pageText || `Page ${pageNum} seems empty`);
     pageInfo.innerText = `Page ${pageNum} of ${totalPages}`;
   }catch(e){
-    docOutput.innerText = 'Error reading page.';
+    docOutput.innerText = 'Error reading page';
   }
 }
 
@@ -334,8 +409,8 @@ goPageBtn.addEventListener('click', ()=> {
 
 processBtn.addEventListener('click', async ()=>{
   const f = fileInput.files[0];
-  if(!f){ docOutput.innerText = 'Select a file first.'; return; }
-  docOutput.innerText = 'Processing... (this may take a few seconds)';
+  if(!f){ docOutput.innerText = 'Select a file first'; return; }
+  docOutput.innerText = 'Processing (this may take a few seconds)';
   // PDF
   if(f.type === 'application/pdf'){
     try{
@@ -347,13 +422,13 @@ processBtn.addEventListener('click', async ()=>{
       displayPdfPage(1);
     }catch(e){
       console.error(e);
-      docOutput.innerText = 'PDF read error.';
+      docOutput.innerText = 'PDF read error';
     }
     return;
   }
   // Image -> OCR
   if(f.type.startsWith('image/')){
-    if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded.'; return; }
+    if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded'; return; }
     try{
       const worker = Tesseract.createWorker({ logger: m => console.log(m) });
       await worker.load();
@@ -361,91 +436,4 @@ processBtn.addEventListener('click', async ()=>{
       await worker.initialize('eng+hin+guj');
       const { data: { text } } = await worker.recognize(f);
       await worker.terminate();
-      docOutput.innerText = text || 'No text recognized.';
-      autoReadOCR(text || '');
-    }catch(err){
-      console.error(err);
-      docOutput.innerText = 'OCR failed. Try a clearer image.';
-    }
-    return;
-  }
-  docOutput.innerText = 'Unsupported file type.';
-});
-
-/* ======== language detection & reading ======== */
-function detectLang(text){
-  if(!text) return 'en-IN';
-  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN';
-  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN';
-  if(/[A-Za-z]/.test(text)) return 'en-IN';
-  return 'en-IN';
-}
-
-function speakLongText(text, lang){
-  if(!('speechSynthesis' in window)){ document.getElementById('readStatus').innerText = 'Speech not supported.'; return; }
-  const forced = document.getElementById('forceLang').value;
-  const useLang = forced || lang || detectLang(text);
-  document.getElementById('readStatus').innerText = `Reading (${useLang})...`;
-  // chunk text (300 chars) to avoid long utterance issues
-  const cleaned = text.replace(/\s+/g,' ').trim();
-  const chunkSize = 300;
-  const chunks = [];
-  let i = 0;
-  while(i < cleaned.length){
-    let part = cleaned.slice(i, i + chunkSize);
-    // try to cut at sentence
-    const lastDot = Math.max(part.lastIndexOf('.'), part.lastIndexOf('?'), part.lastIndexOf('!'));
-    if(lastDot > Math.floor(chunkSize * 0.4)){
-      chunks.push(cleaned.slice(i, i + lastDot + 1).trim());
-      i += lastDot + 1;
-    } else {
-      chunks.push(part.trim());
-      i += chunkSize;
-    }
-  }
-  let idx = 0;
-  function playChunk(){
-    if(idx >= chunks.length){ document.getElementById('readStatus').innerText = 'Read complete.'; return; }
-    const u = new SpeechSynthesisUtterance(chunks[idx]);
-    u.lang = useLang;
-    u.rate = (useLang === 'en-IN')?0.95:0.9;
-    u.onend = ()=>{ idx++; setTimeout(playChunk, 200); };
-    u.onerror = ()=>{ idx++; setTimeout(playChunk, 200); };
-    speechSynthesis.speak(u);
-  }
-  try{ speechSynthesis.cancel(); }catch(e){}
-  playChunk();
-}
-
-document.getElementById('readDoc').addEventListener('click', ()=>{
-  const text = docOutput.innerText || '';
-  if(!text.trim()){ document.getElementById('readStatus').innerText = 'No text to read.'; return; }
-  const lang = detectLang(text);
-  speakLongText(text, lang);
-});
-document.getElementById('stopRead').addEventListener('click', ()=>{ try{ speechSynthesis.cancel(); }catch(e){} document.getElementById('readStatus').innerText = 'Stopped.'; });
-
-function autoReadOCR(text){
-  if(!text || !text.trim()) return;
-  const auto = document.getElementById('autoLang').checked;
-  const forced = document.getElementById('forceLang').value;
-  if(!auto && !forced) return;
-  const lang = forced || detectLang(text);
-  setTimeout(()=> speakLongText(text, lang), 300);
-}
-
-/* ==================== Location ==================== */
-const locBtn = document.getElementById('locBtn');
-const locOut = document.getElementById('locationOutput');
-locBtn.addEventListener('click', ()=>{
-  locOut.innerText = 'Locating...';
-  if(!navigator.geolocation){ locOut.innerText = 'Geolocation not supported.'; return; }
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat = pos.coords.latitude.toFixed(6);
-    const lon = pos.coords.longitude.toFixed(6);
-    const maps = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-    locOut.innerHTML = `Lat: ${lat}, Lon: ${lon} — <a href="${maps}" target="_blank">Open in Google Maps</a>`;
-  }, err=>{
-    if(err.code === 1) locOut.innerText = 'Permission denied. Allow location in browser settings.';
-    else if(err.code === 2) locOut.innerText = 'Position unavailable.';
-    else if(err.code === 3) locOut.innerText =
+      docOutput.innerText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"") || 'No text recognized';
