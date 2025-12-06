@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Chirag Rakani — Accessible Tools & Games Hub</title>
+  <title>Chirag Rakani Accessible Tools & Games Hub</title>
   <meta name="description" content="Accessible tools by Chirag Rakani typing OCR PDF/Image games location & social links">
   <meta name="theme-color" content="#2c3e50">
 
@@ -46,7 +46,18 @@
     <div class="grid">
       <aside class="card">
         <h2>About Me</h2>
-        <p class="small">Chirag Rakani Gharana Kutch Gujarat I build accessible tools for visually impaired users Fluent in Hindi Gujarati & English</p>
+        
+        <p class="small" style="font-weight: bold;">
+            हिंदी: मेरा नाम चिराग राकाणी है और मैं घराणा कच्छ गुजरात का निवासी हूँ मैंने ब्लाइंड स्कूल भुज से 12वीं कक्षा पूरी की है मेरा मुख्य उद्देश्य चैट सपोर्ट डाटा एंट्री या किसी भी टाइपिंग से संबंधित पद पर कार्य करना है जहाँ मैं अपनी बेहतरीन टाइपिंग दक्षता और ग्राहक इंटरैक्शन अनुभव का उपयोग कर सकूँ मैं अंग्रेजी हिंदी और गुजराती में पारंगत हूँ मेरा मुख्य जुनून दृष्टिबाधित लोगों के लिए एक्सेसिबल ऐप्स और गेम्स बनाना है मैं एक लेखक भी हूँ और मेरी कुछ किताबें Amazon पर उपलब्ध हैं
+        </p>
+        
+        <p class="small">
+            English: I am Chirag Rakani from Gharana Kutch Gujarat I am a highly motivated and detail-oriented individual with a strong passion for communication and problem-solving Seeking a role in chat support data entry or any typing-related position where I can utilize my exceptional typing skills and customer interaction experience to contribute to organizational success I completed my 12th Grade at Blind School Bhuj I am dedicated to creating accessible apps and games for the visually impaired and I am also an author with books available on Amazon
+        </p>
+
+        <p class="small">
+            ગુજરાતી: મારું નામ ચિરાગ રાકાણી છે અને હું ઘરાણા કચ્છ ગુજરાત નો રહેવાસી છું મેં બ્લાઇન્ડ સ્કૂલ ભુજ માંથી 12મું ધોરણ પૂરું કર્યું છે મારો મુખ્ય હેતુ ચેટ સપોર્ટ ડેટા એન્ટ્રી અથવા ટાઈપિંગ સંબંધિત કોઈ પણ ભૂમિકામાં કામ કરવાનો છે જ્યાં હું મારી અપવાદરૂપ ટાઇપિંગ કૌશલ્યો અને ગ્રાહક સંપર્ક અનુભવનો ઉપયોગ સંસ્થાકીય સફળતા માટે કરી શકું હું દ્રષ્ટિહીન લોકો માટે સુલભ એપ્સ અને ગેમ્સ બનાવવામાં પણ સમર્પિત છું અને એમેઝોન પર મારા પુસ્તકો પણ ઉપલબ્ધ છે
+        </p>
 
         <h3>Buy my books</h3>
         <p class="small">
@@ -68,7 +79,7 @@
           <h2>Typing Practice Endless Spelling</h2>
           <p class="small">If you get a word correct on the first try → it automatically moves to the next word If you type it wrongly once you must type it correctly 3 times to move on Use **F2** to repeat spelling letter by letter and **Double F2** to repeat the full word</p>
 
-          <div id="practiceWord" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px">Press Next to start</div>
+          <div id="practiceWord" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px">Loading practice word</div>
 
           <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the word here">
 
@@ -228,7 +239,7 @@ const wordsWithUsage = {
     "utilize": "I will utilize my skills effectively",
     "contribute": "I am eager to contribute to the team",
     "gujarat": "I am currently living in Gujarat",
-    "make": "I want to make me happy" // User requested example
+    "make": "I want to make me happy"
 };
 
 const words = Object.keys(wordsWithUsage);
@@ -292,71 +303,82 @@ function onType(e){
 
     if(e.key === 'Enter'){ 
       e.preventDefault();
-      // Allow enter to proceed only if conditions satisfied
-      if(!madeWrong){
-        if(typed === curr.toLowerCase()) {
-            feedback.innerHTML = '<span style="color:green">✅ Correct — next word</span>';
-            speak("Correct Next word");
-            setTimeout(nextWord, 600);
-        } else { 
-            // If user types word and presses Enter, but it is still wrong (after being marked wrong once)
-            feedback.innerText = "Type the word correctly"; 
-            speak("Type the word correctly"); 
-        }
+      
+      if(!curr) {
+          feedback.innerText = "Press Next to start";
+          speak("Press Next to start");
+          return;
+      }
+      
+      const correctWord = curr.toLowerCase();
+      
+      if(typed === correctWord){
+          // Case 1: Correct on 1st try (madeWrong is false) -> Auto next handled by 'input' listener
+          if(!madeWrong) return; 
+
+          // Case 2: Correct during 3-streak required session
+          streak++;
+          practiceInput.value = "";
+          
+          if(streak >= 3){
+              feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct next word</span>';
+              speak("Excellent Next word");
+              setTimeout(nextWord,700);
+          } else {
+              feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3 Type again</span>`;
+              speak(`Correct ${streak} of 3`);
+          }
       } else {
-        if(typed === curr.toLowerCase()){
-            if(streak < 3){
-                streak++;
-                practiceInput.value = "";
-                if(streak >= 3){
-                    feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct — next word</span>';
-                    speak("Excellent Next word");
-                    setTimeout(nextWord,700);
-                } else {
-                    feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3 Type again</span>`;
-                    speak(`Correct ${streak} of 3`);
-                }
-            }
-        } else {
-            // Wrong on Enter when attempting 3 times
-            streak = 0; // Reset streak
-            practiceInput.value = "";
-            feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-            setTimeout(()=> spellOut(curr), 200);
-            setTimeout(()=> speak("Now type the correct word three times"), 1000);
-        }
+          // Case 3: Wrong word typed
+          madeWrong = true;
+          streak = 0;
+          practiceInput.value = "";
+          feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+          
+          setTimeout(()=> spellOut(curr), 200);
+          setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
       }
       return;
     }
   }
 
+  // Handle live input checking for instant feedback
   if(e.type !== 'input') return;
   if(!curr){ feedback.innerText = "Press Next to start"; return; }
   
-  // 2 Auto-change on first attempt correct
-  if(!madeWrong && typed === curr.toLowerCase()){
-    feedback.innerHTML = '<span style="color:green">✅ Correct — next word</span>';
+  const correctWord = curr.toLowerCase();
+
+  // 1 Auto-change on first attempt correct (only works if madeWrong is false)
+  if(!madeWrong && typed === correctWord){
+    feedback.innerHTML = '<span style="color:green">✅ Correct next word</span>';
     speak("Correct Next word");
     setTimeout(nextWord, 600);
     return;
   }
 
-  // 3 Check for wrong typing
-  if(typed.length > 0 && !curr.toLowerCase().startsWith(typed)){
-    madeWrong = true;
-    streak = 0;
-    practiceInput.value = "";
-    feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-    
-    // Speak spelling for the wrong word
-    setTimeout(()=> spellOut(curr), 200);
-    setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
-    return;
+  // 2 Check for wrong typing (if madeWrong is true, we allow typing partially)
+  if(typed.length > 0 && !correctWord.startsWith(typed)){
+    // Only trigger full error if not already in 3-streak mode OR if they type more than the correct length
+    if(!madeWrong || typed.length > correctWord.length){
+        madeWrong = true;
+        streak = 0;
+        practiceInput.value = "";
+        feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+        
+        // Speak spelling for the wrong word
+        setTimeout(()=> spellOut(curr), 200);
+        setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
+        return;
+    }
   }
   
-  // Partial prefix
+  // Partial prefix (Live feedback)
   if(typed.length > 0) {
-      feedback.innerText = madeWrong ? `Keep typing ${streak}/3 attempts done` : `Keep typing`;
+      if(madeWrong){
+          feedback.innerText = `Keep typing ${streak}/3 attempts done`;
+      } else {
+          feedback.innerText = `Keep typing`;
+      }
   } else {
       feedback.innerText = madeWrong ? `Start typing The word is ${curr}` : `Type the word`;
   }
@@ -368,10 +390,6 @@ listenBtn.addEventListener('click', ()=>{ if(curr) speak(curr); else nextWord();
 spellBtn.addEventListener('click', ()=> spellOut(curr));
 practiceInput.addEventListener('input', onType);
 practiceInput.addEventListener('keydown', onType);
-
-// Initialize with the first word
-// I removed the initial nextWord() call on load to wait for user interaction per best practice for speech.
-// The user will click "Next" or "Listen" which will call nextWord()
 
 /* ==================== OCR & PDF ==================== */
 if(typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -394,46 +412,5 @@ async function displayPdfPage(pageNum){
   try{
     const page = await pdfDoc.getPage(pageNum);
     const txt = await page.getTextContent();
-    const pageText = txt.items.map(i=>i.str).join(' ');
-    docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (pageText || `Page ${pageNum} seems empty`);
-    pageInfo.innerText = `Page ${pageNum} of ${totalPages}`;
-  }catch(e){
-    docOutput.innerText = 'Error reading page';
-  }
-}
-
-goPageBtn.addEventListener('click', ()=> {
-  const n = parseInt(pageNumberInput.value || '1',10);
-  if(pdfDoc) displayPdfPage(n);
-});
-
-processBtn.addEventListener('click', async ()=>{
-  const f = fileInput.files[0];
-  if(!f){ docOutput.innerText = 'Select a file first'; return; }
-  docOutput.innerText = 'Processing (this may take a few seconds)';
-  // PDF
-  if(f.type === 'application/pdf'){
-    try{
-      const ab = await f.arrayBuffer();
-      pdfDoc = await pdfjsLib.getDocument({data:ab}).promise;
-      totalPages = pdfDoc.numPages;
-      pdfControls.style.display = 'inline-flex';
-      pageNumberInput.max = totalPages;
-      displayPdfPage(1);
-    }catch(e){
-      console.error(e);
-      docOutput.innerText = 'PDF read error';
-    }
-    return;
-  }
-  // Image -> OCR
-  if(f.type.startsWith('image/')){
-    if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded'; return; }
-    try{
-      const worker = Tesseract.createWorker({ logger: m => console.log(m) });
-      await worker.load();
-      await worker.loadLanguage('eng+hin+guj');
-      await worker.initialize('eng+hin+guj');
-      const { data: { text } } = await worker.recognize(f);
-      await worker.terminate();
-      docOutput.innerText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"") || 'No text recognized';
+    // Remove punctuation from extracted text
+    const pageText = txt.items.map(i=>i.str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")).join('
