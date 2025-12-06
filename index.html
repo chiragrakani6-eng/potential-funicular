@@ -3,16 +3,15 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Chirag — Accessible Tools (Debugged)</title>
-  <meta name="description" content="Accessible tools: typing practice, OCR (PDF/Image), games, location. Debug-ready version with diagnostics.">
+  <title>Chirag — Accessible Tools (Universal)</title>
+  <meta name="description" content="Accessible tools: typing practice, OCR (PDF/Image), games, location. Works on mobile and desktop.">
   <meta name="theme-color" content="#2c3e50">
 
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- We will lazy-load Tesseract; PDF.js included -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
   <style>
-    :root{--bg:#f6f8fb;--card:#fff;--accent:#2c3e50;--accent2:#27ae60;--muted:#666}
+    :root{--bg:#f6f9fc;--card:#fff;--accent:#2c3e50;--accent2:#2b8cff;--muted:#666}
     *{box-sizing:border-box}
     body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#111}
     header{background:var(--accent);color:#fff;padding:14px 16px}
@@ -20,84 +19,79 @@
     .grid{display:grid;grid-template-columns:1fr;gap:14px}
     @media(min-width:900px){.grid{grid-template-columns:320px 1fr}}
     .card{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-    .btn{background:var(--accent2);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .btn-alt{background:#3b82f6}
-    .danger{background:#c0392b}
+    h2{margin:0 0 8px 0}
     .small{font-size:0.95rem;color:var(--muted)}
-    .output{background:#fafafa;padding:10px;border-radius:6px;border:1px solid #e6e6e6;min-height:100px;white-space:pre-wrap}
-    input, select, textarea{padding:8px;border-radius:6px;border:1px solid #ddd;width:100%}
+    button.btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+    button.btn-plain{background:#eee;color:#111}
+    .output{background:#fafafa;padding:10px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap;overflow:auto}
     .typing-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    input, select, textarea{padding:8px;border-radius:6px;border:1px solid #ddd;width:100%}
     footer{padding:12px;text-align:center;color:var(--muted)}
-    .diag {display:flex;flex-direction:column;gap:6px}
-    .diag-row{display:flex;justify-content:space-between;padding:6px 8px;background:#f3f4f6;border-radius:6px}
-    a{color:var(--accent)}
+    .diag-row{display:flex;justify-content:space-between;padding:8px;background:#f3f4f6;border-radius:6px;margin-bottom:6px}
+    .spinner{display:inline-block;width:18px;height:18px;border:3px solid #ddd;border-top-color:var(--accent2);border-radius:50%;animation:rot 1s linear infinite}
+    @keyframes rot{to{transform:rotate(360deg)}}
+    .notice{padding:8px;border-radius:6px;background:#fff7cc;border:1px solid #f1e0a8}
   </style>
 </head>
 <body>
   <header>
     <div style="display:flex;gap:12px;align-items:center">
-      <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
+      <div style="width:52px;height:52px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
       <div>
-        <h1 style="margin:0;font-size:1.05rem">Chirag Accessible Tools — Debugged</h1>
-        <div class="small">If something doesn't work — check Diagnostics and follow instructions below.</div>
+        <h1 style="font-size:1.05rem;margin:0">Chirag — Accessible Tools (Universal)</h1>
+        <div class="small">Mobile-friendly — press INITIALIZE once to enable speech on phones.</div>
       </div>
     </div>
   </header>
 
   <main class="container">
     <div class="grid">
-      <!-- Sidebar / Diagnostics -->
-      <aside class="card" aria-label="Diagnostics and links">
+      <!-- Diagnostics & Links -->
+      <aside class="card" aria-label="Diagnostics & Links">
         <h2>Diagnostics</h2>
-        <div class="diag" id="diag">
-          <div class="diag-row"><div>Speech Synthesis</div><div id="diag-speech">—</div></div>
-          <div class="diag-row"><div>Geolocation</div><div id="diag-geo">—</div></div>
-          <div class="diag-row"><div>Tesseract (OCR)</div><div id="diag-tess">—</div></div>
-          <div class="diag-row"><div>PDF.js</div><div id="diag-pdf">—</div></div>
-          <div class="diag-row"><div>User Gesture (Initialized)</div><div id="diag-init">No</div></div>
+        <div class="diag-row"><div>Speech Synthesis</div><div id="d-speech">—</div></div>
+        <div class="diag-row"><div>Geolocation</div><div id="d-geo">—</div></div>
+        <div class="diag-row"><div>Tesseract (OCR)</div><div id="d-tess">Loading...</div></div>
+        <div class="diag-row"><div>PDF.js</div><div id="d-pdf">—</div></div>
+        <div class="diag-row"><div>Initialized</div><div id="d-init">No</div></div>
+
+        <div style="margin-top:8px">
+          <button id="btnInit" class="btn" style="width:100%;">INITIALIZE (Required for speech)</button>
         </div>
 
-        <div style="margin-top:10px">
-          <button id="btn-init" class="btn">INITIALIZE (Required for Speech)</button>
-        </div>
-
-        <hr style="margin:10px 0">
-
-        <h3>Your links</h3>
+        <hr style="margin:8px 0">
+        <h3>My Books</h3>
         <p class="small">
-          <a href="https://amzn.to/48Tnv7r" target="_blank">Amazon link 1</a><br>
-          <a href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank">My Amazon Book</a>
+          <a href="https://amzn.to/48Tnv7r" target="_blank" rel="noopener">Amazon link 1</a><br>
+          <a href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank" rel="noopener">My Amazon Book</a>
         </p>
       </aside>
 
-      <!-- Main area -->
       <section>
         <!-- Typing Practice -->
         <article class="card" id="typing-card">
           <h2>Typing Practice — Endless Spelling</h2>
-          <p class="small">Click <strong>Next</strong> to start. For speech, press INITIALIZE first if using mobile browser.</p>
+          <p class="small">Behavior: first-try correct → auto next. If you make a mistake, you must type correctly 3 times to proceed. Use Spell or Listen (after INITIALIZE).</p>
 
-          <div id="practiceWord" style="padding:8px;border-radius:6px;border:1px solid #eee;background:#fbfff6;margin-bottom:8px">Press Next</div>
-
-          <input id="practiceInput" type="text" placeholder="Type the word here">
+          <div id="practiceWord" style="padding:10px;border-radius:6px;border:1px solid #eee;background:#fbfff6;margin-bottom:8px">Press Next</div>
+          <input id="practiceInput" type="text" placeholder="Type the spoken word here" aria-label="Type word">
 
           <div class="typing-controls" style="margin-top:8px">
             <button id="nextWordBtn" class="btn">🔄 Next</button>
             <button id="listenBtn" class="btn">🔊 Listen</button>
-            <button id="spellBtn" class="btn btn-alt">🔡 Spell</button>
-            <div id="spellFeedback" aria-live="assertive" style="font-weight:700;margin-left:8px"></div>
+            <button id="spellBtn" class="btn">🔡 Spell</button>
+            <div id="spellFeedback" style="font-weight:700;margin-left:8px"></div>
           </div>
         </article>
 
-        <!-- OCR / PDF -->
+        <!-- Document Reader -->
         <article class="card" style="margin-top:12px">
           <h2>Document Reader (Image / PDF)</h2>
-          <p class="small">Upload an image or PDF. For PDFs use the page number and press Go to jump to that page.</p>
+          <p class="small">Upload image or PDF. For PDF: use page box → Go to jump to any page.</p>
 
           <input id="fileInput" type="file" accept="image/*,.pdf" style="margin-top:8px">
-          <div style="margin-top:8px" class="typing-controls">
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
             <button id="processBtn" class="btn">📁 Process</button>
-
             <div id="pdf-controls" style="display:none;align-items:center">
               <label style="display:flex;align-items:center;gap:6px">Page:
                 <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;padding:6px">
@@ -113,21 +107,499 @@
           <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
             <label><input id="autoLang" type="checkbox" checked> Auto-detect</label>
             <label style="margin-left:6px">Force:
-              <select id="forceLang">
-                <option value="">Auto</option>
-                <option value="en-IN">English</option>
-                <option value="hi-IN">Hindi</option>
-                <option value="gu-IN">Gujarati</option>
-              </select>
+              <select id="forceLang"><option value="">Auto</option><option value="en-IN">English</option><option value="hi-IN">Hindi</option><option value="gu-IN">Gujarati</option></select>
             </label>
             <button id="readDoc" class="btn">🔊 Read</button>
-            <button id="stopRead" class="btn danger">⏹ Stop</button>
+            <button id="stopRead" class="btn btn-plain">⏹ Stop</button>
             <div id="readStatus" class="small" style="margin-left:8px"></div>
           </div>
+          <div id="ocrNote" class="small" style="margin-top:8px;color:#444">Note: OCR may take several seconds on phones. Please wait after pressing Process.</div>
         </article>
 
         <!-- Location -->
         <article class="card" style="margin-top:12px">
           <h2>Where Am I?</h2>
-          <p class="small">Click the button and allow browser location permission.</p>
+          <p class="small">Allow location permission when asked.</p>
           <div style="display:flex;gap:8px;align-items:center">
+            <button id="locBtn" class="btn">📍 Get Location</button>
+            <div id="locOut" class="small" style="margin-left:8px"></div>
+          </div>
+        </article>
+
+        <!-- Games -->
+        <article class="card" style="margin-top:12px">
+          <h2>Games</h2>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button onclick="window.open('https://lichess.org','_blank')" class="btn">♟️ Chess (Lichess)</button>
+
+            <div>
+              <button id="handBtn" class="btn">🏏 Hand Cricket</button>
+              <div id="handPanel" style="display:none;margin-top:8px">
+                <div id="hcStatus" class="small">Ready</div>
+                <input id="hcInput" type="number" min="0" max="6" placeholder="0-6" style="width:90px;margin-top:6px">
+                <div style="margin-top:8px">
+                  <button id="hcPlay" class="btn">Play</button>
+                  <button id="hcReset" class="btn btn-plain">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button id="snlBtn" class="btn">🎲 Snakes & Ladders</button>
+              <div id="snlPanel" style="display:none;margin-top:8px">
+                <div id="snlStatus" class="small">Ready</div>
+                <div style="margin-top:8px">
+                  <button id="snlRoll" class="btn">Roll</button>
+                  <button id="snlReset" class="btn btn-plain">Reset</button>
+                  <span id="snlDice" class="small" style="margin-left:12px">-</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button id="ludoBtn" class="btn">🎯 Ludo Race</button>
+              <div id="ludoPanel" style="display:none;margin-top:8px">
+                <div id="ludoStatus" class="small">Ready</div>
+                <div style="margin-top:8px">
+                  <button id="ludoRoll" class="btn">Roll</button>
+                  <button id="ludoReset" class="btn btn-plain">Reset</button>
+                </div>
+                <div id="ludoScores" class="small" style="margin-top:8px"></div>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+  <footer>© 2025 Chirag Rakani</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Diagnostics elements
+  const dSpeech = document.getElementById('d-speech');
+  const dGeo = document.getElementById('d-geo');
+  const dTess = document.getElementById('d-tess');
+  const dPdf = document.getElementById('d-pdf');
+  const dInit = document.getElementById('d-init');
+
+  // Buttons & elements
+  const btnInit = document.getElementById('btnInit');
+  const nextWordBtn = document.getElementById('nextWordBtn');
+  const listenBtn = document.getElementById('listenBtn');
+  const spellBtn = document.getElementById('spellBtn');
+  const practiceInput = document.getElementById('practiceInput');
+  const practiceWord = document.getElementById('practiceWord');
+  const spellFeedback = document.getElementById('spellFeedback');
+
+  const processBtn = document.getElementById('processBtn');
+  const fileInput = document.getElementById('fileInput');
+  const docOutput = document.getElementById('doc-output');
+  const pdfControls = document.getElementById('pdf-controls');
+  const pageNumberInput = document.getElementById('pageNumberInput');
+  const goPageBtn = document.getElementById('goPageBtn');
+  const pageInfo = document.getElementById('pageInfo');
+  const readDocBtn = document.getElementById('readDoc');
+  const stopReadBtn = document.getElementById('stopRead');
+  const autoLang = document.getElementById('autoLang');
+  const forceLang = document.getElementById('forceLang');
+  const readStatus = document.getElementById('readStatus');
+
+  // location
+  const locBtn = document.getElementById('locBtn');
+  const locOut = document.getElementById('locOut');
+
+  // games
+  const handBtn = document.getElementById('handBtn');
+  const handPanel = document.getElementById('handPanel');
+  const hcPlay = document.getElementById('hcPlay');
+  const hcReset = document.getElementById('hcReset');
+  const hcInput = document.getElementById('hcInput');
+  const hcStatus = document.getElementById('hcStatus');
+
+  const snlBtn = document.getElementById('snlBtn');
+  const snlPanel = document.getElementById('snlPanel');
+  const snlRoll = document.getElementById('snlRoll');
+  const snlReset = document.getElementById('snlReset');
+  const snlDice = document.getElementById('snlDice');
+  const snlStatus = document.getElementById('snlStatus');
+
+  const ludoBtn = document.getElementById('ludoBtn');
+  const ludoPanel = document.getElementById('ludoPanel');
+  const ludoRoll = document.getElementById('ludoRoll');
+  const ludoReset = document.getElementById('ludoReset');
+  const ludoScores = document.getElementById('ludoScores');
+
+  // states
+  let initialized = false;
+  let tessWorker = null;
+  let pdfDoc = null;
+  let totalPages = 0;
+
+  // initial diagnostics
+  dSpeech.innerText = ('speechSynthesis' in window) ? 'Yes' : 'No';
+  dGeo.innerText = ('geolocation' in navigator) ? 'Yes' : 'No';
+  dPdf.innerText = (typeof pdfjsLib !== 'undefined') ? 'Yes' : 'No';
+  dInit.innerText = 'No';
+
+  // Lazy load Tesseract when user first presses Process for image
+  async function loadTesseractWorker(){
+    if(tessWorker) return tessWorker;
+    dTess.innerHTML = '<span class="spinner"></span> Loading';
+    try{
+      // dynamic import of Tesseract from CDN
+      if(typeof Tesseract === 'undefined'){
+        // load script programmatically
+        await new Promise((res,reject)=>{
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+          s.onload = res; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+      const worker = Tesseract.createWorker({ logger: m => { /*console.log(m)*/ } });
+      await worker.load();
+      await worker.loadLanguage('eng+hin+guj');
+      await worker.initialize('eng+hin+guj');
+      tessWorker = worker;
+      dTess.innerText = 'Ready';
+      return tessWorker;
+    }catch(err){
+      console.error('Tesseract load error', err);
+      dTess.innerText = 'Error';
+      return null;
+    }
+  }
+
+  // ---------- Initialization (unlock audio & prime speech) ----------
+  btnInit.addEventListener('click', async () => {
+    // try to unlock audio (some browsers require a user gesture)
+    try{
+      // WebAudio silent buffer to unlock in browsers like Safari/Android Chrome
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(AudioCtx){
+        const ctx = new AudioCtx();
+        const buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(ctx.destination);
+        if(src.start) src.start(0);
+        // suspend/close not needed
+      }
+      // also cancel and speak a tiny phrase to prime
+      if('speechSynthesis' in window){
+        window.speechSynthesis.cancel();
+      }
+      initialized = true;
+      dInit.innerText = 'Yes';
+      btnInit.innerText = 'Initialized ✓';
+      btnInit.disabled = true;
+      // spoken confirmation if speech available
+      if('speechSynthesis' in window) {
+        const ut = new SpeechSynthesisUtterance('Initialization complete. You can now use Listen and Read buttons.');
+        ut.lang = 'en-IN';
+        window.speechSynthesis.speak(ut);
+      }
+    }catch(e){
+      console.error('Init error', e);
+      dInit.innerText = 'No';
+    }
+  });
+
+  /* ---------- Typing practice logic (robust) ---------- */
+  const words = ["accessibility","computer","keyboard","software","screenreader","braille","typing","success","motivation","efficiency","communication","technology","challenge","dedication","confidence","amazing","support","document","location","internet","navigation","paragraph","proficiency","essential","accurate","experience","organization","solution","applicant","objective","multilingual","approachable","customer","service","position","utilize","contribute","gujarat"];
+
+  let curr = '', madeWrong = false, streak = 0;
+
+  function pickNext(){
+    madeWrong = false; streak = 0;
+    curr = words[Math.floor(Math.random()*words.length)];
+    practiceWord.innerText = '🔊 Listen: ' + curr;
+    spellFeedback.innerText = 'Type the word.';
+    practiceInput.value = '';
+    practiceInput.focus();
+    if(initialized && 'speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(curr); u.lang='en-IN'; u.rate=0.95; window.speechSynthesis.speak(u);
+    }
+  }
+
+  function spellOut(word){
+    if(!word) return;
+    const s = word.toUpperCase().split('').join('. ');
+    if(initialized && 'speechSynthesis' in window){ const u=new SpeechSynthesisUtterance('Spelling: '+s); u.lang='en-IN'; window.speechSynthesis.speak(u); }
+    spellFeedback.innerText = 'Spelling: ' + word.toUpperCase().split('').join(' · ');
+  }
+
+  function onType(e){
+    const typed = practiceInput.value.trim().toLowerCase();
+    if(e.type === 'keydown'){
+      if(e.key === 'F2'){ e.preventDefault(); spellOut(curr); return; }
+      if(e.key === 'Enter'){ e.preventDefault();
+        if(!madeWrong){
+          if(typed === curr.toLowerCase()) pickNext();
+          else { spellFeedback.innerText='Type the word correctly.'; if(initialized) speak('Type correctly'); }
+        } else {
+          if(streak >= 3) pickNext();
+          else { spellFeedback.innerText = `Need ${3-streak} more correct`; if(initialized) speak(`Need ${3-streak} more correct attempts`); }
+        }
+        return;
+      }
+    }
+    if(e.type !== 'input') return;
+    if(!curr){ spellFeedback.innerText='Press Next to start.'; return; }
+    if(typed === curr.toLowerCase()){
+      if(!madeWrong){
+        spellFeedback.innerHTML = '<span style="color:green">✅ Correct — moving to next.</span>';
+        if(initialized) speak('Correct. Next word.');
+        setTimeout(pickNext, 600);
+        return;
+      } else {
+        streak++;
+        practiceInput.value = '';
+        if(streak >= 3){
+          spellFeedback.innerHTML = '<span style="color:green">🎉 Completed 3 correct — next word.</span>';
+          if(initialized) speak('Excellent. Next word.');
+          setTimeout(pickNext, 700);
+        } else {
+          spellFeedback.innerHTML = `<span style="color:green">✅ Correct (${streak}/3). Type again.</span>`;
+          if(initialized) speak(`Correct. ${streak} of 3.`);
+        }
+        return;
+      }
+    }
+    if(typed.length > 0 && !curr.toLowerCase().startsWith(typed)){
+      madeWrong = true; streak = 0; practiceInput.value = '';
+      spellFeedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect — attempts reset. Spelling will be spoken.</span>`;
+      setTimeout(()=> spellOut(curr), 250);
+      setTimeout(()=> { if(initialized) speak('Now type the correct word three times'); }, 1000);
+      return;
+    }
+    spellFeedback.innerText = 'Keep typing...';
+  }
+
+  nextWordBtn.addEventListener('click', pickNext);
+  listenBtn.addEventListener('click', ()=> { if(curr){ if(initialized) speak(curr); else { spellFeedback.innerText='Press INITIALIZE first.'; } } else pickNext(); });
+  spellBtn.addEventListener('click', ()=> spellOut(curr));
+  practiceInput.addEventListener('input', onType);
+  practiceInput.addEventListener('keydown', onType);
+
+  /* ---------- OCR & PDF ---------- */
+  if(typeof pdfjsLib !== 'undefined'){ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js'; }
+
+  async function handleProcess(){
+    const f = fileInput.files[0];
+    if(!f){ docOutput.innerText = 'Select a file first.'; return; }
+    docOutput.innerText = 'Processing...';
+    // PDF
+    if(f.type === 'application/pdf'){
+      try{
+        const ab = await f.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument({data:ab}).promise;
+        totalPages = pdfDoc.numPages;
+        document.getElementById('pdf-controls').style.display = 'inline-flex';
+        pageNumberInput.max = totalPages;
+        displayPdfPage(1);
+      }catch(err){
+        console.error(err);
+        docOutput.innerText = 'PDF read error. Try another file or re-upload.';
+      }
+      return;
+    }
+    // Image -> OCR
+    if(f.type.startsWith('image/')){
+      const worker = await loadTesseractWorker();
+      if(!worker){ docOutput.innerText = 'OCR not available on this device/browser.'; return; }
+      try{
+        docOutput.innerText = 'Running OCR (this may take 5–20 seconds)...';
+        const { data: { text } } = await worker.recognize(f);
+        docOutput.innerText = text || 'No text recognized.';
+        if((autoLang.checked || forceLang.value) && initialized) {
+          const lang = forceLang.value || detectLang(text || '');
+          speakLongText(text || '', lang);
+        }
+      }catch(err){
+        console.error(err);
+        docOutput.innerText = 'OCR failed. Try a clearer image.';
+      }
+      return;
+    }
+    docOutput.innerText = 'Unsupported file type.';
+  }
+
+  async function displayPdfPage(n){
+    if(!pdfDoc){ docOutput.innerText = 'No PDF loaded.'; return; }
+    if(n < 1 || n > totalPages){ docOutput.innerText = `Invalid page number (1-${totalPages}).`; return; }
+    docOutput.innerText = 'Loading page...';
+    try{
+      const page = await pdfDoc.getPage(n);
+      const txt = await page.getTextContent();
+      const pageText = txt.items.map(i=>i.str).join(' ');
+      docOutput.innerText = `--- PAGE ${n} ---\n\n` + (pageText || `Page ${n} seems empty.`);
+      pageInfo.innerText = `Page ${n} of ${totalPages}`;
+    }catch(err){
+      console.error(err);
+      docOutput.innerText = 'Error reading page.';
+    }
+  }
+
+  goPageBtn.addEventListener('click', ()=> {
+    const n = parseInt(pageNumberInput.value || '1', 10);
+    if(pdfDoc) displayPdfPage(n);
+  });
+
+  processBtn.addEventListener('click', handleProcess);
+
+  // Read long text (chunks)
+  function detectLang(t){
+    if(!t) return 'en-IN';
+    if(/[\u0A80-\u0AFF]/.test(t)) return 'gu-IN';
+    if(/[\u0900-\u097F]/.test(t)) return 'hi-IN';
+    if(/[A-Za-z]/.test(t)) return 'en-IN';
+    return 'en-IN';
+  }
+
+  function speakLongText(text, lang){
+    if(!('speechSynthesis' in window)){ readStatus.innerText = 'Speech not supported.'; return; }
+    const forced = forceLang.value;
+    const useLang = forced || lang || detectLang(text);
+    readStatus.innerText = `Reading (${useLang})...`;
+    const cleaned = (text||'').replace(/\s+/g,' ').trim();
+    const chunkSize = 300;
+    const chunks=[];
+    let i=0;
+    while(i < cleaned.length){
+      let part = cleaned.slice(i, i+chunkSize);
+      const lastDot = Math.max(part.lastIndexOf('.'), part.lastIndexOf('?'), part.lastIndexOf('!'));
+      if(lastDot > Math.floor(chunkSize*0.4)){
+        chunks.push(cleaned.slice(i, i+lastDot+1).trim()); i += lastDot+1;
+      } else {
+        chunks.push(part.trim()); i += chunkSize;
+      }
+    }
+    let idx=0;
+    function play(){
+      if(idx >= chunks.length){ readStatus.innerText='Read complete.'; return; }
+      const u = new SpeechSynthesisUtterance(chunks[idx]);
+      u.lang = useLang;
+      u.rate = (useLang==='en-IN')?0.95:0.9;
+      u.onend = ()=>{ idx++; setTimeout(play,200); };
+      u.onerror = ()=>{ idx++; setTimeout(play,200); };
+      window.speechSynthesis.speak(u);
+    }
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    play();
+  }
+
+  readDocBtn.addEventListener('click', ()=> {
+    const text = docOutput.innerText || '';
+    if(!text.trim()){ readStatus.innerText='No text to read.'; return; }
+    if(!initialized){ readStatus.innerText='Press INITIALIZE first to enable speech.'; return; }
+    const lang = detectLang(text);
+    speakLongText(text, lang);
+  });
+  stopReadBtn.addEventListener('click', ()=> { try{ speechSynthesis.cancel(); }catch(e){} readStatus.innerText='Stopped.'; });
+
+  // ---------- Location ----------
+  locBtn.addEventListener('click', ()=> {
+    locOut.innerText = 'Locating...';
+    if(!navigator.geolocation){ locOut.innerText = 'Geolocation not supported.'; return; }
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const lat = pos.coords.latitude.toFixed(6), lon = pos.coords.longitude.toFixed(6);
+      const maps = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+      locOut.innerHTML = `Lat: ${lat}, Lon: ${lon} — <a href="${maps}" target="_blank">Open in Google Maps</a>`;
+    }, err=>{
+      if(err.code === 1) locOut.innerText = 'Permission denied. Allow location for this site.';
+      else if(err.code === 2) locOut.innerText = 'Position unavailable.';
+      else if(err.code === 3) locOut.innerText = 'Request timed out.';
+      else locOut.innerText = 'Error getting location.';
+    }, { timeout: 10000 });
+  });
+
+  // ---------- Games (simple, no external libs) ----------
+  handBtn.addEventListener('click', ()=> { handPanel.style.display = handPanel.style.display === 'none' ? 'block' : 'none'; });
+  let hcRuns=0, hcBalls=0, hcOut=false;
+  hcPlay.addEventListener('click', ()=> {
+    const v = parseInt(hcInput.value,10);
+    if(isNaN(v) || v < 0 || v > 6){ if(initialized) speak('Enter number between zero and six'); hcStatus.innerText='Enter 0-6'; return; }
+    if(hcOut){ if(initialized) speak('You are out. Reset the game.'); hcStatus.innerText='You are out.'; return; }
+    const comp = Math.floor(Math.random()*7);
+    hcBalls++;
+    if(v === comp){ hcOut = true; const msg = `OUT! You scored ${hcRuns} runs in ${hcBalls} balls.`; hcStatus.innerText = msg; if(initialized) speak(msg); }
+    else { hcRuns += v; const msg = `You ${v}, Computer ${comp}. Runs ${hcRuns}`; hcStatus.innerText = msg; if(initialized) speak(msg); }
+  });
+  hcReset.addEventListener('click', ()=> { hcRuns=0; hcBalls=0; hcOut=false; hcStatus.innerText='Ready'; });
+
+  snlBtn.addEventListener('click', ()=> { snlPanel.style.display = snlPanel.style.display === 'none' ? 'block' : 'none'; });
+  let snlPos = 0; const snakes = {16:6,18:3,24:9}; const ladders = {2:14,7:22,11:26};
+  snlRoll.addEventListener('click', ()=> {
+    const d = Math.floor(Math.random()*6)+1;
+    let next = snlPos + d;
+    if(next > 30) next = snlPos;
+    snlPos = next;
+    if(ladders[snlPos]) snlPos = ladders[snlPos];
+    if(snakes[snlPos]) snlPos = snakes[snlPos];
+    snlDice.innerText = d;
+    snlStatus.innerText = `Moved to ${snlPos}`;
+    if(initialized) speak(`You rolled ${d}. Moved to ${snlPos}`);
+  });
+  snlReset.addEventListener('click', ()=> { snlPos = 0; snlStatus.innerText='Ready'; });
+
+  ludoBtn.addEventListener('click', ()=> { ludoPanel.style.display = ludoPanel.style.display === 'none' ? 'block' : 'none'; });
+  let you=0, comp=0;
+  ludoRoll.addEventListener('click', ()=> {
+    const r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1;
+    you += r1; comp += r2;
+    ludoScores.innerText = `You ${you} — Computer ${comp}`;
+    if(initialized) speak(`You rolled ${r1}. Computer rolled ${r2}.`);
+  });
+  ludoReset.addEventListener('click', ()=> { you=0; comp=0; ludoScores.innerText=''; });
+
+  // update diag when Tesseract ready
+  (function checkTessLoop(){
+    let checks = 0;
+    const iv = setInterval(()=> {
+      checks++;
+      if(tessWorker) { dTess.innerText='Ready'; clearInterval(iv); }
+      if(checks > 40){ if(!tessWorker) dTess.innerText = (dTess.innerText==='Loading...') ? 'Not loaded' : dTess.innerText; clearInterval(iv); }
+    }, 500);
+  })();
+
+  // helper: lazy-load worker function is above in outer scope
+  async function loadTesseractWorker(){
+    // function re-defined here to avoid hoisting issues - same code as earlier - create script if needed
+    if(tessWorker) return tessWorker;
+    dTess.innerHTML = '<span class="spinner"></span> Loading';
+    try{
+      if(typeof Tesseract === 'undefined'){
+        await new Promise((res,rej)=>{
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+          s.onload = res; s.onerror = rej;
+          document.head.appendChild(s);
+        });
+      }
+      const worker = Tesseract.createWorker({ logger: m => { /*console.log(m)*/ } });
+      await worker.load();
+      await worker.loadLanguage('eng+hin+guj');
+      await worker.initialize('eng+hin+guj');
+      tessWorker = worker;
+      dTess.innerText = 'Ready';
+      return tessWorker;
+    }catch(err){
+      console.error('Tesseract load error', err);
+      dTess.innerText = 'Error';
+      return null;
+    }
+  }
+
+  // Expose loadTesseractWorker to other functions (needed by image OCR flow)
+  window.loadTesseractWorker = loadTesseractWorker;
+
+});
+</script>
+</body>
+</html>
