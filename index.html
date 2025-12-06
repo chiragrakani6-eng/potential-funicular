@@ -32,7 +32,10 @@
     .danger{background:#c0392b}
     /* Typing specific styles */
     .typing-box{padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px}
-    #wpmText{line-height:1.6;font-size:1.1rem;margin-bottom:8px}
+    #wpmText, #tutorTextDisplay{line-height:1.6;font-size:1.1rem;margin-bottom:8px;white-space: pre-wrap;}
+    .highlight-current-tutor{background-color: yellow; padding: 2px 0; border-radius: 2px;}
+    .highlight-typed-tutor-correct{color: green; font-weight: bold;}
+    .highlight-typed-tutor-error{color: red; background-color: #fdd; font-weight: bold; padding: 1px 0;}
   </style>
 </head>
 <body>
@@ -73,11 +76,11 @@
 
       <section>
         <article class="card" id="typing-tutor-card">
-          <h2>Typing Tutor Key Placement</h2>
-          <p class="small">10 exercises to practice home row keys. The tool will speak the required key and finger position.</p>
+          <h2>Typing Tutor (Key Placement & Words)</h2>
           <div id="tutorPanel">
             <div id="tutorStatus" class="typing-box">Press Start Tutor to begin</div>
-            <input id="tutorInput" type="text" placeholder="Press the required key or type the sequence" aria-label="Typing Tutor Input" disabled>
+            <p id="tutorTextDisplay" style="white-space: pre-wrap;">Welcome to the Typing Tutor. Press Start to begin Exercise 1.</p>
+            <input id="tutorInput" type="text" placeholder="Start typing the sequence/words shown above" aria-label="Typing Tutor Input" disabled>
           </div>
           <div class="typing-controls">
             <button id="tutorBtn" class="btn">▶ Start Tutor</button>
@@ -261,47 +264,9 @@ function speak(text, lang='en-IN', rate=0.95){
   window.speechSynthesis.speak(u);
 }
 
-/* ==================== Typing Practice (Endless Spelling) ==================== */
+/* ==================== Typing Practice (Endless Spelling - Original) ==================== */
 const wordsWithUsage = {
-    "accessibility": "We are designing this tool for better web accessibility",
-    "computer": "I use the computer for all my data entry tasks",
-    "keyboard": "My typing speed is fast because I use the keyboard efficiently",
-    "software": "I am competent in using Microsoft Office software",
-    "screenreader": "A screenreader is essential for navigating the internet",
-    "braille": "I learned to read using the braille system in school",
-    "typing": "I am seeking a typing related position",
-    "success": "Success requires dedication and consistent practice",
-    "motivation": "I have high motivation to learn new skills",
-    "efficiency": "Typing proficiency ensures high efficiency",
-    "communication": "Strong communication skills are needed for chat support",
-    "technology": "Assistive technology helps visually impaired people work effectively",
-    "challenge": "I enjoy solving puzzles and logical challenges",
-    "dedication": "Dedication and consistent practice are important",
-    "confidence": "My confidence in my skills is very high",
-    "amazing": "This accessibility feature is truly amazing",
-    "support": "I can provide excellent customer support",
-    "document": "Please review the document before printing",
-    "location": "I am trying to find my current location",
-    "internet": "Internet access is required for online work",
-    "navigation": "Website navigation must be simple and clear",
-    "paragraph": "I will type the entire paragraph quickly",
-    "proficiency": "I have high proficiency in multilingual communication",
-    "essential": "Attention to detail is essential for data entry",
-    "accurate": "I ensure fast and accurate typing",
-    "experience": "I have customer interaction experience",
-    "organization": "I wish to contribute to the organization's success",
-    "solution": "The problem solving team found a perfect solution",
-    "applicant": "The job applicant submitted a strong resume",
-    "objective": "My career objective is to work in tech support",
-    "multilingual": "I am fluent making me a multilingual candidate",
-    "approachable": "I am a friendly and approachable person",
-    "customer": "I focus on helping every customer resolve their issues",
-    "service": "I am passionate about customer service",
-    "position": "I am seeking a data entry position",
-    "utilize": "I will utilize my skills effectively",
-    "contribute": "I am eager to contribute to the team",
-    "gujarat": "I am currently living in Gujarat",
-    "make": "I want to make me happy"
+    "accessibility": "We are designing this tool for better web accessibility", "computer": "I use the computer for all my data entry tasks", "keyboard": "My typing speed is fast because I use the keyboard efficiently", "software": "I am competent in using Microsoft Office software", "screenreader": "A screenreader is essential for navigating the internet", "braille": "I learned to read using the braille system in school", "typing": "I am seeking a typing related position", "success": "Success requires dedication and consistent practice", "motivation": "I have high motivation to learn new skills", "efficiency": "Typing proficiency ensures high efficiency", "communication": "Strong communication skills are needed for chat support", "technology": "Assistive technology helps visually impaired people work effectively", "challenge": "I enjoy solving puzzles and logical challenges", "dedication": "Dedication and consistent practice are important", "confidence": "My confidence in my skills is very high", "amazing": "This accessibility feature is truly amazing", "support": "I can provide excellent customer support", "document": "Please review the document before printing", "location": "I am trying to find my current location", "internet": "Internet access is required for online work", "navigation": "Website navigation must be simple and clear", "paragraph": "I will type the entire paragraph quickly", "proficiency": "I have high proficiency in multilingual communication", "essential": "Attention to detail is essential for data entry", "accurate": "I ensure fast and accurate typing", "experience": "I have customer interaction experience", "organization": "I wish to contribute to the organization's success", "solution": "The problem solving team found a perfect solution", "applicant": "The job applicant submitted a strong resume", "objective": "My career objective is to work in tech support", "multilingual": "I am fluent making me a multilingual candidate", "approachable": "I am a friendly and approachable person", "customer": "I focus on helping every customer resolve their issues", "service": "I am passionate about customer service", "position": "I am seeking a data entry position", "utilize": "I will utilize my skills effectively", "contribute": "I am eager to contribute to the team", "gujarat": "I am currently living in Gujarat", "make": "I want to make me happy"
 };
 
 const words = Object.keys(wordsWithUsage);
@@ -428,26 +393,88 @@ spellBtn.addEventListener('click', ()=> spellOut(curr));
 practiceInput.addEventListener('input', onType);
 practiceInput.addEventListener('keydown', onType);
 
-/* ==================== Typing Tutor (New Tool) ==================== */
+/* ==================== Typing Tutor (Updated Logic for Sequences) ==================== */
 const tutorExercises = [
-    { key: 'a', finger: 'left hand little finger', instruction: 'Press A (Left Hand Little Finger)' },
-    { key: 's', finger: 'left hand ring finger', instruction: 'Press S (Left Hand Ring Finger)' },
-    { key: 'd', finger: 'left hand middle finger', instruction: 'Press D (Left Hand Middle Finger)' },
-    { key: 'f', finger: 'left hand index finger', instruction: 'Press F (Left Hand Index Finger)' },
-    { key: 'j', finger: 'right hand index finger', instruction: 'Press J (Right Hand Index Finger)' },
-    { key: 'k', finger: 'right hand middle finger', instruction: 'Press K (Right Hand Middle Finger)' },
-    { key: 'l', finger: 'right hand ring finger', instruction: 'Press L (Right Hand Ring Finger)' },
-    { key: ';', finger: 'right hand little finger', instruction: 'Press Semicolon (Right Hand Little Finger)' },
-    { key: 'asdf', finger: 'all left home row fingers', instruction: 'Type A S D F (Left Hand Home Row)' },
-    { key: 'jkl;', finger: 'all right home row fingers', instruction: 'Type J K L Semicolon (Right Hand Home Row)' }
+    // Phase 1: Home Row Drills (Drills are long sequences for repetition)
+    { type: 'drill', name: 'Home Row Drill', instruction: 'Exercise 1: Home Row Keys. Press A your left hand little finger. Type this sequence 3 times: a s d f g h j k l ; ; l k j h g f d s a ', 
+      sequence: 'a s d f g h j k l ; ; l k j h g f d s a a s d f g h j k l ; ; l k j h g f d s a a s d f g h j k l ; ; l k j h g f d s a ' },
+    
+    // Phase 2: Bottom Row Drills
+    { type: 'drill', name: 'Bottom Row Drill', instruction: 'Exercise 2: Bottom Row Keys. Type the Bottom Row sequence: z x c v b n m , . / / . , m n b v c x z ',
+      sequence: 'z x c v b n m , . / / . , m n b v c x z z x c v b n m , . / / . , m n b v c x z ' },
+
+    // Phase 3: Upper Row Drills
+    { type: 'drill', name: 'Upper Row Drill', instruction: 'Exercise 3: Upper Row Keys. Type the Upper Row sequence: q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q ',
+      sequence: 'q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q ' },
+
+    // Phase 4: Number Row Drills
+    { type: 'drill', name: 'Number Row Drill', instruction: 'Exercise 4: Number Row Keys. Type the Number Row sequence: 1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 ',
+      sequence: '1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 ' },
+
+    // Phase 5: All Keys Drill
+    { type: 'drill', name: 'All Keys Mix Drill', instruction: 'Exercise 5: All Keys Mix. Type the mixed sequence: q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ ',
+      sequence: 'q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ ' },
+      
+    // Phase 6: Home Row Words
+    { type: 'word', name: 'Home Row Words', instruction: 'Exercise 6: Home Row Words (30+ words). Type these words: dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ',
+      sequence: 'dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ' },
+
+    // Phase 7: Upper Row Words
+    { type: 'word', name: 'Upper Row Words', instruction: 'Exercise 7: Upper Row Words (30+ words). Type these words: quiet wire tree pure type put root your poor wire riot out top tour true were wet up oil pipe year open tear trip your out port power route ',
+      sequence: 'quiet wire tree pure type put root your poor wire riot out top tour true were wet up oil pipe year open tear trip your out port power route ' },
+
+    // Phase 8: Bottom Row Words
+    { type: 'word', name: 'Bottom Row Words', instruction: 'Exercise 8: Bottom Row Words (30+ words). Type these words: zebra comma value vice bank nave men max cat base mix maze cover box zip calm back vice next man vex cut come mix zero ban cave ',
+      sequence: 'zebra comma value vice bank nave men max cat base mix maze cover box zip calm back vice next man vex cut come mix zero ban cave ' },
+    
+    // Phase 9: Home + Upper Row Mix
+    { type: 'word', name: 'Home & Upper Words', instruction: 'Exercise 9: Home and Upper Row Words. Type these mixed words: eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ',
+      sequence: 'eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ' },
+
+    // Phase 10: Home + Bottom Row Mix
+    { type: 'word', name: 'Home & Bottom Words', instruction: 'Exercise 10: Home and Bottom Row Words. Type these mixed words: bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base ',
+      sequence: 'bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base ' },
+    
+    // Phase 11: All Lines Words (Comprehensive Mix)
+    { type: 'word', name: 'All Lines Mix Words', instruction: 'Exercise 11: Comprehensive Mix Words. Type these words: quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen ',
+      sequence: 'quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen ' }
 ];
 
 let currentTutorExIndex = 0;
+let tutorCurrentSequence = '';
+let tutorCurrentIndex = 0;
+let tutorErrors = 0;
+let isTutorActive = false;
+
 const tutorStatus = document.getElementById('tutorStatus');
 const tutorInput = document.getElementById('tutorInput');
 const tutorBtn = document.getElementById('tutorBtn');
+const tutorTextDisplay = document.getElementById('tutorTextDisplay');
+
+function updateTutorTextDisplay() {
+    const sequence = tutorCurrentSequence;
+    const typedPart = sequence.substring(0, tutorCurrentIndex);
+    const currentPart = sequence[tutorCurrentIndex] || '';
+    const remainingPart = sequence.substring(tutorCurrentIndex + 1);
+
+    let typedHtml = '';
+    // This is a simple visual check, we'll rely on the keydown/input handler for logic
+    for (let i = 0; i < typedPart.length; i++) {
+        if (tutorInput.value.length > i && tutorInput.value[i] !== typedPart[i]) {
+            typedHtml += `<span class="highlight-typed-tutor-error">${typedPart[i]}</span>`;
+        } else {
+            typedHtml += `<span class="highlight-typed-tutor-correct">${typedPart[i]}</span>`;
+        }
+    }
+
+    const currentHtml = `<span class="highlight-current-tutor">${currentPart}</span>`;
+    
+    // Show only the correct typed portion and the remaining text
+    tutorTextDisplay.innerHTML = `${typedHtml}${currentHtml}${remainingPart}`;
+}
 
 function startTutor() {
+    isTutorActive = true;
     currentTutorExIndex = 0;
     tutorInput.value = '';
     tutorInput.disabled = false;
@@ -456,71 +483,100 @@ function startTutor() {
 }
 
 function stopTutor() {
+    isTutorActive = false;
     tutorInput.disabled = true;
     tutorBtn.innerText = '▶ Start Tutor';
-    tutorStatus.innerText = 'Tutor stopped Press Start Tutor to begin again';
-    speak('Tutor stopped');
+    tutorStatus.innerText = 'ट्यूटर रुका हुआ है। फिर से शुरू करने के लिए Start Tutor दबाएँ।';
+    tutorTextDisplay.innerText = 'Welcome to the Typing Tutor. Press Start to begin Exercise 1.';
+    speak('ट्यूटर रुक गया।');
 }
 
 function loadTutorExercise(index) {
     if (index >= tutorExercises.length) {
-        tutorStatus.innerText = '🎉 Tutor Complete! You finished all 10 exercises.';
-        speak('Tutor complete You finished all exercises');
+        tutorStatus.innerText = '🎉 अभ्यास पूरा हुआ! आपने सभी 11 अभ्यास पूरे कर लिए हैं।';
+        tutorTextDisplay.innerHTML = 'All Exercises Complete!';
+        speak('अभ्यास पूरा हुआ आपने सभी अभ्यास पूरे कर लिए हैं।');
+        isTutorActive = false;
         tutorInput.disabled = true;
         tutorBtn.innerText = 'Restart Tutor';
         return;
     }
 
     const exercise = tutorExercises[index];
+    tutorCurrentSequence = exercise.sequence;
+    tutorCurrentIndex = 0;
     tutorInput.value = '';
-    tutorInput.dataset.required = exercise.key;
-    
-    tutorStatus.innerText = `Exercise ${index + 1}/${tutorExercises.length}: ${exercise.instruction}`;
-    speak(`Exercise ${index + 1} ${exercise.instruction}`);
+    tutorErrors = 0;
     tutorInput.focus();
+    
+    tutorStatus.innerText = `अभ्यास ${index + 1}/${tutorExercises.length}: ${exercise.name} - ${exercise.instruction}`;
+    
+    updateTutorTextDisplay();
+
+    // The long initial spoken instruction
+    speak(`अभ्यास ${index + 1} शुरू ${exercise.name}। ${exercise.instruction}`, 'hi-IN', 0.85);
+
+    // Give a small cue for the first key after the main instruction
+    setTimeout(() => {
+        const firstChar = tutorCurrentSequence[0];
+        speak(`पहला अक्षर है ${firstChar}`, 'hi-IN', 1.0);
+    }, 5000);
 }
 
-tutorInput.addEventListener('keydown', (e) => {
-    if (tutorInput.disabled) return;
-    if (currentTutorExIndex >= tutorExercises.length) return;
-    
-    const requiredKey = tutorExercises[currentTutorExIndex].key;
-    
-    if (requiredKey.length === 1) {
-        e.preventDefault();
-        const pressedKey = e.key.toLowerCase();
-        
-        if (pressedKey === requiredKey.toLowerCase()) {
-            tutorStatus.innerText = `✅ Correct! Key ${requiredKey.toUpperCase()}. Moving to next.`;
-            speak(`Correct`);
-            currentTutorExIndex++;
-            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1000);
-        } else {
-            tutorStatus.innerText = `❌ Wrong key. You pressed ${e.key.toUpperCase()}. Please press ${requiredKey.toUpperCase()} using your ${tutorExercises[currentTutorExIndex].finger}.`;
-            speak(`Wrong key You pressed ${e.key}. Please press ${requiredKey.toUpperCase()} using your ${tutorExercises[currentTutorExIndex].finger}`);
-        }
-    }
-});
+tutorInput.addEventListener('input', (e) => {
+    if (!isTutorActive) return;
 
-tutorInput.addEventListener('input', () => {
-    if (tutorInput.disabled) return;
-    if (currentTutorExIndex >= tutorExercises.length) return;
+    const typedValue = tutorInput.value;
+    const requiredChar = tutorCurrentSequence[tutorCurrentIndex];
     
-    const requiredKey = tutorExercises[currentTutorExIndex].key;
-    const typedValue = tutorInput.value.toLowerCase();
-    
-    if (requiredKey.length > 1) {
-        if (typedValue === requiredKey) {
-            tutorStatus.innerText = `✅ Correct! Sequence ${requiredKey.toUpperCase()}. Moving to next.`;
-            speak(`Correct`);
-            currentTutorExIndex++;
-            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1000);
-        } else if (!requiredKey.startsWith(typedValue)) {
-            tutorInput.value = '';
-            tutorStatus.innerText = `❌ Mistake. Start over. Required sequence: ${requiredKey.toUpperCase()}`;
-            speak(`Mistake Start over Required sequence is ${requiredKey}`);
-        }
+    // Check if the typed length exceeds the required index, which only happens on an error
+    if (typedValue.length > tutorCurrentIndex + 1) {
+        // This is a case of extra characters being typed after an error was not fixed, we ignore it.
+        tutorInput.value = typedValue.substring(0, tutorCurrentIndex + 1);
+        return;
     }
+    
+    // Check if the newly typed character is correct
+    const lastTypedChar = typedValue[tutorCurrentIndex];
+    
+    if (lastTypedChar === requiredChar) {
+        // Correct character typed
+        tutorCurrentIndex++;
+        tutorInput.value = tutorCurrentSequence.substring(0, tutorCurrentIndex); // Auto-corrects the input visually
+        
+        if (tutorCurrentIndex === tutorCurrentSequence.length) {
+            // Exercise complete
+            tutorStatus.innerText = `✅ सही! ${tutorExercises[currentTutorExIndex].name} पूरा हुआ। गलतियाँ: ${tutorErrors}। अगले अभ्यास पर जा रहे हैं।`;
+            speak(`सही! अभ्यास पूरा हुआ।`, 'hi-IN');
+            currentTutorExIndex++;
+            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
+            return;
+        }
+
+        // Speak the next key only if it's not a space
+        const nextChar = tutorCurrentSequence[tutorCurrentIndex];
+        if (nextChar !== ' ') {
+            speak(`अगला ${nextChar}`, 'hi-IN', 1.2);
+        } else {
+            // If the next is a space, speak the next word's first character or word
+            const nextWordMatch = tutorCurrentSequence.substring(tutorCurrentIndex + 1).match(/\S+/);
+            if (nextWordMatch) {
+                const nextWord = nextWordMatch[0];
+                speak(nextWord, 'en-IN', 1.2); 
+            }
+        }
+    } else {
+        // Incorrect character typed (user made a mistake)
+        tutorErrors++;
+        tutorStatus.innerText = `❌ ग़लत! आपने '${lastTypedChar}' टाइप किया। सही अक्षर '${requiredChar}' है।`;
+        
+        // Revert input to the correct position (before the error)
+        tutorInput.value = typedValue.substring(0, tutorCurrentIndex);
+
+        speak(`ग़लत! सही अक्षर है ${requiredChar}`, 'hi-IN');
+    }
+
+    updateTutorTextDisplay();
 });
 
 tutorBtn.addEventListener('click', ()=>{
@@ -539,7 +595,7 @@ let wpmWordIndex = 0;
 let wpmWords = [];
 let wpmErrors = 0;
 let correctCharacters = 0; 
-let fullTypedCharacters = 0; // Total characters typed including spaces and errors
+let fullTypedCharacters = 0; 
 
 const wpmInput = document.getElementById('wpmInput');
 const wpmTextDiv = document.getElementById('wpmText');
@@ -552,14 +608,7 @@ function calculateWPM() {
     const timeElapsedSeconds = (new Date().getTime() - wpmStartTime) / 1000;
     const minutes = timeElapsedSeconds / 60;
     
-    // Gross WPM: (Total typed characters / 5) / Minutes
-    const grossWPM = Math.round((fullTypedCharacters / 5) / minutes);
-    
-    // Net WPM: ((Correct Characters / 5) - Errors) / Minutes
-    // Using correct characters typed
     const netWPM = Math.round((correctCharacters / 5) / minutes);
-    
-    // Accuracy calculation (Correct Chars / Total Chars Typed)
     const accuracy = fullTypedCharacters > 0 ? ((correctCharacters / fullTypedCharacters) * 100).toFixed(1) : 0;
     
     return { wpm: netWPM, errors: wpmErrors, time: Math.floor(timeElapsedSeconds), accuracy: accuracy };
@@ -593,20 +642,18 @@ function checkWPMInput(e) {
     const typedValue = wpmInput.value;
     const currentWord = wpmWords[wpmWordIndex];
     
-    fullTypedCharacters = wpmWords.slice(0, wpmWordIndex).join(' ').length + (wpmWordIndex > 0 ? wpmWordIndex : 0); // Correct chars from previous words
-    fullTypedCharacters += typedValue.length; // Current typed characters
+    fullTypedCharacters = wpmWords.slice(0, wpmWordIndex).join(' ').length + (wpmWordIndex > 0 ? wpmWordIndex : 0); 
+    fullTypedCharacters += typedValue.length; 
 
     // Check for word completion (space pressed after correct word)
     if (typedValue.endsWith(' ') && typedValue.trim() === currentWord) {
         
-        // Count correct characters for the completed word
-        correctCharacters += currentWord.length + 1; // +1 for space
+        correctCharacters += currentWord.length + 1; 
 
         wpmWordIndex++;
         wpmInput.value = '';
         
         if (wpmWordIndex < wpmWords.length) {
-            // Highlight next word
             const typedPart = `<span style="color: green">${wpmWords.slice(0, wpmWordIndex).join(' ')}</span>`;
             const after = wpmWords.slice(wpmWordIndex + 1).join(' ');
             
@@ -617,7 +664,6 @@ function checkWPMInput(e) {
             finishWPMTest();
         }
     } else {
-        // Live feedback for current word
         const typedTrimmed = typedValue.trim();
         const currentWordSpan = document.getElementById('wpmCurrentWord');
         
@@ -633,7 +679,6 @@ function checkWPMInput(e) {
                     localCorrectChars++;
                 } else {
                     html += `<span style="color: red;">${char}</span>`;
-                    // Error detection (only count once per mistake for WPM calc)
                     if(e.inputType === 'insertText' && i === typedTrimmed.length - 1) {
                          wpmErrors++;
                     }
@@ -647,7 +692,6 @@ function checkWPMInput(e) {
              currentWordSpan.innerHTML = html;
         }
 
-        // Update overall correct character count for net WPM
         correctCharacters = wpmWords.slice(0, wpmWordIndex).reduce((sum, word) => sum + word.length + 1, 0);
         correctCharacters += localCorrectChars;
     }
@@ -684,7 +728,6 @@ document.getElementById('qrGenerateBtn').addEventListener('click', ()=>{
     }
     
     const encodedText = encodeURIComponent(text);
-    // Google Charts API for QR code (size 200x200)
     const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encodedText}`;
     
     qrOutput.innerHTML = `<p>QR Code generated:</p><img src="${qrUrl}" alt="QR Code for ${text}" style="width:200px;height:200px;"><p><a href="${qrUrl}" target="_blank">View Image</a></p>`;
@@ -696,7 +739,6 @@ document.getElementById('qrGenerateBtn').addEventListener('click', ()=>{
 document.getElementById('ttsSpeakBtn').addEventListener('click', ()=>{
     const text = document.getElementById('ttsInput').value;
     if(text){
-        // Using lang='en-IN' and default rate 
         speak(text, 'en-IN', 1.0);
     } else {
         speak('Please enter text to speak');
@@ -716,7 +758,6 @@ document.getElementById('translateBtn').addEventListener('click', ()=>{
     const sourceLang = document.getElementById('translateSource').value;
     const targetLang = document.getElementById('translateTarget').value;
     
-    // Open Google Translate in a new window/tab
     const translateUrl = `https://translate.google.com/?sl=${sourceLang}&tl=${targetLang}&text=${encodeURIComponent(text)}&op=translate`;
     window.open(translateUrl, '_blank');
     
@@ -965,8 +1006,7 @@ hcPlay.addEventListener('click', ()=>{
                 hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} You won by ${runDiff} runs`;
                 speak(`Out Computer score ${hcScore} You won by ${runDiff} runs`);
             } else {
-                // Should only happen if hcScore == hcTarget - 1 (tie) or hcScore > hcTarget - 1 (already won, but we catch win first)
-                // Correct logic for out: if computer score is less than target, you win.
+                
                 hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} It was a tie. Game over.`;
                 speak(`It was a tie. Game over.`);
             }
@@ -1133,9 +1173,7 @@ ludoRoll.addEventListener('click', ()=>{
 
 // Initial setup on load
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize the first word for typing practice
     nextWord(); 
-    // Reset games
     resetHandCricket();
     resetSnakesLadders();
     resetLudo();
