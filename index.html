@@ -2,178 +2,221 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chirag Rakani — Accessible Tools Hub (Desktop)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Chirag Rakani — Accessible Tools Hub</title>
 <meta name="description" content="Typing practice, document reader (PDF+OCR), location, accessible games — by Chirag Rakani">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
-<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-<!-- Tesseract will be lazy-loaded only when OCR needed -->
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';</script>
 
 <style>
   :root{
     --bg:#f1f5f9; --card:#fff; --accent:#123; --accent2:#1464ff; --ok:#2ea44f; --err:#c92a2a;
-    --muted:#6b7280; font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    --muted:#6b7280; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:#111}
-  header{background:linear-gradient(90deg,#123,#165);color:#fff;padding:18px 28px;display:flex;align-items:center;gap:18px}
-  header h1{margin:0;font-size:1.25rem}
-  .container{max-width:1150px;margin:20px auto;padding:0 18px}
-  .layout{display:grid;grid-template-columns:340px 1fr;gap:18px}
-  .card{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,0.06)}
-  h2{margin:0 0 10px 0}
-  .small{font-size:0.95rem;color:var(--muted)}
-  .btn{background:var(--accent2);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+  body{margin:0;background:var(--bg);color:#111;padding-bottom:40px;}
+  
+  /* Responsive Header */
+  header{
+    background:linear-gradient(90deg,#123,#165);color:#fff;
+    padding:16px;
+    display:flex; flex-wrap: wrap; align-items:center; gap:16px;
+  }
+  header h1{margin:0;font-size:1.2rem;line-height:1.4;}
+  .logo-box{
+    width:50px;height:50px;border-radius:10px;background:#fff;color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;
+  }
+  
+  .container{max-width:1150px;margin:20px auto;padding:0 16px;}
+  
+  /* Responsive Layout: Grid on Desktop, Stack on Mobile */
+  .layout{
+    display:grid;
+    grid-template-columns: 340px 1fr;
+    gap:18px;
+  }
+  
+  /* Mobile Breakpoint */
+  @media (max-width: 850px) {
+    .layout { grid-template-columns: 1fr; }
+    header { text-align:center; justify-content:center; }
+    .controls { justify-content: center; }
+  }
+
+  .card{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,0.06); overflow-wrap: break-word;}
+  h2{margin:0 0 10px 0; font-size: 1.3rem;}
+  .small{font-size:0.9rem;color:var(--muted); line-height: 1.5;}
+  
+  /* Interactive Elements */
+  .btn{background:var(--accent2);color:#fff;border:0;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:600; font-size:0.95rem; touch-action: manipulation;}
+  .btn:active{opacity:0.8;}
   .btn-alt{background:#0ea5ff}
   .btn-plain{background:#eef2ff;color:#123;border:1px solid #dbeafe}
-  input[type="text"], input[type="number"], textarea, select{padding:10px;border-radius:8px;border:1px solid #e6eef8;width:100%;font-size:1rem}
-  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .output{background:#fbfdff;border:1px solid #e6eef8;padding:12px;border-radius:8px;min-height:140px;white-space:pre-wrap;overflow:auto}
-  footer{padding:14px;text-align:center;color:var(--muted);margin-top:18px}
+  
+  input[type="text"], input[type="number"], textarea, select{
+    padding:12px;border-radius:8px;border:1px solid #e6eef8;
+    width:100%;font-size:1rem; margin-bottom: 5px;
+  }
+  
+  /* Flex Utils */
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+  .flex-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  
+  .output{background:#fbfdff;border:1px solid #e6eef8;padding:12px;border-radius:8px;min-height:140px;white-space:pre-wrap;overflow:auto; max-height: 400px;}
+  
+  footer{padding:14px;text-align:center;color:var(--muted);margin-top:20px; font-size: 0.9rem;}
+  
   .diag-row{display:flex;justify-content:space-between;padding:8px;border-radius:6px;background:#f8fafc;margin-bottom:8px}
-  .games-grid{display:flex;gap:10px;flex-wrap:wrap}
+  
+  .games-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:10px;}
+  .games-grid .btn { width: 100%; text-align: center; }
+
   code.k{background:#eef2ff;padding:2px 6px;border-radius:6px;color:#123}
-  .note{background:#fffbe6;padding:8px;border-radius:8px;border:1px solid #f0e6b8}
+  .note{background:#fffbe6;padding:10px;border-radius:8px;border:1px solid #f0e6b8; text-align:center;}
+
+  /* Typing Section Specifics */
+  .typing-area { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+  @media(min-width: 600px){
+    .typing-area { flex-direction:row; align-items:center; }
+  }
+
+  /* Diagnostics links */
+  .link-list a { display: inline-block; margin-right: 10px; margin-bottom: 5px; color: var(--accent2); text-decoration: none;}
 </style>
 </head>
 <body>
   <header>
-    <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800">CR</div>
+    <div class="logo-box">CR</div>
     <div>
-      <h1>Chirag Rakani — Accessible Tools Hub (Desktop)</h1>
-      <div class="small">Typing practice • OCR (PDF/Image) • Read aloud • Location • Games</div>
+      <h1>Accessible Tools Hub</h1>
+      <div class="small">Typing • OCR • Read • Location • Games</div>
     </div>
   </header>
 
   <main class="container">
     <div class="layout">
-      <!-- Sidebar / Diagnostics -->
+      
       <aside class="card" aria-label="Diagnostics and links">
-        <h2>Diagnostics</h2>
+        <h2>Diagnostics & Settings</h2>
         <div class="diag-row"><div>Speech Synthesis</div><div id="diag-speech">—</div></div>
         <div class="diag-row"><div>Geolocation</div><div id="diag-geo">—</div></div>
-        <div class="diag-row"><div>Tesseract OCR</div><div id="diag-tess">Not loaded</div></div>
-        <div class="diag-row"><div>PDF.js</div><div id="diag-pdf">—</div></div>
+        <div class="diag-row"><div>OCR Engine</div><div id="diag-tess">Not loaded</div></div>
         <div style="margin-top:10px">
-          <button id="btn-init" class="btn" style="width:100%">INITIALIZE (optional — primes audio)</button>
+          <button id="btn-init" class="btn" style="width:100%">INITIALIZE AUDIO SYSTEM</button>
         </div>
 
-        <hr style="margin:12px 0">
+        <hr style="margin:16px 0; border:0; border-top:1px solid #eee;">
 
         <h3>About / Links</h3>
-        <p class="small">
+        <p class="small link-list">
           <strong>Chirag Rakani</strong><br>
-          Gharana, Kutch, Gujarat<br>
-          <a href="mailto:chiragrakani6@gmail.com">chiragrakani6@gmail.com</a><br>
-          <a href="https://amzn.to/48Tnv7r" target="_blank">Amazon link 1</a><br>
-          <a href="https://www.amazon.in/dp/B0FXBS6X6Z/?tag=chiragrakani9-21" target="_blank">My Book (Amazon)</a><br>
-          <a href="https://www.facebook.com/share/1DH4fAcwqU/" target="_blank">Facebook</a> • <a href="https://www.instagram.com/koli.chirag" target="_blank">Instagram</a> • <a href="https://youtube.com/shorts/Us4sDykOYtc" target="_blank">YouTube</a>
+          <a href="mailto:chiragrakani6@gmail.com">Email Me</a>
+          <a href="https://amzn.to/48Tnv7r" target="_blank">Amazon Link</a>
+          <a href="https://www.amazon.in/dp/B0FXBS6X6Z/?tag=chiragrakani9-21" target="_blank">My Book</a><br>
+          <a href="https://www.facebook.com/share/1DH4fAcwqU/" target="_blank">Facebook</a>
+          <a href="https://www.instagram.com/koli.chirag" target="_blank">Instagram</a>
+          <a href="https://youtube.com/shorts/Us4sDykOYtc" target="_blank">YouTube</a>
         </p>
       </aside>
 
-      <!-- Main content -->
       <section>
-        <!-- Typing Practice -->
+        
         <section class="card" id="typing-card" aria-labelledby="typing-h">
-          <h2 id="typing-h">Typing Practice — Spelling Drill</h2>
-          <p class="small">Rules: first-try correct → automatic next. If you make a wrong attempt → you must type the correct word <strong>3 times</strong> to move on. Press <code class="k">F2</code> to spell-out current word. Use Listen/Spell buttons as well.</p>
+          <h2 id="typing-h">Typing Practice</h2>
+          <p class="small">Rules: Type correctly → Auto Next. Wrong → Type 3 times correctly. <code class="k">F2</code> to spell.</p>
 
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+          <div class="typing-area">
             <div style="flex:1">
-              <div id="practiceWord" class="note" style="font-weight:700;font-size:1.05rem">Press Next to start</div>
+              <div id="practiceWord" class="note" style="font-weight:700;font-size:1.1rem">Press Next to start</div>
             </div>
-            <div style="width:320px">
-              <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the word here">
+            <div style="flex:1; min-width: 200px;">
+              <input id="practiceInput" type="text" placeholder="Type here..." aria-label="Type the word here" autocomplete="off">
             </div>
           </div>
 
-          <div class="controls" style="margin-bottom:8px">
+          <div class="controls">
             <button id="nextWordBtn" class="btn">🔄 Next</button>
             <button id="listenBtn" class="btn">🔊 Listen</button>
-            <button id="spellBtn" class="btn btn-alt">🔡 Spell (F2)</button>
-            <div id="spellFeedback" class="small" style="margin-left:8px;font-weight:700"></div>
+            <button id="spellBtn" class="btn btn-alt">🔡 Spell</button>
+            <div id="spellFeedback" class="small" style="font-weight:700; width:100%; margin-top:5px;"></div>
           </div>
         </section>
 
-        <!-- Document Reader -->
         <section class="card" style="margin-top:14px" aria-labelledby="doc-h">
-          <h2 id="doc-h">Document Reader (PDF & Image OCR)</h2>
-          <p class="small">Upload an image (JPG/PNG) for OCR or a PDF file. For PDF use "Page" + "Go" to jump to any page.</p>
+          <h2 id="doc-h">Document Reader (OCR/PDF)</h2>
+          <p class="small">Upload Image (JPG/PNG) or PDF.</p>
 
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px">
-            <input id="fileInput" type="file" accept="image/*,.pdf">
-            <button id="processBtn" class="btn">📁 Process</button>
+          <div class="flex-row" style="margin-bottom:8px">
+            <input id="fileInput" type="file" accept="image/*,.pdf" style="width:auto; flex:1">
+            <button id="processBtn" class="btn">Process File</button>
           </div>
 
-          <div id="pdf-controls" style="display:none;align-items:center;gap:8px;margin-bottom:10px">
-            <label>Page: <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;margin-left:6px"></label>
-            <button id="goPageBtn" class="btn btn-plain">Go</button>
-            <span id="pageInfo" class="small" style="margin-left:12px"></span>
+          <div id="pdf-controls" style="display:none;" class="flex-row">
+            <label class="small">Page: <input id="pageNumberInput" type="number" min="1" value="1" style="width:60px;display:inline-block"></label>
+            <button id="goPageBtn" class="btn btn-plain" style="padding:8px 12px">Go</button>
+            <span id="pageInfo" class="small"></span>
           </div>
 
           <div class="output" id="doc-output" tabindex="0" aria-live="polite">Text will appear here...</div>
 
-          <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
-            <label><input id="autoLang" type="checkbox" checked> Auto-detect language</label>
-            <label style="margin-left:8px">Force:
-              <select id="forceLang"><option value="">Auto</option><option value="en-IN">English</option><option value="hi-IN">Hindi</option><option value="gu-IN">Gujarati</option></select>
-            </label>
-            <button id="readDocBtn" class="btn">🔊 Read</button>
-            <button id="stopReadBtn" class="btn btn-plain">⏹ Stop</button>
-            <div id="readStatus" class="small" style="margin-left:8px"></div>
+          <div class="controls" style="margin-top:12px; align-items: flex-end;">
+            <div style="flex:1; min-width: 150px;">
+               <label class="small"><input id="autoLang" type="checkbox" checked> Auto Language</label><br>
+               <select id="forceLang" style="margin-top:4px"><option value="">Detect</option><option value="en-IN">English</option><option value="hi-IN">Hindi</option><option value="gu-IN">Gujarati</option></select>
+            </div>
+            <div>
+                <button id="readDocBtn" class="btn">🔊 Read Aloud</button>
+                <button id="stopReadBtn" class="btn btn-plain">⏹ Stop</button>
+            </div>
           </div>
+          <div id="readStatus" class="small" style="margin-top:5px; color:var(--accent2)"></div>
         </section>
 
-        <!-- Location -->
         <section class="card" style="margin-top:14px">
           <h2>Where Am I?</h2>
-          <p class="small">Click the button and allow location permission in browser.</p>
-          <div style="display:flex;gap:10px;align-items:center">
-            <button id="locBtn" class="btn">📍 Get Current Location</button>
-            <div id="locOutput" class="small" style="margin-left:6px"></div>
+          <div class="flex-row">
+            <button id="locBtn" class="btn">📍 Get Location</button>
+            <div id="locOutput" class="small" style="flex:1"></div>
           </div>
         </section>
 
-        <!-- Games -->
         <section class="card" style="margin-top:14px">
-          <h2>Accessible Games</h2>
+          <h2>Games</h2>
           <div class="games-grid">
-            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess (Lichess)</button>
-            <button id="handBtn" class="btn">🏏 Hand Cricket</button>
-            <button id="snlBtn" class="btn">🎲 Snakes & Ladders</button>
-            <button id="ludoBtn" class="btn">🎯 Ludo Race</button>
+            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Chess</button>
+            <button id="handBtn" class="btn">🏏 Cricket</button>
+            <button id="snlBtn" class="btn">🎲 Snakes</button>
+            <button id="ludoBtn" class="btn">🎯 Ludo</button>
           </div>
 
-          <!-- Hand Cricket panel -->
-          <div id="handPanel" style="display:none;margin-top:12px">
-            <div class="small" id="hcStatus">Ready</div>
-            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-              <input id="hcInput" type="number" min="0" max="6" placeholder="0-6" style="width:120px">
+          <div id="handPanel" style="display:none;margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px;">
+            <div class="small" id="hcStatus" style="font-weight:bold; margin-bottom:5px">Ready</div>
+            <div class="flex-row">
+              <input id="hcInput" type="number" min="0" max="6" placeholder="0-6" style="width:80px">
               <button id="hcPlay" class="btn">Play</button>
               <button id="hcReset" class="btn btn-plain">Reset</button>
             </div>
           </div>
 
-          <!-- Snakes & Ladders -->
-          <div id="snlPanel" style="display:none;margin-top:12px">
-            <div class="small" id="snlStatus">Ready</div>
-            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-              <button id="snlRoll" class="btn">Roll</button>
+          <div id="snlPanel" style="display:none;margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px;">
+            <div class="small" id="snlStatus" style="font-weight:bold; margin-bottom:5px">Ready</div>
+            <div class="flex-row">
+              <button id="snlRoll" class="btn">Roll Dice</button>
+              <div id="snlDice" style="font-size:1.5rem; font-weight:bold; padding:0 10px">-</div>
               <button id="snlReset" class="btn btn-plain">Reset</button>
-              <div id="snlDice" class="small" style="margin-left:8px">-</div>
             </div>
           </div>
 
-          <!-- Ludo -->
-          <div id="ludoPanel" style="display:none;margin-top:12px">
-            <div class="small" id="ludoStatus">Ready</div>
-            <div style="display:flex;gap:8px;margin-top:8px">
+          <div id="ludoPanel" style="display:none;margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px;">
+            <div class="small" id="ludoStatus" style="font-weight:bold; margin-bottom:5px">Ready</div>
+            <div class="flex-row">
               <button id="ludoRoll" class="btn">Roll</button>
               <button id="ludoReset" class="btn btn-plain">Reset</button>
-              <div id="ludoScores" class="small" style="margin-left:8px"></div>
             </div>
+             <div id="ludoScores" class="small" style="margin-top:5px"></div>
           </div>
 
         </section>
@@ -181,14 +224,14 @@
     </div>
   </main>
 
-  <footer>© 2025 Chirag Rakani — Accessible Tools Hub</footer>
+  <footer>© 2025 Chirag Rakani</footer>
 
 <script>
 /* ---------------- Utility: speak wrapper ---------------- */
 function canSpeak(){ return ('speechSynthesis' in window); }
 function speakText(text, lang='en-IN', rate=0.95){
   if(!canSpeak()) return;
-  try{ window.speechSynthesis.cancel(); }catch(e){}
+  window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang;
   u.rate = rate;
@@ -199,26 +242,22 @@ function speakText(text, lang='en-IN', rate=0.95){
 document.getElementById('diag-speech').innerText = canSpeak() ? 'Yes' : 'No';
 document.getElementById('diag-geo').innerText = ('geolocation' in navigator) ? 'Yes' : 'No';
 document.getElementById('diag-pdf').innerText = (typeof pdfjsLib !== 'undefined') ? 'Yes' : 'No';
-document.getElementById('diag-tess').innerText = 'Not loaded';
 
-/* ---------- Optional Initialization (primes audio on some browsers) ---------- */
+/* ---------- Initialization ---------- */
 document.getElementById('btn-init').addEventListener('click', function(){
-  // small AudioContext trick to unlock audio on some browsers
+  // Unlock audio context for mobile browsers
   try{
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if(AudioCtx){
       const ctx = new AudioCtx();
-      const buffer = ctx.createBuffer(1,1,ctx.sampleRate);
-      const src = ctx.createBufferSource();
-      src.buffer = buffer;
-      src.connect(ctx.destination);
-      if(src.start) src.start(0);
+      const b = ctx.createBuffer(1,1,ctx.sampleRate);
+      const s = ctx.createBufferSource();
+      s.buffer = b; s.connect(ctx.destination);
+      if(s.start) s.start(0);
     }
-    if(canSpeak()) { speakText('Initialization complete. Speech functions are ready.'); }
+    if(canSpeak()) { speakText('System initialized.'); }
     this.innerText = 'Initialized ✓'; this.disabled = true;
-  }catch(e){
-    console.warn('Init failed', e);
-  }
+  }catch(e){ console.warn(e); }
 });
 
 /* =================== Typing Practice Logic =================== */
@@ -242,210 +281,185 @@ let madeWrong = false;
 let correctStreak = 0;
 
 function loadNextWord(){
-  madeWrong = false;
-  correctStreak = 0;
+  madeWrong = false; correctStreak = 0;
   currentWord = words[Math.floor(Math.random() * words.length)];
-  practiceWord.innerText = '🔊 Listen: ' + currentWord;
-  spellFeedback.innerText = `Type the word.`;
+  practiceWord.innerText = 'Word: ' + currentWord;
+  spellFeedback.innerText = '';
   practiceInput.value = '';
   practiceInput.focus();
-  // speak the word (desktop usually allows)
   speakText(currentWord);
 }
 
 function spellOut(word){
   if(!word) return;
   const spelled = word.toUpperCase().split('').join('. ');
-  speakText('Spelling: ' + spelled);
-  spellFeedback.innerText = 'Spelling: ' + word.toUpperCase().split('').join(' · ');
+  speakText('Spelling. ' + spelled);
+  spellFeedback.innerText = 'Spelling: ' + word.toUpperCase().split('').join('-');
 }
 
-// handle user typing events
 practiceInput.addEventListener('input', handleTyping);
-practiceInput.addEventListener('keydown', handleTyping);
+practiceInput.addEventListener('keydown', (e) => {
+    if(e.key === 'F2'){ e.preventDefault(); spellOut(currentWord); }
+    if(e.key === 'Enter') handleEnter();
+});
 nextWordBtn.addEventListener('click', loadNextWord);
 listenBtn.addEventListener('click', ()=> { if(!currentWord) loadNextWord(); else speakText(currentWord); });
 spellBtn.addEventListener('click', ()=> spellOut(currentWord));
 
-// F2 works at keydown (desktop)
+function handleEnter(){
+    const typed = practiceInput.value.trim().toLowerCase();
+    if(!currentWord) return;
+    if(!madeWrong && typed === currentWord.toLowerCase()){
+        speakText('Correct.'); loadNextWord();
+    } else if (madeWrong) {
+        if(typed === currentWord.toLowerCase()){
+           correctStreak++;
+           practiceInput.value = '';
+           if(correctStreak >= 3) { speakText('Done.'); loadNextWord(); }
+           else { speakText(`${correctStreak} of 3.`); spellFeedback.innerText = `${correctStreak}/3 correct.`; }
+        } else {
+            speakText('Wrong. Try again.');
+        }
+    }
+}
+
 function handleTyping(e){
   const typed = practiceInput.value.trim().toLowerCase();
-  // Key handling
-  if(e.type === 'keydown'){
-    if(e.key === 'F2'){ e.preventDefault(); spellOut(currentWord); return; }
-    if(e.key === 'Enter'){ e.preventDefault();
-      if(!madeWrong){
-        if(typed === currentWord.toLowerCase()) loadNextWord();
-        else { spellFeedback.innerText = 'Type the word correctly.'; speakText('Type the word correctly.'); }
-      } else {
-        if(correctStreak >= 3) loadNextWord();
-        else { spellFeedback.innerText = `Need ${3 - correctStreak} more correct attempt(s)`; speakText(`Need ${3 - correctStreak} more correct attempts`); }
-      }
-      return;
-    }
-  }
-  if(e.type !== 'input') return;
+  if(e.inputType === 'insertLineBreak') return; 
+  if(!currentWord) return;
 
-  if(!currentWord){
-    spellFeedback.innerText = 'Press Next to start.';
-    return;
-  }
-
-  if(typed === currentWord.toLowerCase()){
-    // If user never made a wrong attempt for this word => auto next
-    if(!madeWrong){
-      spellFeedback.innerHTML = '<span style="color:var(--ok)">✅ Correct — moving to next.</span>';
-      speakText('Correct. Next word.');
-      setTimeout(loadNextWord, 600);
-      return;
-    } else {
-      // made wrong earlier => need three correct typings
-      correctStreak++;
-      practiceInput.value = '';
-      if(correctStreak >= 3){
-        spellFeedback.innerHTML = '<span style="color:var(--ok)">🎉 Completed 3 correct — next word.</span>';
-        speakText('Excellent. Next word.');
-        setTimeout(loadNextWord, 700);
-      } else {
-        spellFeedback.innerHTML = `<span style="color:var(--ok)">✅ Correct (${correctStreak}/3) — type again.</span>`;
-        speakText(`Correct. ${correctStreak} of 3.`);
-      }
-      return;
-    }
-  }
-
-  // wrong typing (not prefix)
-  if(typed.length > 0 && !currentWord.toLowerCase().startsWith(typed)){
-    madeWrong = true;
-    correctStreak = 0;
+  if(typed === currentWord.toLowerCase() && !madeWrong){
+      spellFeedback.innerHTML = '<span style="color:var(--ok)">Correct!</span>';
+  } else if (typed.length > 0 && !currentWord.toLowerCase().startsWith(typed)){
+    madeWrong = true; correctStreak = 0;
     practiceInput.value = '';
-    spellFeedback.innerHTML = `<span style="color:var(--err)">❌ Incorrect — attempts reset. Spelling will be spoken.</span>`;
-    // Speak spelling and then the word
-    setTimeout(()=> spellOut(currentWord), 200);
-    setTimeout(()=> speakText(`Now type the correct word three times.`), 1000);
-    return;
+    spellFeedback.innerHTML = '<span style="color:var(--err)">Incorrect. Type 3 times.</span>';
+    speakText('Incorrect.');
+    setTimeout(()=> spellOut(currentWord), 1000);
   }
-
-  // partial correct prefix
-  spellFeedback.innerText = `Keep typing...`;
 }
 
 /* ================ Document Reader (PDF + OCR) ================ */
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
 const docOutput = document.getElementById('doc-output');
-const pdfControls = document.getElementById('pdf-controls');
-const pageNumberInput = document.getElementById('pageNumberInput');
-const goPageBtn = document.getElementById('goPageBtn');
-const pageInfo = document.getElementById('pageInfo');
-const readDocBtn = document.getElementById('readDocBtn');
-const stopReadBtn = document.getElementById('stopReadBtn');
-const autoLangCheckbox = document.getElementById('autoLang');
-const forceLangSelect = document.getElementById('forceLang');
 const readStatus = document.getElementById('readStatus');
-
 let pdfDoc = null, totalPdfPages = 0;
-let tessWorker = null; // Tesseract worker lazy
+let tessWorker = null;
 
-// lazy-load tesseract function
 async function ensureTesseract(){
   if(tessWorker) return tessWorker;
-  docOutput.innerText = 'Loading OCR engine — please wait a moment...';
-  try{
-    if(typeof Tesseract === 'undefined'){
-      await new Promise((res,reject)=>{
+  docOutput.innerText = 'Loading OCR...';
+  if(typeof Tesseract === 'undefined'){
+    await new Promise((res)=>{
         const s = document.createElement('script');
         s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-        s.onload = res; s.onerror = reject;
-        document.head.appendChild(s);
-      });
-    }
-    const worker = Tesseract.createWorker({ logger: m => console.log(m) });
-    await worker.load();
-    await worker.loadLanguage('eng+hin+guj');
-    await worker.initialize('eng+hin+guj');
-    tessWorker = worker;
-    document.getElementById('diag-tess').innerText = 'Ready';
-    return tessWorker;
-  }catch(err){
-    console.error('Tesseract load error', err);
-    document.getElementById('diag-tess').innerText = 'Error';
-    throw err;
+        s.onload = res; document.head.appendChild(s);
+    });
   }
+  tessWorker = await Tesseract.createWorker();
+  await tessWorker.setParameters({ user_defined_dpi: '96' }); // optimize
+  await tessWorker.loadLanguage('eng+hin+guj');
+  await tessWorker.initialize('eng+hin+guj');
+  document.getElementById('diag-tess').innerText = 'Ready';
+  return tessWorker;
 }
 
-// process file (PDF or image)
 processBtn.addEventListener('click', async () => {
   const file = fileInput.files[0];
-  if(!file){ docOutput.innerText = 'Please choose a file first.'; return; }
+  if(!file){ alert('Select a file'); return; }
   docOutput.innerText = 'Processing...';
-  // PDF
+  
   if(file.type === 'application/pdf'){
-    try{
       const ab = await file.arrayBuffer();
       pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
       totalPdfPages = pdfDoc.numPages;
-      pdfControls.style.display = 'flex';
-      pageNumberInput.max = totalPdfPages;
-      displayPdfPage(1);
-    }catch(err){
-      console.error(err);
-      docOutput.innerText = 'Error reading PDF. Try opening it on desktop (not protected).';
-    }
-    return;
+      document.getElementById('pdf-controls').style.display = 'flex';
+      document.getElementById('pageNumberInput').max = totalPdfPages;
+      renderPdfPage(1);
+  } else if(file.type.startsWith('image/')){
+      try{
+          await ensureTesseract();
+          const { data: { text } } = await tessWorker.recognize(file);
+          docOutput.innerText = text || 'No text found.';
+      }catch(e){ docOutput.innerText = 'OCR Error: ' + e.message; }
   }
-
-  // Image -> OCR
-  if(file.type.startsWith('image/')){
-    try{
-      await ensureTesseract(); // may throw
-      docOutput.innerText = 'Running OCR (this can take 5–20 seconds depending on file and CPU)...';
-      const { data: { text } } = await tessWorker.recognize(file);
-      docOutput.innerText = text || 'No text recognized.';
-      if(autoLangCheckbox.checked || forceLangSelect.value){
-        const lang = forceLangSelect.value || detectLanguage(text || '');
-        speakLongText(text || '', lang);
-      }
-    }catch(err){
-      console.error(err);
-      docOutput.innerText = 'OCR failed — try a clearer scan or different image.';
-    }
-    return;
-  }
-
-  docOutput.innerText = 'Unsupported file type. Use PDF or image (JPG/PNG).';
 });
 
-async function displayPdfPage(pageNum){
-  if(!pdfDoc){ docOutput.innerText = 'No PDF loaded.'; return; }
-  if(pageNum < 1 || pageNum > totalPdfPages){ docOutput.innerText = `Invalid page (1-${totalPdfPages})`; return; }
-  docOutput.innerText = 'Loading page...';
-  try{
-    const page = await pdfDoc.getPage(pageNum);
-    const content = await page.getTextContent();
-    const pageText = content.items.map(i => i.str).join(' ');
-    docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (pageText || `Page ${pageNum} seems empty.`);
-    pageInfo.innerText = `Page ${pageNum} of ${totalPdfPages}`;
-  }catch(err){
-    console.error(err);
-    docOutput.innerText = 'Error rendering page.';
-  }
+async function renderPdfPage(num){
+    if(!pdfDoc) return;
+    try {
+        const p = await pdfDoc.getPage(num);
+        const t = await p.getTextContent();
+        docOutput.innerText = t.items.map(s => s.str).join(' ');
+        document.getElementById('pageInfo').innerText = `/ ${totalPdfPages}`;
+    } catch(e) { docOutput.innerText = 'Page error'; }
 }
+document.getElementById('goPageBtn').addEventListener('click', ()=> renderPdfPage(parseInt(document.getElementById('pageNumberInput').value)));
 
-goPageBtn.addEventListener('click', ()=> {
-  const n = parseInt(pageNumberInput.value || '1', 10);
-  if(pdfDoc) displayPdfPage(n);
+/* Text to Speech Implementation */
+document.getElementById('readDocBtn').addEventListener('click', () => {
+    const text = docOutput.innerText;
+    const lang = document.getElementById('forceLang').value || detectLanguage(text);
+    readStatus.innerText = 'Reading... (' + lang + ')';
+    speakLongText(text, lang);
 });
 
-// read text (chunked)
-function detectLanguage(text){
-  if(!text) return 'en-IN';
-  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN';
-  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN';
-  if(/[A-Za-z]/.test(text)) return 'en-IN';
-  return 'en-IN';
+document.getElementById('stopReadBtn').addEventListener('click', () => {
+    window.speechSynthesis.cancel();
+    readStatus.innerText = 'Stopped.';
+});
+
+function detectLanguage(t){
+    if(/[\u0A80-\u0AFF]/.test(t)) return 'gu-IN';
+    if(/[\u0900-\u097F]/.test(t)) return 'hi-IN';
+    return 'en-IN';
 }
 
 function speakLongText(text, lang){
-  if(!text) return;
-  if(!canSpeak()){ readStatus.innerText = 'SpeechSynthesis not supported on this bro
+    window.speechSynthesis.cancel();
+    if(!text) return;
+    
+    // Chunking for long text (simple split by punctuation)
+    const sentences = text.match( /[^.!?]+[.!?]+|[^.!?]+$/g ) || [text];
+    let i = 0;
+    
+    function speakNext(){
+        if(i >= sentences.length) { readStatus.innerText = 'Finished.'; return; }
+        const u = new SpeechSynthesisUtterance(sentences[i].trim());
+        u.lang = lang;
+        u.rate = 1;
+        u.onend = () => { i++; speakNext(); };
+        u.onerror = () => { readStatus.innerText = 'Error reading.'; };
+        window.speechSynthesis.speak(u);
+    }
+    speakNext();
+}
+
+/* ================ Geolocation ================ */
+document.getElementById('locBtn').addEventListener('click', () => {
+    const out = document.getElementById('locOutput');
+    out.innerText = 'Locating...';
+    navigator.geolocation.getCurrentPosition(
+        (p) => { out.innerText = `Lat: ${p.coords.latitude.toFixed(4)}, Lon: ${p.coords.longitude.toFixed(4)}`; },
+        (e) => { out.innerText = 'Permission denied or unavailable.'; }
+    );
+});
+
+/* ================ Games Logic (Simplified) ================ */
+// Toggle panels
+['hand','snl','ludo'].forEach(game => {
+    document.getElementById(game+'Btn').addEventListener('click', ()=>{
+        ['handPanel','snlPanel','ludoPanel'].forEach(p => document.getElementById(p).style.display='none');
+        document.getElementById(game+'Panel').style.display = 'block';
+    });
+});
+
+// Hand Cricket
+document.getElementById('hcPlay').addEventListener('click', ()=>{
+    const user = parseInt(document.getElementById('hcInput').value);
+    const cpu = Math.floor(Math.random()*7);
+    const status = document.getElementById('hcStatus');
+    if(isNaN(user) || user>6) { status.innerText = 'Enter 0-6'; return; }
+    if(user === cpu) status.innerText = `Out! Both chose ${user}.`;
+    else status.innerText = `You: ${user}, CPU: 
