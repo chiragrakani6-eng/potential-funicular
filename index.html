@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Chirag Rakani — Accessible Tools & Games Hub</title>
 
-  <!-- Google verification -->
-  <meta name="google-site-verification" content="chirag-rakani-google-verify-14526">
-
   <meta name="description" content="Accessible web hub by Chirag Rakani — typing practice, OCR reader, screen-reader friendly games, and tools for visually impaired users.">
   <meta name="theme-color" content="#2c3e50">
 
@@ -15,134 +12,96 @@
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-
   <style>
-    :root{
-      --bg:#f4f7fb; --card:#ffffff; --accent:#2c3e50; --accent-2:#27ae60; --muted:#6b7280;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    }
+    :root{ --bg:#f4f7fb; --card:#fff; --accent:#2c3e50; --accent-2:#27ae60; --muted:#6b7280; font-family:"Segoe UI",Roboto,Arial,sans-serif; }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:#111;line-height:1.45}
     header{background:var(--accent);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
-    header h1{font-size:1.05rem;margin:0}
     .container{max-width:980px;margin:18px auto;padding:0 14px}
     .grid{display:grid;grid-template-columns:1fr;gap:14px}
     @media(min-width:900px){.grid{grid-template-columns:320px 1fr}}
     .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
-    .avatar{width:56px;height:56px;border-radius:10px;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
-    .muted{color:var(--muted)}
-    nav a{display:inline-block;padding:6px 10px;border-radius:8px;color:#fff;background:transparent;margin-right:6px;text-decoration:none}
     .btn{display:inline-block;padding:10px 12px;border-radius:8px;border:0;background:var(--accent-2);color:#fff;cursor:pointer;font-weight:600}
-    .social a{margin-right:6px;text-decoration:none;color:var(--accent)}
-    h2{margin-top:0}
-    .games-list button{width:100%;text-align:left;padding:10px;border-radius:8px;margin-bottom:8px;border:1px solid #eee;background:#fafafa}
     .small{font-size:0.95rem;color:var(--muted)}
-    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
-    .board{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-    .cell{background:#f8fafc;border-radius:6px;padding:8px;text-align:center;font-weight:700}
-    .dice{font-size:1.4rem;padding:8px;border-radius:8px;border:1px dashed #ccc}
-    footer{padding:18px;text-align:center;color:var(--muted);font-size:0.95rem}
-    .output-box { background: #f9f9f9; padding: 12px; margin-top: 10px; border: 2px solid #ccc; border-radius: 6px; min-height: 120px; white-space: pre-wrap; }
-    #pdf-controls, .typing-controls { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; background:#fff; }
+    .output-box{background:#f9f9f9;padding:12px;border:2px solid #ccc;border-radius:6px;min-height:120px;white-space:pre-wrap}
+    .typing-controls{display:flex;gap:8px;align-items:center;margin-top:8px}
     input[type="file"]{padding:8px}
-    label{display:flex;gap:6px;align-items:center}
-    [aria-live]{padding:6px}
+    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
   </style>
 </head>
 <body>
   <header>
     <div style="display:flex;align-items:center;gap:12px">
-      <div class="avatar">CR</div>
+      <div style="width:56px;height:56px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)">CR</div>
       <div>
-        <h1>Chirag's Accessible Tools & Games Hub</h1>
-        <div class="small">Tools for visually impaired users — typing, OCR, auto read, games</div>
+        <h1 style="margin:0;font-size:1.05rem">Chirag's Accessible Tools & Games Hub</h1>
+        <div class="small">Typing, OCR, Auto-read & Accessible games</div>
       </div>
     </div>
   </header>
 
   <main class="container">
     <div class="grid">
-
       <!-- Sidebar -->
       <aside class="card">
         <h2>About Me</h2>
-        <p class="small">
-          <strong>Chirag Rakani</strong> — Gharana, Kutch, Gujarat.  
-          Accessible tools developer • Typing expert • Screen-reader friendly apps creator  
-          Fluent in Hindi, Gujarati, English.
-        </p>
+        <p class="small"><strong>Chirag Rakani</strong> — Gharana, Kutch, Gujarat. Built accessible web tools for visually impaired users. Fluent in Hindi, Gujarati & English.</p>
 
         <h3>Contact</h3>
         <p class="small">📞 9737796825<br>✉️ <a href="mailto:chiragrakani6@gmail.com">chiragrakani6@gmail.com</a></p>
 
         <h3>Follow</h3>
-        <div class="social small">
+        <div class="small">
           <a href="https://youtube.com/shorts/Us4sDykOYtc?si=ITbIS3l6enuNzF29" target="_blank">YouTube</a> •
           <a href="https://www.facebook.com/share/1DH4fAcwqU/" target="_blank">Facebook</a> •
           <a href="https://www.instagram.com/koli.chirag?igsh=cGNyaTIyNXQ1NWM2" target="_blank">Instagram</a>
         </div>
-
-        <hr>
-
-        <h3>Quick Tools</h3>
-        <ul class="small">
-          <li><a href="#typing">Typing practice</a></li>
-          <li><a href="#ocr">Document reader</a></li>
-          <li><a href="#games">Games</a></li>
-        </ul>
       </aside>
 
-      <!-- Main content -->
+      <!-- Main -->
       <section>
+        <!-- Typing Practice: NEW behavior as requested -->
+        <article id="typing" class="card" aria-labelledby="typing-h">
+          <h2 id="typing-h">Typing Practice — Endless Spelling Drill</h2>
+          <p class="small">
+            Rules: If you type the word correctly on first try → automatic next word.  
+            If you make a wrong attempt first, you must type the correct word <strong>3 times</strong> to proceed.  
+            Press <strong>Spell</strong> to hear spelling (same as F2).
+          </p>
 
-        <!-- Typing Practice -->
-        <article id="typing" class="card">
-          <h2>Typing Practice</h2>
+          <div id="practiceWord" class="small" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px;">Click Next to start</div>
 
-          <div id="practiceWord" class="small">Click Next Word to begin.</div>
-          <input id="practiceInput" type="text" placeholder="Type the word here" style="width:100%;padding:8px;margin-top:6px">
-
-          <div class="typing-controls">
-            <button class="btn" onclick="nextWord()">Next Word</button>
-            <button class="btn" onclick="readWord(currentPracticeWord)">Listen</button>
-            <span id="spellFeedback" class="small"></span>
-          </div>
-
-          <hr>
-
-          <div id="testParagraph" class="small" style="padding:8px;border:1px solid #eee;border-radius:6px">Type the paragraph & press Start</div>
-          <textarea id="typingTestInput" rows="4" style="width:100%;padding:8px;margin-top:6px"></textarea>
+          <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the spoken word" style="width:100%;padding:10px;font-size:1rem">
 
           <div class="typing-controls">
-            <button class="btn" onclick="resetTypingTest()">Start</button>
-            <div id="timer" class="small">Time: 0s</div>
-            <div id="wpmResult" class="small">WPM: 0</div>
+            <button class="btn" id="nextWordBtn">🔄 Next</button>
+            <button class="btn" id="listenBtn">🔊 Listen</button>
+            <button class="btn" id="spellBtn" style="background:#3b82f6">🔡 Spell</button>
+            <div id="spellFeedback" aria-live="assertive" style="margin-left:8px;font-weight:700;color:#333"></div>
           </div>
         </article>
 
         <!-- OCR -->
         <article id="ocr" class="card" style="margin-top:12px">
           <h2>Document Reader (OCR + Auto Read)</h2>
-
           <input type="file" id="fileInput" accept="image/*, .pdf" style="margin-top:8px">
-          <button class="btn" onclick="processFile()" style="margin-top:6px">Read Document</button>
-
-          <div id="pdf-controls" style="display:none;margin-top:8px">
-            <label>Go to:
-              <input type="number" id="pageNumberInput" min="1" value="1" style="width:70px;margin-left:6px">
-            </label>
-            <button class="btn" onclick="handleGoToPage()">Go</button>
-            <span id="pageInfo" class="small"></span>
+          <div style="margin-top:8px">
+            <button class="btn" onclick="processFile()">Read Document</button>
+            <div id="pdf-controls" style="display:none;margin-top:8px">
+              <label>Page:
+                <input type="number" id="pageNumberInput" min="1" value="1" style="width:70px;margin-left:6px">
+              </label>
+              <button class="btn" onclick="handleGoToPage()">Go</button>
+              <span id="pageInfo" class="small"></span>
+            </div>
           </div>
 
-          <h3>Result:</h3>
-          <div id="doc-output" class="output-box">Text will appear here...</div>
+          <h3 style="margin-top:12px">Result:</h3>
+          <div id="doc-output" class="output-box" tabindex="0" aria-live="polite">Text will appear here...</div>
 
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
             <label><input type="checkbox" id="autoLang" checked> Auto-detect</label>
-            <label>Force:
+            <label style="margin-left:6px">Force:
               <select id="forceLang">
                 <option value="">Auto</option>
                 <option value="en-IN">English</option>
@@ -150,44 +109,41 @@
                 <option value="gu-IN">Gujarati</option>
               </select>
             </label>
-
-            <button id="readDoc" class="btn">Read</button>
-            <button id="stopRead" class="btn" style="background:#c0392b">Stop</button>
-            <div id="readStatus" class="small"></div>
+            <button id="readDoc" class="btn">🔊 Read</button>
+            <button id="stopRead" class="btn" style="background:#c0392b">⏹ Stop</button>
+            <div id="readStatus" class="small" style="margin-left:8px"></div>
           </div>
         </article>
 
-        <!-- Games -->
+        <!-- Games (kept minimal) -->
         <article id="games" class="card" style="margin-top:12px">
-          <h2>Games (Accessible)</h2>
+          <h2>Games — Accessible</h2>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button onclick="window.open('https://lichess.org','_blank')" class="btn">♟️ Chess (Lichess)</button>
+            <button id="hand-cricket-btn" class="btn">🏏 Hand Cricket</button>
+            <div id="hand-cricket" style="display:none;margin-top:8px">
+              <div id="hc-status" class="small">Ready</div>
+              <input id="hc-input" type="number" min="0" max="6" style="width:90px;margin-top:6px">
+              <button class="btn" id="hc-play">Play</button>
+              <button class="btn" id="hc-reset" style="background:#777">Reset</button>
+            </div>
 
-          <button onclick="window.open('https://lichess.org','_blank')" class="games-btn">♟️ Play Chess</button>
+            <button id="snl-btn" class="btn">🎲 Snakes & Ladders</button>
+            <div id="snl" style="display:none;margin-top:8px">
+              <div id="snl-status" class="small">Ready</div>
+              <button class="btn" id="snl-roll">Roll</button>
+              <button class="btn" id="snl-reset" style="background:#777">Reset</button>
+              <div class="dice" id="snl-dice">-</div>
+              <div id="snl-board"></div>
+            </div>
 
-          <button id="hand-cricket-btn" class="games-btn">🏏 Hand Cricket</button>
-          <div id="hand-cricket" style="display:none;margin-top:8px">
-            <div class="small">Enter 0–6. If computer matches, you're OUT.</div>
-            <div id="hc-status" class="small">Ready</div>
-
-            <input id="hc-input" type="number" min="0" max="6" style="width:90px;margin-top:6px">
-            <button class="btn" id="hc-play">Play</button>
-            <button class="btn" id="hc-reset" style="background:#777">Reset</button>
-          </div>
-
-          <button id="snl-btn" class="games-btn">🎲 Snakes & Ladders</button>
-          <div id="snl" style="display:none;margin-top:8px">
-            <div id="snl-status" class="small">Ready</div>
-            <button class="btn" id="snl-roll">Roll</button>
-            <button class="btn" id="snl-reset" style="background:#777">Reset</button>
-            <div class="dice" id="snl-dice">-</div>
-            <div id="snl-board"></div>
-          </div>
-
-          <button id="ludo-btn" class="games-btn">🎯 Ludo Race</button>
-          <div id="ludo" style="display:none;margin-top:8px">
-            <div id="ludo-status" class="small">Ready</div>
-            <button class="btn" id="ludo-roll">Roll</button>
-            <button class="btn" id="ludo-reset" style="background:#777">Reset</button>
-            <div id="ludo-scores" class="small"></div>
+            <button id="ludo-btn" class="btn">🎯 Ludo Race</button>
+            <div id="ludo" style="display:none;margin-top:8px">
+              <div id="ludo-status" class="small">Ready</div>
+              <button class="btn" id="ludo-roll">Roll</button>
+              <button class="btn" id="ludo-reset" style="background:#777">Reset</button>
+              <div id="ludo-scores" class="small"></div>
+            </div>
           </div>
         </article>
 
@@ -195,234 +151,286 @@
     </div>
   </main>
 
-  <footer>
-    © 2025 Chirag Rakani — Accessible Tools Hub
-  </footer>
+  <footer style="padding:16px;text-align:center;color:#666">© 2025 Chirag Rakani — Accessible Tools Hub</footer>
 
   <div id="game-announce" class="sr-only" aria-live="assertive"></div>
 
 <script>
-/* ---------- SPEECH FUNCTION ---------- */
-function speak(text){
+/* ----------------- Speech helper ----------------- */
+function speakText(text, lang='en-IN', rate=0.95){
   if(!('speechSynthesis' in window)) return;
+  try{ window.speechSynthesis.cancel(); } catch(e){}
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-IN';
-  u.rate = 0.95;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
+  u.lang = lang;
+  u.rate = rate;
+  window.speechSynthesis.speak(u);
 }
 
-/* ---------- SPELLING PRACTICE ---------- */
+/* ------------- Typing practice logic ------------- */
+/*
+Behavior:
+- If user types word correctly on first attempt -> automatically move to next word.
+- If user typed wrong at least once before first correct -> require 3 correct typings to move on.
+- Spell button (and F2 if keyboard) will speak the spelled letters.
+*/
+
 const spellingWords = [
   "accessibility","computer","keyboard","software","screenreader","braille","typing",
-  "success","motivation","efficiency","communication","technology","challenge","confidence"
+  "success","motivation","efficiency","communication","technology","challenge","dedication",
+  "confidence","amazing","support","document","location","internet","navigation","paragraph",
+  "proficiency","essential","accurate","experience","organization","solution","applicant",
+  "objective","multilingual","approachable","customer","service","position","utilize","contribute","gujarat"
 ];
-let currentPracticeWord="", correctAttempts=0;
 
-function nextWord(){
-  correctAttempts=0;
-  const w = spellingWords[Math.floor(Math.random()*spellingWords.length)];
-  currentPracticeWord = w;
-  document.getElementById("practiceWord").innerText = "Word: "+w;
-  document.getElementById("practiceInput").value="";
-  speak(w);
+let currentPracticeWord = "";
+let madeWrongAttempt = false;   // true if user typed incorrectly at least once for current word
+let correctStreak = 0;         // number of consecutive correct typings after wrong attempt
+
+const practiceInput = document.getElementById('practiceInput');
+const practiceWordDiv = document.getElementById('practiceWord');
+const feedbackDiv = document.getElementById('spellFeedback');
+const nextBtn = document.getElementById('nextWordBtn');
+const listenBtn = document.getElementById('listenBtn');
+const spellBtn = document.getElementById('spellBtn');
+
+function pickNextWord(){
+  // Reset state
+  madeWrongAttempt = false;
+  correctStreak = 0;
+  const idx = Math.floor(Math.random()*spellingWords.length);
+  currentPracticeWord = spellingWords[idx];
+  practiceWordDiv.innerText = "🔊 Listen: " + currentPracticeWord;
+  feedbackDiv.innerText = `Type the word. If you make a mistake, you'll need to type it correctly 3 times.`;
+  practiceInput.value = "";
+  practiceInput.focus();
+  // speak the word clearly
+  setTimeout(()=> speakText(currentPracticeWord), 200);
 }
 
-document.getElementById("practiceInput").addEventListener("input", e=>{
-  if(!currentPracticeWord) return;
-  if(e.target.value.trim().toLowerCase() === currentPracticeWord.toLowerCase()){
-    correctAttempts=1;
-    document.getElementById("spellFeedback").innerHTML = "<span style='color:green'>Correct ✔</span>";
+function spellOut(word){
+  if(!word) return;
+  const spelled = word.toUpperCase().split('').join('. ');
+  speakText("Spelling: " + spelled + ".");
+  feedbackDiv.innerText = `Spelling: ${word.toUpperCase().split('').join(' · ')}`;
+}
+
+function onUserTyped(e){
+  const typed = practiceInput.value.trim().toLowerCase();
+  const correct = currentPracticeWord.toLowerCase();
+
+  // Key handling: Enter and F2
+  if(e.type === 'keydown'){
+    if(e.key === 'F2'){
+      e.preventDefault();
+      spellOut(currentPracticeWord);
+      return;
+    }
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      // If user presses Enter, only proceed if conditions met
+      if(!madeWrongAttempt){
+        // if never made wrong attempt but hasn't typed yet, ignore
+        if(typed === correct){
+          pickNextWord();
+        } else {
+          feedbackDiv.innerText = "Type the word correctly (or press Next).";
+          speakText("Type the word correctly.");
+        }
+      } else {
+        if(correctStreak >= 3){
+          pickNextWord();
+        } else {
+          feedbackDiv.innerText = `You need ${3 - correctStreak} more correct attempt(s).`;
+          speakText(`You need ${3 - correctStreak} more correct attempts.`);
+        }
+      }
+      return;
+    }
   }
-});
 
-/* ---------- TYPING TEST ---------- */
-const testText = "Quickly type this paragraph to test your speed. Improving typing helps communication.";
-let timer=null, start=0, active=false;
+  // Only process on input events for live checking
+  if(e.type !== 'input') return;
 
-function resetTypingTest(){
-  active=false;
-  clearInterval(timer);
-  document.getElementById("typingTestInput").value="";
-  document.getElementById("testParagraph").innerText=testText;
-  document.getElementById("timer").innerText="Time: 0s";
-  document.getElementById("wpmResult").innerText="WPM: 0";
-}
-
-function startTyping(){
-  if(!active){
-    active=true;
-    start=Date.now();
-    timer=setInterval(()=>{
-      const sec=Math.floor((Date.now()-start)/1000);
-      document.getElementById("timer").innerText="Time: "+sec+"s";
-      const text=document.getElementById("typingTestInput").value.length;
-      const wpm=Math.round((text/5)/(sec/60));
-      document.getElementById("wpmResult").innerText="WPM: "+wpm;
-    },1000);
-  }
-}
-
-document.getElementById("typingTestInput").addEventListener("input", startTyping);
-
-/* ---------- GAMES: HAND CRICKET ---------- */
-document.getElementById("hand-cricket-btn").onclick = ()=>{
-  const el=document.getElementById("hand-cricket");
-  el.style.display = el.style.display==="none"?"block":"none";
-};
-
-let hcRuns=0, hcBalls=0, hcOut=false;
-
-document.getElementById("hc-play").onclick = ()=>{
-  const input = parseInt(document.getElementById("hc-input").value,10);
-  const comp = Math.floor(Math.random()*7);
-  if(isNaN(input) || input<0 || input>6){
-    speak("Enter number 0 to 6");
+  if(!currentPracticeWord){
+    feedbackDiv.innerText = "Press Next to start.";
     return;
   }
-  if(hcOut){
-    speak("You are out. Reset game.");
+
+  if(typed === correct){
+    // If user had NOT made any wrong attempts yet -> immediate success and go next.
+    if(!madeWrongAttempt){
+      feedbackDiv.innerHTML = `<span style="color:green">✅ Correct — moving to next word.</span>`;
+      speakText("Correct. Next word.");
+      // small delay then next
+      setTimeout(()=> pickNextWord(), 600);
+      return;
+    } else {
+      // User had made a wrong attempt earlier — count streak
+      correctStreak++;
+      if(correctStreak < 3){
+        feedbackDiv.innerHTML = `<span style="color:green">✅ Correct (${correctStreak}/3) — type again.</span>`;
+        speakText(`Correct. ${correctStreak} of 3.`);
+        practiceInput.value = "";
+        practiceInput.focus();
+        return;
+      } else {
+        // reached 3 correct in a row -> next word
+        feedbackDiv.innerHTML = `<span style="color:green">🎉 Completed 3 correct attempts. Next word.</span>`;
+        speakText("Excellent. Next word.");
+        setTimeout(()=> pickNextWord(), 700);
+        return;
+      }
+    }
+  }
+
+  // If typed is non-empty and not a prefix of correct -> it's a wrong attempt
+  if(typed.length > 0 && !correct.startsWith(typed)){
+    // mark wrong, reset streak
+    madeWrongAttempt = true;
+    correctStreak = 0;
+    practiceInput.value = "";
+    practiceInput.style.borderColor = '#c0392b';
+    feedbackDiv.innerHTML = `<span style="color:#c0392b">❌ Incorrect — Attempts now require 3 correct typings. Spelling will be spoken.</span>`;
+    // Speak spelling and then the word
+    setTimeout(()=> spellOut(currentPracticeWord), 200);
+    setTimeout(()=> speakText("Now try typing the correct word three times."), 1000);
     return;
   }
-  hcBalls++;
-  if(input===comp){
-    hcOut=true;
-    const msg=`OUT! Total ${hcRuns} runs in ${hcBalls} balls.`;
-    document.getElementById("hc-status").innerText = msg;
-    speak(msg);
-  }else{
-    hcRuns+=input;
-    const msg=`You: ${input}, Computer: ${comp}. Runs ${hcRuns}`;
-    document.getElementById("hc-status").innerText = msg;
-    speak(msg);
-  }
-};
 
-document.getElementById("hc-reset").onclick=()=>{
-  hcRuns=0; hcBalls=0; hcOut=false;
-  document.getElementById("hc-status").innerText="Ready";
-};
+  // Partial prefix (still typing) - encourage user
+  feedbackDiv.innerText = `Keep typing...`;
+  practiceInput.style.borderColor = '#3498db';
+}
 
-/* ---------- SNAKES & LADDERS ---------- */
-document.getElementById("snl-btn").onclick = ()=>{
-  const el=document.getElementById("snl");
-  el.style.display = el.style.display==="none"?"block":"none";
-};
+/* Hook events */
+nextBtn.addEventListener('click', pickNextWord);
+listenBtn.addEventListener('click', ()=> { if(currentPracticeWord) speakText(currentPracticeWord); else pickNextWord(); });
+spellBtn.addEventListener('click', ()=> spellOut(currentPracticeWord));
+practiceInput.addEventListener('input', onUserTyped);
+practiceInput.addEventListener('keydown', onUserTyped);
 
-let pos=0;
-const snakes={16:6,24:9};
-const ladders={2:14,7:22};
+/* Start first word automatically */
+pickNextWord();
 
-document.getElementById("snl-roll").onclick = ()=>{
-  const d=Math.floor(Math.random()*6)+1;
-  let next=pos+d;
-  if(next>30) next=pos;
-  pos=next;
-  if(ladders[pos]) pos=ladders[pos];
-  if(snakes[pos]) pos=snakes[pos];
-  document.getElementById("snl-dice").innerText = d;
-  const msg=`Moved to ${pos}`;
-  document.getElementById("snl-status").innerText=msg;
-  speak(msg);
-};
-
-document.getElementById("snl-reset").onclick=()=>{pos=0;};
-
-/* ---------- LUDO ---------- */
-document.getElementById("ludo-btn").onclick = ()=>{
-  const el=document.getElementById("ludo");
-  el.style.display = el.style.display==="none"?"block":"none";
-};
-
-let you=0, compu=0;
-
-document.getElementById("ludo-roll").onclick=()=>{
-  const d1=Math.floor(Math.random()*6)+1;
-  const d2=Math.floor(Math.random()*6)+1;
-  you+=d1; compu+=d2;
-  const msg=`You ${you}, Computer ${compu}`;
-  document.getElementById("ludo-scores").innerText = msg;
-  speak(msg);
-};
-
-document.getElementById("ludo-reset").onclick=()=>{you=0; compu=0;};
-
-/* ---------- OCR + AUTO LANGUAGE DETECT ---------- */
+/* ------------- Other features: minimal OCR + Reader (kept as earlier) ------------- */
 
 if(typeof pdfjsLib !== "undefined"){
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js";
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js";
 }
 
-let currentPdf=null, totalPages=0;
+let currentPdf = null, totalPdfPages = 0;
 
 async function processFile(){
-  const f=document.getElementById("fileInput").files[0];
-  const out=document.getElementById("doc-output");
-  if(!f){ out.innerText="Select a file."; return; }
-
-  out.innerText="Processing...";
-
-  if(f.type==="application/pdf"){
-    const arr=await f.arrayBuffer();
-    const pdf=await pdfjsLib.getDocument({data:arr}).promise;
-    currentPdf=pdf;
-    totalPages=pdf.numPages;
-    document.getElementById("pdf-controls").style.display="flex";
-    displayPage(1);
-  } else if(f.type.startsWith("image/")){
-    const worker = Tesseract.createWorker();
-    await worker.load();
-    await worker.loadLanguage("eng+hin+guj");
-    await worker.initialize("eng+hin+guj");
-    const { data:{ text } } = await worker.recognize(f);
-    await worker.terminate();
-    out.innerText=text;
-    autoRead(text);
+  const f = document.getElementById('fileInput').files[0];
+  const out = document.getElementById('doc-output');
+  if(!f){ out.innerText = "Select a file."; return; }
+  out.innerText = "Processing...";
+  if(f.type === 'application/pdf'){
+    try{
+      const ab = await f.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data:ab}).promise;
+      currentPdf = pdf; totalPdfPages = pdf.numPages;
+      document.getElementById('pdf-controls').style.display = 'block';
+      displayPage(1);
+    }catch(e){ out.innerText = "PDF read error."; }
+  } else if(f.type.startsWith('image/')){
+    try{
+      const worker = Tesseract.createWorker({ logger: m => console.log(m) });
+      await worker.load();
+      await worker.loadLanguage('eng+hin+guj');
+      await worker.initialize('eng+hin+guj');
+      const { data: { text } } = await worker.recognize(f);
+      await worker.terminate();
+      out.innerText = text || "No text recognized.";
+      autoReadAfterOCRIfWanted(text || "");
+    }catch(e){
+      out.innerText = "OCR failed.";
+    }
+  } else {
+    out.innerText = "Unsupported file.";
   }
 }
 
-async function displayPage(n){
-  const page=await currentPdf.getPage(n);
-  const txt=await page.getTextContent();
-  const t=txt.items.map(i=>i.str).join(" ");
-  document.getElementById("doc-output").innerText = t;
-  autoRead(t);
+async function displayPage(p){
+  const out = document.getElementById('doc-output');
+  if(!currentPdf) return;
+  try{
+    const page = await currentPdf.getPage(p);
+    const content = await page.getTextContent();
+    const pageText = content.items.map(i => i.str).join(' ');
+    out.innerText = pageText || `Page ${p} seems empty.`;
+    document.getElementById('pageInfo').innerText = `Page ${p} of ${totalPdfPages}`;
+    document.getElementById('pageNumberInput').value = p;
+    autoReadAfterOCRIfWanted(pageText || "");
+  }catch(e){
+    out.innerText = "Error reading page.";
+  }
 }
 
-/* LANGUAGE DETECT */
-function detectLang(t){
-  if(/[\u0A80-\u0AFF]/.test(t)) return "gu-IN";
-  if(/[\u0900-\u097F]/.test(t)) return "hi-IN";
-  if(/[A-Za-z]/.test(t)) return "en-IN";
-  return "en-IN";
+function handleGoToPage(){
+  const n = parseInt(document.getElementById('pageNumberInput').value || "1", 10);
+  if(currentPdf) displayPage(n);
 }
 
-function speakLong(t, lang){
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(t);
-  u.lang=lang;
-  u.rate = (lang==="en-IN")?0.95:0.9;
-  speechSynthesis.speak(u);
+/* Language detect for OCR reading */
+function detectLanguage(text){
+  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN';
+  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN';
+  if(/[A-Za-z]/.test(text)) return 'en-IN';
+  return 'en-IN';
 }
 
-function autoRead(txt){
-  const auto=document.getElementById("autoLang").checked;
-  const forced=document.getElementById("forceLang").value;
+/* speak long text (simple) */
+function speakLongText(text, lang){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'en-IN';
+  u.rate = (u.lang === 'en-IN') ? 0.95 : 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+document.getElementById('readDoc').addEventListener('click', ()=>{
+  const text = document.getElementById('doc-output').innerText || '';
+  if(!text.trim()){ document.getElementById('readStatus').innerText = 'No text to read.'; return; }
+  const forced = document.getElementById('forceLang').value;
+  const lang = forced || detectLanguage(text);
+  speakLongText(text, lang);
+});
+
+document.getElementById('stopRead').addEventListener('click', ()=> { if('speechSynthesis' in window) window.speechSynthesis.cancel(); });
+
+async function autoReadAfterOCRIfWanted(text){
+  if(!text || !text.trim()) return;
+  const auto = document.getElementById('autoLang').checked;
+  const forced = document.getElementById('forceLang').value;
   if(!auto && !forced) return;
-  const lang = forced || detectLang(txt);
-  speakLong(txt, lang);
+  const lang = forced || detectLanguage(text);
+  setTimeout(()=> speakLongText(text, lang), 300);
 }
 
-document.getElementById("readDoc").onclick=()=>{
-  const txt=document.getElementById("doc-output").innerText;
-  const forced=document.getElementById("forceLang").value;
-  const lang = forced || detectLang(txt);
-  speakLong(txt, lang);
-};
+/* Simple games hooks (kept minimal to save space) */
+document.getElementById('hand-cricket-btn').addEventListener('click', ()=> {
+  const el = document.getElementById('hand-cricket'); el.style.display = el.style.display==='none'?'block':'none';
+});
+let hcRuns=0, hcBalls=0, hcOut=false;
+document.getElementById('hc-play').addEventListener('click', ()=>{
+  const v = parseInt(document.getElementById('hc-input').value,10);
+  const comp = Math.floor(Math.random()*7);
+  if(isNaN(v) || v<0 || v>6){ speakText('Enter number 0 to 6'); return; }
+  if(hcOut){ speakText('You are out. Reset.'); return; }
+  hcBalls++;
+  if(v===comp){ hcOut=true; const msg=`OUT! ${hcRuns} runs in ${hcBalls} balls`; document.getElementById('hc-status').innerText=msg; speakText(msg); }
+  else { hcRuns += v; const msg=`You ${v}, Comp ${comp}. Runs ${hcRuns}`; document.getElementById('hc-status').innerText=msg; speakText(msg); }
+});
+document.getElementById('hc-reset').addEventListener('click', ()=>{ hcRuns=0; hcBalls=0; hcOut=false; document.getElementById('hc-status').innerText='Ready'; });
 
-document.getElementById("stopRead").onclick=()=>speechSynthesis.cancel();
-</script>
+document.getElementById('snl-btn').addEventListener('click', ()=>{ const el=document.getElementById('snl'); el.style.display = el.style.display==='none'?'block':'none'; });
+let snlPos=0; const snakes={16:6,24:9}, ladders={2:14,7:22};
+document.getElementById('snl-roll').addEventListener('click', ()=>{ const d=Math.floor(Math.random()*6)+1; let next=snlPos+d; if(next>30) next=snlPos; snlPos=next; if(ladders[snlPos]) snlPos = ladders[snlPos]; if(snakes[snlPos]) snlPos = snakes[snlPos]; document.getElementById('snl-dice').innerText=d; document.getElementById('snl-status').innerText=`Moved to ${snlPos}`; speakText(`Moved to ${snlPos}`); });
+document.getElementById('snl-reset').addEventListener('click', ()=>{ snlPos=0; document.getElementById('snl-status').innerText='Ready'; });
 
-</body>
-</html>
+document.getElementById('ludo-btn').addEventListener('click', ()=>{ const el=document.getElementById('ludo'); el.style.display = el.style.display==='none'?'block':'none'; });
+let you=0, comp=0;
+document.getElementById('ludo-roll').addEventListener('click', ()=>{ const d1=Math.floor(Math.random()*6)+1, d2=Math.floor(Math.random()*6)+1; you+=d1; comp+=d2; document.getElementById('ludo-scores').innerText=`You ${you} Comp ${comp}`; speakText(`You ${you}, Computer ${comp}`); });
+document.getElementById('ludo-reset').addEventListen
