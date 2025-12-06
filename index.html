@@ -3,32 +3,34 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Chirag Rakani Accessible Tools & Games Hub</title>
-  <meta name="description" content="Accessible tools by Chirag Rakani typing OCR PDF/Image games location & social links">
+  <title>Chirag — Accessible Tools (Debugged)</title>
+  <meta name="description" content="Accessible tools: typing practice, OCR (PDF/Image), games, location. Debug-ready version with diagnostics.">
   <meta name="theme-color" content="#2c3e50">
 
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
   <style>
-    :root{--bg:#f4f7fb;--card:#fff;--accent:#2c3e50;--accent2:#27ae60;--muted:#666}
+    :root{--bg:#f6f8fb;--card:#fff;--accent:#2c3e50;--accent2:#27ae60;--muted:#666}
     *{box-sizing:border-box}
     body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#111}
     header{background:var(--accent);color:#fff;padding:14px 16px}
-    .container{max-width:980px;margin:18px auto;padding:0 14px}
+    .container{max-width:980px;margin:14px auto;padding:0 14px}
     .grid{display:grid;grid-template-columns:1fr;gap:14px}
     @media(min-width:900px){.grid{grid-template-columns:320px 1fr}}
-    .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-    h2{margin:0 0 8px 0}
-    .small{font-size:0.95rem;color:var(--muted)}
-    .btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+    .card{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .btn{background:var(--accent2);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
     .btn-alt{background:#3b82f6}
-    .output{background:#fafafa;padding:12px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap}
-    .typing-controls{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
-    input[type="text"], input[type="number"], textarea{padding:10px;border-radius:6px;border:1px solid #ddd;width:100%}
-    footer{padding:14px;text-align:center;color:var(--muted)}
-    a.social{color:var(--accent);text-decoration:none;margin-right:8px}
     .danger{background:#c0392b}
+    .small{font-size:0.95rem;color:var(--muted)}
+    .output{background:#fafafa;padding:10px;border-radius:6px;border:1px solid #e6e6e6;min-height:100px;white-space:pre-wrap}
+    input, select, textarea{padding:8px;border-radius:6px;border:1px solid #ddd;width:100%}
+    .typing-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    footer{padding:12px;text-align:center;color:var(--muted)}
+    .diag {display:flex;flex-direction:column;gap:6px}
+    .diag-row{display:flex;justify-content:space-between;padding:6px 8px;background:#f3f4f6;border-radius:6px}
+    a{color:var(--accent)}
   </style>
 </head>
 <body>
@@ -36,84 +38,82 @@
     <div style="display:flex;gap:12px;align-items:center">
       <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
       <div>
-        <h1 style="font-size:1.05rem;margin:0">Chirag's Accessible Tools & Games Hub</h1>
-        <div class="small">Typing practice OCR PDF/Image Games Location Social</div>
+        <h1 style="margin:0;font-size:1.05rem">Chirag Accessible Tools — Debugged</h1>
+        <div class="small">If something doesn't work — check Diagnostics and follow instructions below.</div>
       </div>
     </div>
   </header>
 
   <main class="container">
     <div class="grid">
-      <aside class="card">
-        <h2>About Me</h2>
-        
-        <p class="small" style="font-weight: bold;">
-            हिंदी: मेरा नाम चिराग राकाणी है और मैं घराणा कच्छ गुजरात का निवासी हूँ मैंने ब्लाइंड स्कूल भुज से 12वीं कक्षा पूरी की है मेरा मुख्य उद्देश्य चैट सपोर्ट डाटा एंट्री या किसी भी टाइपिंग से संबंधित पद पर कार्य करना है जहाँ मैं अपनी बेहतरीन टाइपिंग दक्षता और ग्राहक इंटरैक्शन अनुभव का उपयोग कर सकूँ मैं अंग्रेजी हिंदी और गुजराती में पारंगत हूँ मेरा मुख्य जुनून दृष्टिबाधित लोगों के लिए एक्सेसिबल ऐप्स और गेम्स बनाना है मैं एक लेखक भी हूँ और मेरी कुछ किताबें Amazon पर उपलब्ध हैं
-        </p>
-        
-        <p class="small">
-            English: I am Chirag Rakani from Gharana Kutch Gujarat I am a highly motivated and detail-oriented individual with a strong passion for communication and problem-solving Seeking a role in chat support data entry or any typing-related position where I can utilize my exceptional typing skills and customer interaction experience to contribute to organizational success I completed my 12th Grade at Blind School Bhuj I am dedicated to creating accessible apps and games for the visually impaired and I am also an author with books available on Amazon
-        </p>
-
-        <p class="small">
-            ગુજરાતી: મારું નામ ચિરાગ રાકાણી છે અને હું ઘરાણા કચ્છ ગુજરાત નો રહેવાસી છું મેં બ્લાઇન્ડ સ્કૂલ ભુજ માંથી 12મું ધોરણ પૂરું કર્યું છે મારો મુખ્ય હેતુ ચેટ સપોર્ટ ડેટા એન્ટ્રી અથવા ટાઈપિંગ સંબંધિત કોઈ પણ ભૂમિકામાં કામ કરવાનો છે જ્યાં હું મારી અપવાદરૂપ ટાઇપિંગ કૌશલ્યો અને ગ્રાહક સંપર્ક અનુભવનો ઉપયોગ સંસ્થાકીય સફળતા માટે કરી શકું હું દ્રષ્ટિહીન લોકો માટે સુલભ એપ્સ અને ગેમ્સ બનાવવામાં પણ સમર્પિત છું અને એમેઝોન પર મારા પુસ્તકો પણ ઉપલબ્ધ છે
-        </p>
-
-        <h3>Buy my books</h3>
-        <p class="small">
-          <a class="social" href="https://amzn.to/48Tnv7r" target="_blank" rel="noopener noreferrer">Amazon Link 1</a><br>
-          <a class="social" href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank" rel="noopener noreferrer">Amazon Book Buy</a>
-        </p>
-
-        <h3>Contact & Social</h3>
-        <p class="small">📞 9737796825<br>✉️ <a href="mailto:chiragrakani6@gmail.com">chiragrakani6@gmail.com</a></p>
-        <div class="small">
-          <a class="social" href="https://youtube.com/shorts/Us4sDykOYtc?si=ITbIS3l6enuNzF29" target="_blank">YouTube</a>
-          <a class="social" href="https://www.facebook.com/share/1DH4fAcwqU/" target="_blank">Facebook</a>
-          <a class="social" href="https://www.instagram.com/koli.chirag?igsh=cGNyaTIyNXQ1NWM2" target="_blank">Instagram</a>
+      <!-- Sidebar / Diagnostics -->
+      <aside class="card" aria-label="Diagnostics and links">
+        <h2>Diagnostics</h2>
+        <div class="diag" id="diag">
+          <div class="diag-row"><div>Speech Synthesis</div><div id="diag-speech">—</div></div>
+          <div class="diag-row"><div>Geolocation</div><div id="diag-geo">—</div></div>
+          <div class="diag-row"><div>Tesseract (OCR)</div><div id="diag-tess">—</div></div>
+          <div class="diag-row"><div>PDF.js</div><div id="diag-pdf">—</div></div>
+          <div class="diag-row"><div>User Gesture (Initialized)</div><div id="diag-init">No</div></div>
         </div>
+
+        <div style="margin-top:10px">
+          <button id="btn-init" class="btn">INITIALIZE (Required for Speech)</button>
+        </div>
+
+        <hr style="margin:10px 0">
+
+        <h3>Your links</h3>
+        <p class="small">
+          <a href="https://amzn.to/48Tnv7r" target="_blank">Amazon link 1</a><br>
+          <a href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank">My Amazon Book</a>
+        </p>
       </aside>
 
+      <!-- Main area -->
       <section>
+        <!-- Typing Practice -->
         <article class="card" id="typing-card">
-          <h2>Typing Practice Endless Spelling</h2>
-          <p class="small">If you get a word correct on the first try → it automatically moves to the next word If you type it wrongly once you must type it correctly 3 times to move on Use **F2** to repeat spelling letter by letter and **Double F2** to repeat the full word</p>
+          <h2>Typing Practice — Endless Spelling</h2>
+          <p class="small">Click <strong>Next</strong> to start. For speech, press INITIALIZE first if using mobile browser.</p>
 
-          <div id="practiceWord" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px">Loading practice word</div>
+          <div id="practiceWord" style="padding:8px;border-radius:6px;border:1px solid #eee;background:#fbfff6;margin-bottom:8px">Press Next</div>
 
-          <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the word here">
+          <input id="practiceInput" type="text" placeholder="Type the word here">
 
           <div class="typing-controls" style="margin-top:8px">
             <button id="nextWordBtn" class="btn">🔄 Next</button>
-            <button id="listenBtn" class="btn">🔊 Listen Word</button>
-            <button id="spellBtn" class="btn btn-alt">🔡 Spell Letter by Letter</button>
-            <div id="spellFeedback" aria-live="assertive" style="font-weight:600;margin-left:8px"></div>
+            <button id="listenBtn" class="btn">🔊 Listen</button>
+            <button id="spellBtn" class="btn btn-alt">🔡 Spell</button>
+            <div id="spellFeedback" aria-live="assertive" style="font-weight:700;margin-left:8px"></div>
           </div>
         </article>
 
+        <!-- OCR / PDF -->
         <article class="card" style="margin-top:12px">
-          <h2>Document Reader Image / PDF</h2>
-          <p class="small">Upload an image or PDF For PDF use the page box to jump to any page number and press Go</p>
+          <h2>Document Reader (Image / PDF)</h2>
+          <p class="small">Upload an image or PDF. For PDFs use the page number and press Go to jump to that page.</p>
 
-          <input id="fileInput" type="file" accept="image/*, .pdf" style="margin-top:8px">
+          <input id="fileInput" type="file" accept="image/*,.pdf" style="margin-top:8px">
           <div style="margin-top:8px" class="typing-controls">
             <button id="processBtn" class="btn">📁 Process</button>
+
             <div id="pdf-controls" style="display:none;align-items:center">
               <label style="display:flex;align-items:center;gap:6px">Page:
-                <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;padding:8px">
+                <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;padding:6px">
               </label>
               <button id="goPageBtn" class="btn">Go</button>
               <span id="pageInfo" class="small" style="margin-left:8px"></span>
             </div>
           </div>
 
-          <h3 style="margin-top:12px">Result:</h3>
-          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Text will appear here</div>
+          <h3 style="margin-top:12px">Result</h3>
+          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Text will appear here...</div>
 
           <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-            <label><input id="autoLang" type="checkbox" checked> Auto-detect language</label>
+            <label><input id="autoLang" type="checkbox" checked> Auto-detect</label>
             <label style="margin-left:6px">Force:
-              <select id="forceLang" style="padding:8px">
+              <select id="forceLang">
                 <option value="">Auto</option>
                 <option value="en-IN">English</option>
                 <option value="hi-IN">Hindi</option>
@@ -126,291 +126,8 @@
           </div>
         </article>
 
+        <!-- Location -->
         <article class="card" style="margin-top:12px">
-          <h2>Where Am I Location</h2>
-          <p class="small">Tap the button and allow browser location permission</p>
+          <h2>Where Am I?</h2>
+          <p class="small">Click the button and allow browser location permission.</p>
           <div style="display:flex;gap:8px;align-items:center">
-            <button id="locBtn" class="btn">📍 Get Current Location</button>
-            <div id="locationOutput" class="small" style="margin-left:8px"></div>
-          </div>
-        </article>
-
-        <article class="card" style="margin-top:12px">
-          <h2>Games</h2>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess Lichess</button>
-
-            <div>
-              <button id="handBtn" class="btn">🏏 Hand Cricket</button>
-              <div id="handPanel" style="display:none;margin-top:8px">
-                <div id="hcStatus" class="small">Ready</div>
-                <input id="hcInput" type="number" min="0" max="6" placeholder="0-6" style="width:90px;margin-top:6px">
-                <div style="margin-top:8px">
-                  <button id="hcPlay" class="btn">Play</button>
-                  <button id="hcReset" class="btn" style="background:#777">Reset</button>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <button id="snlBtn" class="btn">🎲 Snakes & Ladders</button>
-              <div id="snlPanel" style="display:none;margin-top:8px">
-                <div id="snlStatus" class="small">Ready</div>
-                <div style="margin-top:8px">
-                  <button id="snlRoll" class="btn">Roll</button>
-                  <button id="snlReset" class="btn" style="background:#777">Reset</button>
-                  <div id="snlDice" class="small" style="display:inline-block;margin-left:12px">-</div>
-                </div>
-                <div id="snlBoard" style="margin-top:8px"></div>
-              </div>
-            </div>
-
-            <div>
-              <button id="ludoBtn" class="btn">🎯 Ludo Race</button>
-              <div id="ludoPanel" style="display:none;margin-top:8px">
-                <div id="ludoStatus" class="small">Ready</div>
-                <div style="margin-top:8px">
-                  <button id="ludoRoll" class="btn">Roll</button>
-                  <button id="ludoReset" class="btn" style="background:#777">Reset</button>
-                </div>
-                <div id="ludoScores" class="small" style="margin-top:8px"></div>
-              </div>
-            </div>
-
-          </div>
-        </article>
-
-      </section>
-    </div>
-  </main>
-
-  <footer>© 2025 Chirag Rakani Accessible Tools Hub</footer>
-
-  <div id="ann" class="sr-only" aria-live="assertive"></div>
-
-<script>
-/* ==================== Utility: Speech ==================== */
-function speak(text, lang='en-IN', rate=0.95){
-  if(!('speechSynthesis' in window)) return;
-  try{ window.speechSynthesis.cancel(); }catch(e){}
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang;
-  u.rate = rate;
-  window.speechSynthesis.speak(u);
-}
-
-/* ==================== Typing Practice ==================== */
-const wordsWithUsage = {
-    "accessibility": "We are designing this tool for better web accessibility",
-    "computer": "I use the computer for all my data entry tasks",
-    "keyboard": "My typing speed is fast because I use the keyboard efficiently",
-    "software": "I am competent in using Microsoft Office software",
-    "screenreader": "A screenreader is essential for navigating the internet",
-    "braille": "I learned to read using the braille system in school",
-    "typing": "I am seeking a typing related position",
-    "success": "Success requires dedication and consistent practice",
-    "motivation": "I have high motivation to learn new skills",
-    "efficiency": "Typing proficiency ensures high efficiency",
-    "communication": "Strong communication skills are needed for chat support",
-    "technology": "Assistive technology helps visually impaired people work effectively",
-    "challenge": "I enjoy solving puzzles and logical challenges",
-    "dedication": "Dedication and consistent practice are important",
-    "confidence": "My confidence in my skills is very high",
-    "amazing": "This accessibility feature is truly amazing",
-    "support": "I can provide excellent customer support",
-    "document": "Please review the document before printing",
-    "location": "I am trying to find my current location",
-    "internet": "Internet access is required for online work",
-    "navigation": "Website navigation must be simple and clear",
-    "paragraph": "I will type the entire paragraph quickly",
-    "proficiency": "I have high proficiency in multilingual communication",
-    "essential": "Attention to detail is essential for data entry",
-    "accurate": "I ensure fast and accurate typing",
-    "experience": "I have customer interaction experience",
-    "organization": "I wish to contribute to the organization's success",
-    "solution": "The problem solving team found a perfect solution",
-    "applicant": "The job applicant submitted a strong resume",
-    "objective": "My career objective is to work in tech support",
-    "multilingual": "I am fluent making me a multilingual candidate",
-    "approachable": "I am a friendly and approachable person",
-    "customer": "I focus on helping every customer resolve their issues",
-    "service": "I am passionate about customer service",
-    "position": "I am seeking a data entry position",
-    "utilize": "I will utilize my skills effectively",
-    "contribute": "I am eager to contribute to the team",
-    "gujarat": "I am currently living in Gujarat",
-    "make": "I want to make me happy"
-};
-
-const words = Object.keys(wordsWithUsage);
-
-let curr = "";
-let madeWrong = false;
-let streak = 0;
-let lastF2Press = 0;
-const F2_TIMEOUT = 500; // 500ms for double F2 detection
-
-const practiceInput = document.getElementById('practiceInput');
-const practiceWord = document.getElementById('practiceWord');
-const feedback = document.getElementById('spellFeedback');
-const nextWordBtn = document.getElementById('nextWordBtn');
-const listenBtn = document.getElementById('listenBtn');
-const spellBtn = document.getElementById('spellBtn');
-
-function nextWord(){
-  madeWrong = false;
-  streak = 0;
-  curr = words[Math.floor(Math.random()*words.length)];
-  let usage = wordsWithUsage[curr];
-
-  practiceWord.innerText = `🔊 Word ${curr} | 📖 Usage ${usage}`;
-  feedback.innerText = "Word loaded Type the word";
-  practiceInput.value = "";
-  practiceInput.focus();
-
-  // 1 Speak word and usage
-  speak(`The word is ${curr}`);
-  setTimeout(() => speak(`Use in a sentence ${usage}`, 'en-IN', 0.8), 1500);
-}
-
-function spellOut(word){
-  if(!word) return;
-  const s = word.toUpperCase().split('').join(' '); // Using space instead of dot for no punctuation
-  speak("Spelling " + s);
-  feedback.innerText = `Spelling ${word.toUpperCase().split('').join(' · ')}`;
-}
-
-function onType(e){
-  const typed = practiceInput.value.trim().toLowerCase();
-  
-  if(e.type === 'keydown'){
-    if(e.key === 'F2'){ 
-      e.preventDefault(); 
-      const now = new Date().getTime();
-
-      if (now - lastF2Press < F2_TIMEOUT) {
-        // Double F2 detected -> Speak the full word
-        speak(curr);
-        feedback.innerText = `🔊 Repeating full word ${curr}`;
-        lastF2Press = 0; // Reset
-      } else {
-        // Single F2 detected -> Spell out the word (letter by letter)
-        spellOut(curr);
-        lastF2Press = now;
-      }
-      return;
-    }
-
-    if(e.key === 'Enter'){ 
-      e.preventDefault();
-      
-      if(!curr) {
-          feedback.innerText = "Press Next to start";
-          speak("Press Next to start");
-          return;
-      }
-      
-      const correctWord = curr.toLowerCase();
-      
-      if(typed === correctWord){
-          // Case 1: Correct on 1st try (madeWrong is false) -> Auto next handled by 'input' listener
-          if(!madeWrong) return; 
-
-          // Case 2: Correct during 3-streak required session
-          streak++;
-          practiceInput.value = "";
-          
-          if(streak >= 3){
-              feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct next word</span>';
-              speak("Excellent Next word");
-              setTimeout(nextWord,700);
-          } else {
-              feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3 Type again</span>`;
-              speak(`Correct ${streak} of 3`);
-          }
-      } else {
-          // Case 3: Wrong word typed
-          madeWrong = true;
-          streak = 0;
-          practiceInput.value = "";
-          feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-          
-          setTimeout(()=> spellOut(curr), 200);
-          setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
-      }
-      return;
-    }
-  }
-
-  // Handle live input checking for instant feedback
-  if(e.type !== 'input') return;
-  if(!curr){ feedback.innerText = "Press Next to start"; return; }
-  
-  const correctWord = curr.toLowerCase();
-
-  // 1 Auto-change on first attempt correct (only works if madeWrong is false)
-  if(!madeWrong && typed === correctWord){
-    feedback.innerHTML = '<span style="color:green">✅ Correct next word</span>';
-    speak("Correct Next word");
-    setTimeout(nextWord, 600);
-    return;
-  }
-
-  // 2 Check for wrong typing (if madeWrong is true, we allow typing partially)
-  if(typed.length > 0 && !correctWord.startsWith(typed)){
-    // Only trigger full error if not already in 3-streak mode OR if they type more than the correct length
-    if(!madeWrong || typed.length > correctWord.length){
-        madeWrong = true;
-        streak = 0;
-        practiceInput.value = "";
-        feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-        
-        // Speak spelling for the wrong word
-        setTimeout(()=> spellOut(curr), 200);
-        setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
-        return;
-    }
-  }
-  
-  // Partial prefix (Live feedback)
-  if(typed.length > 0) {
-      if(madeWrong){
-          feedback.innerText = `Keep typing ${streak}/3 attempts done`;
-      } else {
-          feedback.innerText = `Keep typing`;
-      }
-  } else {
-      feedback.innerText = madeWrong ? `Start typing The word is ${curr}` : `Type the word`;
-  }
-}
-
-// hooks
-nextWordBtn.addEventListener('click', ()=>{ nextWord(); });
-listenBtn.addEventListener('click', ()=>{ if(curr) speak(curr); else nextWord(); });
-spellBtn.addEventListener('click', ()=> spellOut(curr));
-practiceInput.addEventListener('input', onType);
-practiceInput.addEventListener('keydown', onType);
-
-/* ==================== OCR & PDF ==================== */
-if(typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-
-let pdfDoc = null;
-let totalPages = 0;
-
-const fileInput = document.getElementById('fileInput');
-const processBtn = document.getElementById('processBtn');
-const docOutput = document.getElementById('doc-output');
-const pdfControls = document.getElementById('pdf-controls');
-const pageNumberInput = document.getElementById('pageNumberInput');
-const goPageBtn = document.getElementById('goPageBtn');
-const pageInfo = document.getElementById('pageInfo');
-
-async function displayPdfPage(pageNum){
-  if(!pdfDoc){ docOutput.innerText = 'No PDF loaded'; return; }
-  if(pageNum < 1 || pageNum > totalPages){ docOutput.innerText = 'Invalid page number'; return; }
-  docOutput.innerText = 'Loading page...';
-  try{
-    const page = await pdfDoc.getPage(pageNum);
-    const txt = await page.getTextContent();
-    // Remove punctuation from extracted text
-    const pageText = txt.items.map(i=>i.str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")).join('
