@@ -1,3 +1,8 @@
+
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -394,49 +399,79 @@ practiceInput.addEventListener('input', onType);
 practiceInput.addEventListener('keydown', onType);
 
 /* ==================== Typing Tutor (Updated Logic for Sequences) ==================== */
+
+// Helper to create the long drill sequence with forward and backward runs
+function createDrill(keys, repetitions = 6) {
+    // Keys are passed as a copy using spread [...] to prevent modification of the original array
+    const forward = keys.join(' ');
+    const reversed = [...keys].reverse().join(' ');
+    // Creates a pattern like: 'a s d f ... ; ; ... f d s a ' with a space at the end
+    const basicSequence = forward + ' ' + reversed + ' '; 
+    return basicSequence.repeat(repetitions);
+}
+
+// Define key sets
+const homeKeys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';'];
+const bottomKeys = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'];
+const upperKeys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'];
+const numberKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
+
+// Updated Exercises Array
 const tutorExercises = [
-    // Phase 1: Home Row Drills (Drills are long sequences for repetition)
-    { type: 'drill', name: 'Home Row Drill', instruction: 'Exercise 1: Home Row Keys. Press A your left hand little finger. Type this sequence 3 times: a s d f g h j k l ; ; l k j h g f d s a ', 
-      sequence: 'a s d f g h j k l ; ; l k j h g f d s a a s d f g h j k l ; ; l k j h g f d s a a s d f g h j k l ; ; l k j h g f d s a ' },
-    
+    // Phase 1: Home Row Drills
+    { type: 'drill', name: 'Exercise 1: Home Row Drill (6x repetition)', 
+      instruction: 'Home Row Keys. Type the sequence 6 times: a s d f g h j k l ; ...', 
+      sequence: createDrill([...homeKeys], 6) }, 
+
     // Phase 2: Bottom Row Drills
-    { type: 'drill', name: 'Bottom Row Drill', instruction: 'Exercise 2: Bottom Row Keys. Type the Bottom Row sequence: z x c v b n m , . / / . , m n b v c x z ',
-      sequence: 'z x c v b n m , . / / . , m n b v c x z z x c v b n m , . / / . , m n b v c x z ' },
+    { type: 'drill', name: 'Exercise 2: Bottom Row Drill (6x repetition)', 
+      instruction: 'Bottom Row Keys. Type the sequence 6 times: z x c v b n m , . / ...',
+      sequence: createDrill([...bottomKeys], 6) }, 
 
     // Phase 3: Upper Row Drills
-    { type: 'drill', name: 'Upper Row Drill', instruction: 'Exercise 3: Upper Row Keys. Type the Upper Row sequence: q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q ',
-      sequence: 'q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q q w e r t y u i o p [ ] \\ \\ ] [ p o i u y t r e w q ' },
+    { type: 'drill', name: 'Exercise 3: Upper Row Drill (6x repetition)', 
+      instruction: 'Upper Row Keys. Type the sequence 6 times: q w e r t y u i o p [ ] \\ ...',
+      sequence: createDrill([...upperKeys], 6) },
 
     // Phase 4: Number Row Drills
-    { type: 'drill', name: 'Number Row Drill', instruction: 'Exercise 4: Number Row Keys. Type the Number Row sequence: 1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 ',
-      sequence: '1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 1 2 3 4 5 6 7 8 9 0 - = = - 0 9 8 7 6 5 4 3 2 1 ' },
-
-    // Phase 5: All Keys Drill
-    { type: 'drill', name: 'All Keys Mix Drill', instruction: 'Exercise 5: All Keys Mix. Type the mixed sequence: q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ ',
-      sequence: 'q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ q z 1 a s d 2 3 f v 4 c 5 g r t 6 y 7 h 8 j 9 k 0 l p ; - / [ ] = \\ ' },
+    { type: 'drill', name: 'Exercise 4: Number Row Drill (6x repetition)', 
+      instruction: 'Number Row Keys. Type the sequence 6 times: 1 2 3 4 5 6 7 8 9 0 - = ...',
+      sequence: createDrill([...numberKeys], 6) },
+      
+    // Phase 5: Random Key Drill (New mode: single-key input)
+    { type: 'random_key', name: 'Exercise 5: All Three Rows Random Key (25 Keys)', 
+      instruction: 'Listen for the spoken key and press it. (25 random keys)',
+      sequence: [...homeKeys, ...bottomKeys, ...upperKeys].join(' ') // Key pool
+    },
       
     // Phase 6: Home Row Words
-    { type: 'word', name: 'Home Row Words', instruction: 'Exercise 6: Home Row Words (30+ words). Type these words: dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ',
-      sequence: 'dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ' },
+    { type: 'word', name: 'Exercise 6: Home Row Words (30+ words)', 
+      instruction: 'Home Row Words (like: dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had)',
+      sequence: 'dad fad sad had has hash dash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ' },
 
-    // Phase 7: Upper Row Words
-    { type: 'word', name: 'Upper Row Words', instruction: 'Exercise 7: Upper Row Words (30+ words). Type these words: quiet wire tree pure type put root your poor wire riot out top tour true were wet up oil pipe year open tear trip your out port power route ',
-      sequence: 'quiet wire tree pure type put root your poor wire riot out top tour true were wet up oil pipe year open tear trip your out port power route ' },
+    // Phase 7: Bottom Row Words
+    { type: 'word', name: 'Exercise 7: Bottom Row Words (30+ words)', 
+      instruction: 'Bottom Row Words (like: zebra zip wax box cvbnm base calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box)', 
+      sequence: 'zebra zip wax box cvbnm base calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box ' },
 
-    // Phase 8: Bottom Row Words
-    { type: 'word', name: 'Bottom Row Words', instruction: 'Exercise 8: Bottom Row Words (30+ words). Type these words: zebra comma value vice bank nave men max cat base mix maze cover box zip calm back vice next man vex cut come mix zero ban cave ',
-      sequence: 'zebra comma value vice bank nave men max cat base mix maze cover box zip calm back vice next man vex cut come mix zero ban cave ' },
-    
-    // Phase 9: Home + Upper Row Mix
-    { type: 'word', name: 'Home & Upper Words', instruction: 'Exercise 9: Home and Upper Row Words. Type these mixed words: eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ',
-      sequence: 'eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ' },
+    // Phase 8: Upper Row Words
+    { type: 'word', name: 'Exercise 8: Upper Row Words (30+ words)', 
+      instruction: 'Upper Row Words (like: quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route)',
+      sequence: 'quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route ' },
 
-    // Phase 10: Home + Bottom Row Mix
-    { type: 'word', name: 'Home & Bottom Words', instruction: 'Exercise 10: Home and Bottom Row Words. Type these mixed words: bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base ',
+    // Phase 9: Home + Bottom Row Words
+    { type: 'word', name: 'Exercise 9: Home & Bottom Row Words (Mixed)', 
+      instruction: 'Home and Bottom Row Words (like: bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base)',
       sequence: 'bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base ' },
     
-    // Phase 11: All Lines Words (Comprehensive Mix)
-    { type: 'word', name: 'All Lines Mix Words', instruction: 'Exercise 11: Comprehensive Mix Words. Type these words: quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen ',
+    // Phase 10: Home + Upper Row Words
+    { type: 'word', name: 'Exercise 10: Home & Upper Row Words (Mixed)', 
+      instruction: 'Home and Upper Row Words (like: eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low)',
+      sequence: 'eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ' },
+
+    // Phase 11: All Rows Words (Comprehensive Mix)
+    { type: 'word', name: 'Exercise 11: All Rows Mix Words (Comprehensive)', 
+      instruction: 'All Rows Words (like: quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen)',
       sequence: 'quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen ' }
 ];
 
@@ -451,25 +486,84 @@ const tutorInput = document.getElementById('tutorInput');
 const tutorBtn = document.getElementById('tutorBtn');
 const tutorTextDisplay = document.getElementById('tutorTextDisplay');
 
+
+// Global state for random key mode
+let requiredRandomKey = '';
+let randomKeySequence = [];
+let randomKeyIndex = 0;
+const RANDOM_KEY_TOTAL = 25; // Limiting the random keys to 25
+
+// --- Logic for Random Key Mode (Exercise 5) ---
+
+function generateRandomKeys(keys) {
+    let pool = keys.split(' ').filter(k => k.length > 0);
+    const result = [];
+    for(let i=0; i<RANDOM_KEY_TOTAL; i++) {
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        result.push(pool[randomIndex]);
+    }
+    return result;
+}
+
+function startRandomKeyMode(keys) {
+    tutorInput.value = '';
+    tutorInput.disabled = false;
+    tutorInput.focus();
+    
+    randomKeySequence = generateRandomKeys(keys);
+    randomKeyIndex = 0;
+    requiredRandomKey = randomKeySequence[0];
+
+    updateRandomKeyDisplay();
+    
+    speak(`Random key drill started. Press the key: ${requiredRandomKey}`, 'en-IN', 1.2);
+}
+
+function updateRandomKeyDisplay() {
+    tutorTextDisplay.innerHTML = `Keys Completed: ${randomKeyIndex}/${RANDOM_KEY_TOTAL}<br>`;
+    
+    let displayHtml = '';
+    for(let i=0; i<randomKeySequence.length; i++) {
+        const key = randomKeySequence[i];
+        // For shift keys, show the symbol not the word 'shift'
+        const displayKey = (key === ';') ? ';' : (key === ',') ? ',' : (key === '.') ? '.' : (key === '/') ? '/' : (key === '[') ? '[' : (key === ']') ? ']' : (key === '\\') ? '\\' : key;
+        
+        if (i < randomKeyIndex) {
+            displayHtml += `<span class="highlight-typed-tutor-correct">${displayKey}</span>`;
+        } else if (i === randomKeyIndex) {
+            displayHtml += `<span class="highlight-current-tutor">${displayKey}</span>`;
+        } else {
+            displayHtml += displayKey;
+        }
+        displayHtml += ' ';
+    }
+    tutorTextDisplay.innerHTML += `<div style="font-size: 1.5rem; letter-spacing: 5px; white-space: pre-wrap;">${displayHtml}</div>`;
+}
+
+// --- Main Tutor Functions ---
+
 function updateTutorTextDisplay() {
+    // Only for 'drill' and 'word' types
     const sequence = tutorCurrentSequence;
     const typedPart = sequence.substring(0, tutorCurrentIndex);
     const currentPart = sequence[tutorCurrentIndex] || '';
     const remainingPart = sequence.substring(tutorCurrentIndex + 1);
 
     let typedHtml = '';
-    // This is a simple visual check, we'll rely on the keydown/input handler for logic
     for (let i = 0; i < typedPart.length; i++) {
-        if (tutorInput.value.length > i && tutorInput.value[i] !== typedPart[i]) {
-            typedHtml += `<span class="highlight-typed-tutor-error">${typedPart[i]}</span>`;
-        } else {
+        // Simple comparison: check if the character in the input matches the required character
+        const charMatches = tutorInput.value.length > i && tutorInput.value[i] === typedPart[i];
+        
+        if (charMatches) {
             typedHtml += `<span class="highlight-typed-tutor-correct">${typedPart[i]}</span>`;
+        } else {
+             // This branch mostly handles the visual if the user types ahead/incorrectly and the input hasn't been reverted yet
+            typedHtml += `<span class="highlight-typed-tutor-error">${typedPart[i]}</span>`;
         }
     }
 
     const currentHtml = `<span class="highlight-current-tutor">${currentPart}</span>`;
     
-    // Show only the correct typed portion and the remaining text
     tutorTextDisplay.innerHTML = `${typedHtml}${currentHtml}${remainingPart}`;
 }
 
@@ -479,6 +573,7 @@ function startTutor() {
     tutorInput.value = '';
     tutorInput.disabled = false;
     tutorBtn.innerText = 'Stop Tutor';
+    tutorInput.focus();
     loadTutorExercise(currentTutorExIndex);
 }
 
@@ -507,44 +602,47 @@ function loadTutorExercise(index) {
     tutorCurrentIndex = 0;
     tutorInput.value = '';
     tutorErrors = 0;
-    tutorInput.focus();
     
-    tutorStatus.innerText = `अभ्यास ${index + 1}/${tutorExercises.length}: ${exercise.name} - ${exercise.instruction}`;
-    
-    updateTutorTextDisplay();
+    tutorStatus.innerText = `${exercise.name}: ${exercise.instruction}`;
 
-    // The long initial spoken instruction
-    speak(`अभ्यास ${index + 1} शुरू ${exercise.name}। ${exercise.instruction}`, 'hi-IN', 0.85);
-
-    // Give a small cue for the first key after the main instruction
-    setTimeout(() => {
-        const firstChar = tutorCurrentSequence[0];
-        speak(`पहला अक्षर है ${firstChar}`, 'hi-IN', 1.0);
-    }, 5000);
+    if (exercise.type === 'random_key') {
+        startRandomKeyMode(exercise.sequence);
+    } else {
+        tutorInput.disabled = false;
+        tutorInput.focus();
+        updateTutorTextDisplay();
+        // Speak the main instruction and then the first key/word cue
+        speak(`अभ्यास ${index + 1} शुरू ${exercise.name}। ${exercise.instruction}`, 'hi-IN', 0.85);
+        setTimeout(() => {
+            if (exercise.type === 'drill') {
+                const firstChar = tutorCurrentSequence[0];
+                speak(`पहला अक्षर है ${firstChar}`, 'hi-IN', 1.0);
+            } else if (exercise.type === 'word') {
+                const firstWord = tutorCurrentSequence.split(' ')[0];
+                speak(`पहला शब्द है ${firstWord}`, 'en-IN', 1.0);
+            }
+        }, 5000);
+    }
 }
 
-tutorInput.addEventListener('input', (e) => {
-    if (!isTutorActive) return;
+// --- Key Event Listeners ---
 
-    const typedValue = tutorInput.value;
-    const requiredChar = tutorCurrentSequence[tutorCurrentIndex];
+// 1. Handle Random Key Mode (Exercise 5) using keydown for single-char check
+tutorInput.addEventListener('keydown', (e) => {
+    if (!isTutorActive || tutorExercises[currentTutorExIndex].type !== 'random_key') return;
     
-    // Check if the typed length exceeds the required index, which only happens on an error
-    if (typedValue.length > tutorCurrentIndex + 1) {
-        // This is a case of extra characters being typed after an error was not fixed, we ignore it.
-        tutorInput.value = typedValue.substring(0, tutorCurrentIndex + 1);
-        return;
-    }
+    const typedKey = e.key.toLowerCase();
     
-    // Check if the newly typed character is correct
-    const lastTypedChar = typedValue[tutorCurrentIndex];
-    
-    if (lastTypedChar === requiredChar) {
-        // Correct character typed
-        tutorCurrentIndex++;
-        tutorInput.value = tutorCurrentSequence.substring(0, tutorCurrentIndex); // Auto-corrects the input visually
+    // Allow special keys like Shift, Ctrl, Alt, F2, Tab, Escape, Enter to be pressed without consequence
+    if (['shift', 'control', 'alt', 'meta', 'f2', 'tab', 'escape', 'enter'].includes(typedKey)) return;
+
+    e.preventDefault(); // Stop the key from being typed into the input field
+
+    // Check if the pressed key is the required key
+    if (typedKey === requiredRandomKey) {
+        randomKeyIndex++;
         
-        if (tutorCurrentIndex === tutorCurrentSequence.length) {
+        if (randomKeyIndex >= randomKeySequence.length) {
             // Exercise complete
             tutorStatus.innerText = `✅ सही! ${tutorExercises[currentTutorExIndex].name} पूरा हुआ। गलतियाँ: ${tutorErrors}। अगले अभ्यास पर जा रहे हैं।`;
             speak(`सही! अभ्यास पूरा हुआ।`, 'hi-IN');
@@ -553,29 +651,69 @@ tutorInput.addEventListener('input', (e) => {
             return;
         }
 
-        // Speak the next key only if it's not a space
-        const nextChar = tutorCurrentSequence[tutorCurrentIndex];
-        if (nextChar !== ' ') {
-            speak(`अगला ${nextChar}`, 'hi-IN', 1.2);
-        } else {
-            // If the next is a space, speak the next word's first character or word
-            const nextWordMatch = tutorCurrentSequence.substring(tutorCurrentIndex + 1).match(/\S+/);
-            if (nextWordMatch) {
-                const nextWord = nextWordMatch[0];
-                speak(nextWord, 'en-IN', 1.2); 
-            }
-        }
+        // Advance to next key
+        requiredRandomKey = randomKeySequence[randomKeyIndex];
+        tutorStatus.innerText = `✅ Good! Next key: ${requiredRandomKey}`;
+        speak(`Good`, 'en-IN', 1.5);
+        setTimeout(() => speak(requiredRandomKey, 'en-IN', 1.5), 500);
     } else {
-        // Incorrect character typed (user made a mistake)
         tutorErrors++;
-        tutorStatus.innerText = `❌ ग़लत! आपने '${lastTypedChar}' टाइप किया। सही अक्षर '${requiredChar}' है।`;
+        tutorStatus.innerText = `❌ Error! You pressed '${typedKey}'. Correct key is: '${requiredRandomKey}'`;
+        speak(`Error press ${requiredRandomKey}`, 'en-IN', 1.5);
+    }
+
+    updateRandomKeyDisplay();
+});
+
+// 2. Handle Drill/Word Modes using input for sequence check
+tutorInput.addEventListener('input', (e) => {
+    if (!isTutorActive || tutorExercises[currentTutorExIndex].type === 'random_key') return;
+
+    const typedValue = tutorInput.value;
+    const requiredChar = tutorCurrentSequence[tutorCurrentIndex];
+    
+    // Error condition: User typed a wrong character
+    if (typedValue.length > 0 && typedValue[typedValue.length - 1] !== requiredChar) {
+        tutorErrors++;
+        tutorStatus.innerText = `❌ ग़लत! आपने '${typedValue[typedValue.length - 1]}' टाइप किया। सही अक्षर '${requiredChar}' है।`;
         
         // Revert input to the correct position (before the error)
         tutorInput.value = typedValue.substring(0, tutorCurrentIndex);
 
         speak(`ग़लत! सही अक्षर है ${requiredChar}`, 'hi-IN');
+        updateTutorTextDisplay();
+        return;
     }
+    
+    // Correct character typed
+    if (typedValue.length === tutorCurrentIndex + 1 && typedValue[tutorCurrentIndex] === requiredChar) {
+        tutorCurrentIndex++;
+        
+        if (tutorCurrentIndex === tutorCurrentSequence.length) {
+            // Exercise complete
+            tutorStatus.innerText = `✅ सही! ${tutorExercises[currentTutorExIndex].name} पूरा हुआ। गलतियाँ: ${tutorErrors}। अगले अभ्यास पर जा रहे हैं।`;
+            speak(`सही! अभ्यास पूरा हुआ।`, 'hi-IN');
+            currentTutorExIndex++;
+            tutorInput.value = ''; // Clear for next exercise
+            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
+            return;
+        }
 
+        // Speak the next key/word cue
+        const nextChar = tutorCurrentSequence[tutorCurrentIndex];
+        if (nextChar === ' ') {
+            // If the next is a space, speak the next word/key
+            const nextSegmentMatch = tutorCurrentSequence.substring(tutorCurrentIndex + 1).match(/\S+/);
+            if (nextSegmentMatch) {
+                const nextSegment = nextSegmentMatch[0];
+                speak(nextSegment, 'en-IN', 1.2); 
+            }
+        } else {
+             // Speak the next key only if it's not a space
+            speak(`अगला ${nextChar}`, 'hi-IN', 1.2);
+        }
+    }
+    
     updateTutorTextDisplay();
 });
 
