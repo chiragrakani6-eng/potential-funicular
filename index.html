@@ -429,4 +429,372 @@ processBtn.addEventListener('click', async ()=>{
   if(f.type === 'application/pdf'){
     try{
       const ab = await f.arrayBuffer();
-      // Using maxImageSize of 1024 to potentially improve performance on la
+      // Using maxImageSize of 1024 to potentially improve performance on large PDFs, though accuracy improvement is primarily library-dependent
+      pdfDoc = await pdfjsLib.getDocument({data:ab, maxImageSize: 1024}).promise; 
+      totalPages = pdfDoc.numPages;
+      pdfControls.style.display = 'inline-flex';
+      pageNumberInput.max = totalPages;
+      displayPdfPage(1);
+    }catch(e){
+      console.error(e);
+      docOutput.innerText = 'PDF read error';
+    }
+    return;
+  }
+  // Image -> OCR
+  if(f.type.startsWith('image/')){
+    if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded'; return; }
+    try{
+      // Tesseract Configuration for Accuracy
+      const worker = Tesseract.createWorker({ 
+          logger: m => console.log(m),
+          // Adding hints to improve recognition for English/Indian context
+          preserveInterwordSpaces: true 
+      });
+      await worker.load();
+      await worker.loadLanguage('eng+hin+guj');
+      await worker.initialize('eng+hin+guj');
+      // Setting OEM (OCR Engine Mode) to 1 for better accuracy (LSTM only)
+      await worker.setParameters({
+        tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
+        tessedit_pageseg_mode: Tesseract.PSM.AUTO 
+      });
+      
+      const { data: { text } } = await worker.recognize(f);
+      await worker.terminate();
+      
+      // Remove punctuation from OCR output
+      const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); 
+      docOutput.innerText = cleanedText || 'No text recognized';
+      autoReadOCR(cleanedText || '');
+    }catch(err){
+      console.error(err);
+      docOutput.innerText = 'OCR failed Try a clearer image';
+    }
+    return;
+  }
+  docOutput.innerText = 'Unsupported file type';
+});
+
+/* ======== language detection & reading ======== */
+function detectLang(text){
+  if(!text) return 'en-IN';
+  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN';
+  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN';
+  if(/[A-Za-z]/.test(text)) return 'en-IN';
+  return 'en-IN';
+}
+
+function speakLongText(text, lang){
+  if(!('speechSynthesis' in window)){ document.getElementById('readStatus').innerText = 'Speech not supported'; return; }
+  const forced = document.getElementById('forceLang').value;
+  const useLang = forced || lang || detectLang(text);
+  document.getElementById('readStatus').innerText = `Reading ${useLang}`;
+  
+  const cleaned = text.replace(/\s+/g,' ').trim();
+  const chunkSize = 300;
+  const chunks = [];
+  let i = 0;
+  while(i < cleaned.length){
+    let part = cleaned.slice(i, i + chunkSize);
+    let cutPoint = i + chunkSize;
+    if (cleaned.length > i + chunkSize) {
+        let lastSpace = cleaned.lastIndexOf(' ', i + chunkSize);
+        if (lastSpace > i + chunkSize - 50) { 
+            cutPoint = lastSpace;
+        }
+    }
+    chunks.push(cleaned.slice(i, cutPoint).trim());
+    i = cutPoint;
+  }
+  let idx = 0;
+  function playChunk(){
+    if(idx >= chunks.length){ document.getElementById('readStatus').innerText = 'Read complete'; return; }
+    const u = new SpeechSynthesisUtterance(chunks[idx]);
+    u.lang = useLang;
+    u.rate = (useLang === 'en-IN')?0.95:0.9;
+    u.onend = ()=>{ idx++; setTimeout(playChunk, 200); };
+    u.onerror = ()=>{ idx++; setTimeout(playChunk, 200); };
+    speechSynthesis.speak(u);
+  }
+  try{ speechSynthesis.cancel(); }catch(e){}
+  playChunk();
+}
+
+document.getElementById('readDoc').addEventListener('click', ()=>{
+  const text = docOutput.innerText || '';
+  if(!text.trim()){ document.getElementById('readStatus').innerText = 'No text to read'; return; }
+  const lang = detectLang(text);
+  speakLongText(text, lang);
+});
+document.getElementById('stopRead').addEventListener('click', ()=>{ try{ speechSynthesis.cancel(); }catch(e){} document.getElementById('readStatus').innerText = 'Stopped'; });
+
+function autoReadOCR(text){
+  if(!text || !text.trim()) return;
+  const auto = document.getElementById('autoLang').checked;
+  const forced = document.getElementById('forceLang').value;
+  if(!auto && !forced) return;
+  const lang = forced || detectLang(text);
+  setTimeout(()=> speakLongText(text, lang), 300);
+}
+
+/* ==================== Location ==================== */
+const locBtn = document.getElementById('locBtn');
+const locOut = document.getElementById('locationOutput');
+locBtn.addEventListener('click', ()=>{
+  locOut.innerText = 'Locating...';
+  if(!navigator.geolocation){ locOut.innerText = 'Geolocation not supported by this browser'; return; }
+  
+  // High accuracy and timeout settings for better performance
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 10000, // 10 seconds
+    maximumAge: 0
+  };
+  
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat = pos.coords.latitude.toFixed(6);
+    const lon = pos.coords.longitude.toFixed(6);
+    // Fixed the Google Maps URL to the correct format
+    const maps = `https://maps.google.com/?q=${lat},${lon}`;
+    locOut.innerHTML = `Lat ${lat} Lon ${lon} — <a href="${maps}" target="_blank">Open in Google Maps</a>`;
+    speak(`Location found Latitude ${lat} Longitude ${lon}`);
+  }, err=>{
+    let msg = 'An unknown error occurred';
+    if(err.code === 1) msg = 'Permission denied Please allow location access in browser settings';
+    else if(err.code === 2) msg = 'Position unavailable Unable to determine location';
+    else if(err.code === 3) msg = 'Request timed out';
+    
+    locOut.innerText = `Error ${msg}`;
+    speak(`Location error ${msg}`);
+  }, options);
+});
+
+/* ==================== Games ==================== */
+// Hand Cricket Logic
+const hcStatus = document.getElementById('hcStatus');
+const hcInput = document.getElementById('hcInput');
+const hcPlay = document.getElementById('hcPlay');
+const hcReset = document.getElementById('hcReset');
+const handBtn = document.getElementById('handBtn');
+const handPanel = document.getElementById('handPanel');
+
+let hcTarget = 0;
+let hcScore = 0;
+let hcState = 'batting'; // 'batting' or 'bowling'
+
+handBtn.addEventListener('click', ()=>{
+    const isVisible = handPanel.style.display === 'block';
+    handPanel.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) resetHandCricket();
+});
+
+function resetHandCricket(){
+    hcTarget = 0;
+    hcScore = 0;
+    hcState = 'batting';
+    hcStatus.innerText = 'You are batting Enter a number 1-6 to score';
+    hcInput.value = '';
+    speak('Hand Cricket reset You are batting Enter a number 1 to 6');
+}
+
+hcReset.addEventListener('click', resetHandCricket);
+
+hcPlay.addEventListener('click', ()=>{
+    if(hcState === 'finished') { speak('Game finished Please reset'); return; }
+    const playerRun = parseInt(hcInput.value);
+    if (isNaN(playerRun) || playerRun < 1 || playerRun > 6) {
+        hcStatus.innerText = 'Invalid input Enter a number between 1 and 6';
+        speak('Invalid input');
+        return;
+    }
+
+    const computerRun = Math.floor(Math.random() * 6) + 1;
+    hcInput.value = '';
+
+    if (hcState === 'batting') {
+        if (playerRun === computerRun) {
+            hcStatus.innerText = `Out You played ${playerRun} Computer bowled ${computerRun} Your total score is ${hcScore} Now computer is batting You are bowling Computer needs ${hcScore + 1} to win`;
+            hcTarget = hcScore + 1;
+            hcState = 'bowling';
+            speak(`Out Your score is ${hcScore} Computer needs ${hcTarget} to win You are bowling Enter a number 1 to 6`);
+        } else {
+            hcScore += playerRun;
+            hcStatus.innerText = `You scored ${playerRun} Computer bowled ${computerRun} Total score ${hcScore}`;
+            speak(`You scored ${playerRun} Total score ${hcScore}`);
+        }
+    } else if (hcState === 'bowling') {
+        if (playerRun === computerRun) {
+            hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} You won by ${hcTarget - 1 - hcScore} runs`;
+            speak(`Out Computer score ${hcScore} You won`);
+            hcState = 'finished';
+        } else {
+            hcScore += computerRun;
+            if (hcScore >= hcTarget) {
+                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Target was ${hcTarget - 1} Computer won`;
+                speak(`Computer won with score ${hcScore}`);
+                hcState = 'finished';
+            } else {
+                const required = hcTarget - hcScore - 1;
+                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Computer needs ${required} more runs to win`;
+                speak(`Computer scored ${computerRun} Needs ${required} more runs`);
+            }
+        }
+    }
+});
+
+// Snakes & Ladders (Simplified)
+const snlStatus = document.getElementById('snlStatus');
+const snlRoll = document.getElementById('snlRoll');
+const snlReset = document.getElementById('snlReset');
+const snlDice = document.getElementById('snlDice');
+const snlBtn = document.getElementById('snlBtn');
+const snlPanel = document.getElementById('snlPanel');
+
+let snlPosition = 1;
+const snlJumps = {
+    4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91, // Ladders
+    17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 // Snakes
+};
+
+snlBtn.addEventListener('click', ()=>{
+    const isVisible = snlPanel.style.display === 'block';
+    snlPanel.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) resetSnakesLadders();
+});
+
+function resetSnakesLadders(){
+    snlPosition = 1;
+    snlStatus.innerText = 'Your position is 1 Roll the dice to begin First to 100 wins';
+    snlDice.innerText = '-';
+    speak('Snakes and Ladders reset Your position is 1');
+}
+snlReset.addEventListener('click', resetSnakesLadders);
+
+snlRoll.addEventListener('click', ()=>{
+    if(snlPosition >= 100) return;
+    const roll = Math.floor(Math.random() * 6) + 1;
+    snlDice.innerText = roll;
+    
+    let newPosition = snlPosition + roll;
+
+    if (newPosition > 100) {
+        snlStatus.innerText = `You rolled ${roll} but need exactly ${100 - snlPosition} to win You stay at ${snlPosition}`;
+        speak(`You rolled ${roll} but cannot move`);
+        return;
+    }
+    
+    let jumpMsg = '';
+    if (snlJumps[newPosition]) {
+        const finalPosition = snlJumps[newPosition];
+        if (finalPosition > newPosition) {
+            jumpMsg = ` Wow a Ladder from ${newPosition} to ${finalPosition}`;
+        } else {
+            jumpMsg = ` Oh no a Snake from ${newPosition} down to ${finalPosition}`;
+        }
+        newPosition = finalPosition;
+    }
+    
+    snlPosition = newPosition;
+
+    if (snlPosition === 100) {
+        snlStatus.innerText = `🎉 You rolled ${roll} and landed on 100 You win`;
+        speak(`You rolled ${roll} and landed on 100 You win`);
+        return;
+    }
+    
+    snlStatus.innerText = `You rolled ${roll} Your new position is ${snlPosition}${jumpMsg}`;
+    speak(`You rolled ${roll} New position ${snlPosition} ${jumpMsg}`);
+});
+
+// Ludo Race (Simplified one player vs three AI)
+const ludoStatus = document.getElementById('ludoStatus');
+const ludoRoll = document.getElementById('ludoRoll');
+const ludoReset = document.getElementById('ludoReset');
+const ludoScores = document.getElementById('ludoScores');
+const ludoBtn = document.getElementById('ludoBtn');
+const ludoPanel = document.getElementById('ludoPanel');
+
+let ludoPositions = { player: 0, ai1: 0, ai2: 0, ai3: 0 };
+const LUDO_END = 50;
+let ludoTurn = 'player';
+let ludoGameActive = true;
+
+ludoBtn.addEventListener('click', ()=>{
+    const isVisible = ludoPanel.style.display === 'block';
+    ludoPanel.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) resetLudo();
+});
+
+function resetLudo(){
+    ludoPositions = { player: 0, ai1: 0, ai2: 0, ai3: 0 };
+    ludoTurn = 'player';
+    ludoGameActive = true;
+    ludoStatus.innerText = 'Ludo Race reset First to 50 wins Your turn';
+    updateLudoScores();
+    speak('Ludo Race reset Your turn');
+}
+ludoReset.addEventListener('click', resetLudo);
+
+function updateLudoScores(){
+    ludoScores.innerHTML = `Player ${ludoPositions.player} | AI 1 ${ludoPositions.ai1} | AI 2 ${ludoPositions.ai2} | AI 3 ${ludoPositions.ai3}`;
+}
+
+function checkLudoWin(player){
+    if (ludoPositions[player] >= LUDO_END) {
+        ludoStatus.innerText = `${player.toUpperCase()} wins`;
+        speak(`${player.toUpperCase()} wins`);
+        ludoGameActive = false;
+        return true;
+    }
+    return false;
+}
+
+function rollLudoDice(){
+    return Math.floor(Math.random() * 6) + 1;
+}
+
+function handleAITurn(ai){
+    if(!ludoGameActive) return;
+    const roll = rollLudoDice();
+    ludoPositions[ai] += roll;
+    
+    if (checkLudoWin(ai)) return;
+    
+    ludoStatus.innerText = `It was ${ai.toUpperCase()}'s turn They rolled ${roll} New position ${ludoPositions[ai]} Your turn`;
+    updateLudoScores();
+    speak(`${ai.toUpperCase()} rolled ${roll} Your turn`);
+    
+    if(ludoGameActive) ludoTurn = 'player';
+}
+
+ludoRoll.addEventListener('click', ()=>{
+    if (!ludoGameActive || ludoTurn !== 'player') return;
+
+    const roll = rollLudoDice();
+    ludoPositions.player += roll;
+    
+    if (checkLudoWin('player')) return;
+
+    ludoStatus.innerText = `You rolled ${roll} Your new position is ${ludoPositions.player}`;
+    updateLudoScores();
+    speak(`You rolled ${roll} Your new position is ${ludoPositions.player}`);
+
+    ludoTurn = 'ai1';
+    setTimeout(() => handleAITurn('ai1'), 1500);
+    setTimeout(() => { if(ludoGameActive) handleAITurn('ai2'); }, 3000);
+    setTimeout(() => { if(ludoGameActive) handleAITurn('ai3'); }, 4500);
+});
+
+// Initial setup on load
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the first word for typing practice
+    nextWord(); 
+    // Reset games
+    resetHandCricket();
+    resetSnakesLadders();
+    resetLudo();
+});
+</script>
+</body>
+</html>
