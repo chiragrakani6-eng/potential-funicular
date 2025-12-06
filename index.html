@@ -20,15 +20,19 @@
     @media(min-width:900px){.grid{grid-template-columns:320px 1fr}}
     .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
     h2{margin:0 0 8px 0}
+    h3{margin:8px 0 6px 0}
     .small{font-size:0.95rem;color:var(--muted)}
     .btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
     .btn-alt{background:#3b82f6}
     .output{background:#fafafa;padding:12px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap}
     .typing-controls{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
-    input[type="text"], input[type="number"], textarea{padding:10px;border-radius:6px;border:1px solid #ddd;width:100%}
+    input[type="text"], input[type="number"], textarea, select{padding:10px;border-radius:6px;border:1px solid #ddd;width:100%}
     footer{padding:14px;text-align:center;color:var(--muted)}
     a.social{color:var(--accent);text-decoration:none;margin-right:8px}
     .danger{background:#c0392b}
+    /* Typing specific styles */
+    .typing-box{padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px}
+    #wpmText{line-height:1.6;font-size:1.1rem;margin-bottom:8px}
   </style>
 </head>
 <body>
@@ -68,20 +72,85 @@
       </aside>
 
       <section>
-        <article class="card" id="typing-card">
+        <article class="card" id="typing-tutor-card">
+          <h2>Typing Tutor Key Placement</h2>
+          <p class="small">10 exercises to practice home row keys. The tool will speak the required key and finger position.</p>
+          <div id="tutorPanel">
+            <div id="tutorStatus" class="typing-box">Press Start Tutor to begin</div>
+            <input id="tutorInput" type="text" placeholder="Press the required key or type the sequence" aria-label="Typing Tutor Input" disabled>
+          </div>
+          <div class="typing-controls">
+            <button id="tutorBtn" class="btn">▶ Start Tutor</button>
+          </div>
+        </article>
+        
+        <article class="card" style="margin-top:12px" id="wpm-card">
+          <h2>Typing WPM Test</h2>
+          <p class="small">Type the highlighted text as fast and accurately as possible to calculate your WPM score.</p>
+          
+          <div id="wpmText" class="typing-box">Click Start WPM Test to load the paragraph</div>
+          <input id="wpmInput" type="text" placeholder="Start typing here" aria-label="WPM Test Input" disabled>
+          
+          <div class="typing-controls">
+            <button id="wpmStartBtn" class="btn">▶ Start WPM Test</button>
+            <div id="wpmResults" style="font-weight:600;margin-left:8px">WPM: 0 | Errors: 0 | Time: 0s</div>
+          </div>
+        </article>
+
+        <article class="card" style="margin-top:12px" id="typing-card">
           <h2>Typing Practice Endless Spelling</h2>
           <p class="small">If you get a word correct on the first try → it automatically moves to the next word If you type it wrongly once you must type it correctly 3 times to move on Use F2 to repeat spelling letter by letter and Double F2 to repeat the full word</p>
 
-          <div id="practiceWord" style="padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px">Loading practice word</div>
+          <div id="practiceWord" class="typing-box">Loading practice word</div>
 
           <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the word here">
 
-          <div class="typing-controls" style="margin-top:8px">
+          <div class="typing-controls">
             <button id="nextWordBtn" class="btn">🔄 Next</button>
             <button id="listenBtn" class="btn">🔊 Listen Word</button>
             <button id="spellBtn" class="btn btn-alt">🔡 Spell Letter by Letter</button>
             <div id="spellFeedback" aria-live="assertive" style="font-weight:600;margin-left:8px"></div>
           </div>
+        </article>
+        
+        <article class="card" style="margin-top:12px">
+          <h2>QR Code Generator</h2>
+          <p class="small">Enter any text or URL to generate a scannable QR Code.</p>
+          <input id="qrInput" type="text" placeholder="Enter text or URL" aria-label="QR Code Input">
+          <div id="qrOutput" style="margin-top:8px"></div>
+          <button id="qrGenerateBtn" class="btn">Generate QR</button>
+        </article>
+
+        <article class="card" style="margin-top:12px">
+          <h2>Text to Speech</h2>
+          <p class="small">Enter text and press Speak to hear it read aloud.</p>
+          <textarea id="ttsInput" placeholder="Enter text to speak" rows="3"></textarea>
+          <div class="typing-controls">
+            <button id="ttsSpeakBtn" class="btn">🔊 Speak</button>
+          </div>
+        </article>
+        
+        <article class="card" style="margin-top:12px">
+          <h2>Translator (External Link)</h2>
+          <p class="small">This uses Google Translate to open the translation in a new tab.</p>
+          <textarea id="translateInput" placeholder="Enter text to translate" rows="3"></textarea>
+          <div class="typing-controls">
+            <div style="display:flex;gap:8px;width:100%">
+              <select id="translateSource" style="width:50%">
+                <option value="auto">Auto-detect</option>
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="gu">Gujarati</option>
+              </select>
+              <select id="translateTarget" style="width:50%">
+                <option value="hi">Hindi</option>
+                <option value="en">English</option>
+                <option value="gu">Gujarati</option>
+              </select>
+            </div>
+            <button id="translateBtn" class="btn">Open Translation</button>
+          </div>
+          <div id="translateOutput" class="small" style="margin-top:8px"></div>
         </article>
 
         <article class="card" style="margin-top:12px">
@@ -192,7 +261,7 @@ function speak(text, lang='en-IN', rate=0.95){
   window.speechSynthesis.speak(u);
 }
 
-/* ==================== Typing Practice ==================== */
+/* ==================== Typing Practice (Endless Spelling) ==================== */
 const wordsWithUsage = {
     "accessibility": "We are designing this tool for better web accessibility",
     "computer": "I use the computer for all my data entry tasks",
@@ -241,7 +310,7 @@ let curr = "";
 let madeWrong = false;
 let streak = 0;
 let lastF2Press = 0;
-const F2_TIMEOUT = 500; // 500ms for double F2 detection
+const F2_TIMEOUT = 500;
 
 const practiceInput = document.getElementById('practiceInput');
 const practiceWord = document.getElementById('practiceWord');
@@ -261,7 +330,6 @@ function nextWord(){
   practiceInput.value = "";
   practiceInput.focus();
 
-  // Speak word and usage
   speak(`The word is ${curr}`);
   setTimeout(() => speak(`Use in a sentence ${usage}`, 'en-IN', 0.8), 1500);
 }
@@ -282,12 +350,10 @@ function onType(e){
       const now = new Date().getTime();
 
       if (now - lastF2Press < F2_TIMEOUT) {
-        // Double F2 detected -> Speak the full word
         speak(curr);
         feedback.innerText = `🔊 Repeating full word ${curr}`;
-        lastF2Press = 0; // Reset
+        lastF2Press = 0;
       } else {
-        // Single F2 detected -> Spell out the word (letter by letter)
         spellOut(curr);
         lastF2Press = now;
       }
@@ -297,19 +363,12 @@ function onType(e){
     if(e.key === 'Enter'){ 
       e.preventDefault();
       
-      if(!curr) {
-          feedback.innerText = "Press Next to start";
-          speak("Press Next to start");
-          return;
-      }
-      
+      if(!curr) { feedback.innerText = "Press Next to start"; speak("Press Next to start"); return; }
       const correctWord = curr.toLowerCase();
       
       if(typed === correctWord){
-          // Case 1: Correct on 1st try (madeWrong is false) -> Auto next handled by 'input' listener (should not happen on Enter)
           if(!madeWrong) return; 
 
-          // Case 2: Correct during 3-streak required session
           streak++;
           practiceInput.value = "";
           
@@ -322,12 +381,10 @@ function onType(e){
               speak(`Correct ${streak} of 3`);
           }
       } else {
-          // Case 3: Wrong word typed
           madeWrong = true;
           streak = 0;
           practiceInput.value = "";
           feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-          
           setTimeout(()=> spellOut(curr), 200);
           setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
       }
@@ -335,13 +392,11 @@ function onType(e){
     }
   }
 
-  // Handle live input checking for instant feedback
   if(e.type !== 'input') return;
   if(!curr){ feedback.innerText = "Press Next to start"; return; }
   
   const correctWord = curr.toLowerCase();
 
-  // 1 Auto-change on first attempt correct (only works if madeWrong is false)
   if(!madeWrong && typed === correctWord){
     feedback.innerHTML = '<span style="color:green">✅ Correct next word</span>';
     speak("Correct Next word");
@@ -349,38 +404,326 @@ function onType(e){
     return;
   }
 
-  // 2 Check for wrong typing
   if(typed.length > 0 && !correctWord.startsWith(typed)){
-    // Trigger full error logic if the typed input is not a prefix of the correct word
     madeWrong = true;
     streak = 0;
     practiceInput.value = "";
     feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
-    
-    // Speak spelling for the wrong word
     setTimeout(()=> spellOut(curr), 200);
     setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
     return;
   }
   
-  // Partial prefix (Live feedback)
   if(typed.length > 0) {
-      if(madeWrong){
-          feedback.innerText = `Keep typing ${streak}/3 attempts done`;
-      } else {
-          feedback.innerText = `Keep typing`;
-      }
+      feedback.innerText = madeWrong ? `Keep typing ${streak}/3 attempts done` : `Keep typing`;
   } else {
       feedback.innerText = madeWrong ? `Start typing The word is ${curr}` : `Type the word`;
   }
 }
 
 // hooks
-nextWordBtn.addEventListener('click', ()=>{ nextWord(); });
+nextWordBtn.addEventListener('click', nextWord);
 listenBtn.addEventListener('click', ()=>{ if(curr) speak(curr); else nextWord(); });
 spellBtn.addEventListener('click', ()=> spellOut(curr));
 practiceInput.addEventListener('input', onType);
 practiceInput.addEventListener('keydown', onType);
+
+/* ==================== Typing Tutor (New Tool) ==================== */
+const tutorExercises = [
+    { key: 'a', finger: 'left hand little finger', instruction: 'Press A (Left Hand Little Finger)' },
+    { key: 's', finger: 'left hand ring finger', instruction: 'Press S (Left Hand Ring Finger)' },
+    { key: 'd', finger: 'left hand middle finger', instruction: 'Press D (Left Hand Middle Finger)' },
+    { key: 'f', finger: 'left hand index finger', instruction: 'Press F (Left Hand Index Finger)' },
+    { key: 'j', finger: 'right hand index finger', instruction: 'Press J (Right Hand Index Finger)' },
+    { key: 'k', finger: 'right hand middle finger', instruction: 'Press K (Right Hand Middle Finger)' },
+    { key: 'l', finger: 'right hand ring finger', instruction: 'Press L (Right Hand Ring Finger)' },
+    { key: ';', finger: 'right hand little finger', instruction: 'Press Semicolon (Right Hand Little Finger)' },
+    { key: 'asdf', finger: 'all left home row fingers', instruction: 'Type A S D F (Left Hand Home Row)' },
+    { key: 'jkl;', finger: 'all right home row fingers', instruction: 'Type J K L Semicolon (Right Hand Home Row)' }
+];
+
+let currentTutorExIndex = 0;
+const tutorStatus = document.getElementById('tutorStatus');
+const tutorInput = document.getElementById('tutorInput');
+const tutorBtn = document.getElementById('tutorBtn');
+
+function startTutor() {
+    currentTutorExIndex = 0;
+    tutorInput.value = '';
+    tutorInput.disabled = false;
+    tutorBtn.innerText = 'Stop Tutor';
+    loadTutorExercise(currentTutorExIndex);
+}
+
+function stopTutor() {
+    tutorInput.disabled = true;
+    tutorBtn.innerText = '▶ Start Tutor';
+    tutorStatus.innerText = 'Tutor stopped Press Start Tutor to begin again';
+    speak('Tutor stopped');
+}
+
+function loadTutorExercise(index) {
+    if (index >= tutorExercises.length) {
+        tutorStatus.innerText = '🎉 Tutor Complete! You finished all 10 exercises.';
+        speak('Tutor complete You finished all exercises');
+        tutorInput.disabled = true;
+        tutorBtn.innerText = 'Restart Tutor';
+        return;
+    }
+
+    const exercise = tutorExercises[index];
+    tutorInput.value = '';
+    tutorInput.dataset.required = exercise.key;
+    
+    tutorStatus.innerText = `Exercise ${index + 1}/${tutorExercises.length}: ${exercise.instruction}`;
+    speak(`Exercise ${index + 1} ${exercise.instruction}`);
+    tutorInput.focus();
+}
+
+tutorInput.addEventListener('keydown', (e) => {
+    if (tutorInput.disabled) return;
+    if (currentTutorExIndex >= tutorExercises.length) return;
+    
+    const requiredKey = tutorExercises[currentTutorExIndex].key;
+    
+    if (requiredKey.length === 1) {
+        e.preventDefault();
+        const pressedKey = e.key.toLowerCase();
+        
+        if (pressedKey === requiredKey.toLowerCase()) {
+            tutorStatus.innerText = `✅ Correct! Key ${requiredKey.toUpperCase()}. Moving to next.`;
+            speak(`Correct`);
+            currentTutorExIndex++;
+            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1000);
+        } else {
+            tutorStatus.innerText = `❌ Wrong key. You pressed ${e.key.toUpperCase()}. Please press ${requiredKey.toUpperCase()} using your ${tutorExercises[currentTutorExIndex].finger}.`;
+            speak(`Wrong key You pressed ${e.key}. Please press ${requiredKey.toUpperCase()} using your ${tutorExercises[currentTutorExIndex].finger}`);
+        }
+    }
+});
+
+tutorInput.addEventListener('input', () => {
+    if (tutorInput.disabled) return;
+    if (currentTutorExIndex >= tutorExercises.length) return;
+    
+    const requiredKey = tutorExercises[currentTutorExIndex].key;
+    const typedValue = tutorInput.value.toLowerCase();
+    
+    if (requiredKey.length > 1) {
+        if (typedValue === requiredKey) {
+            tutorStatus.innerText = `✅ Correct! Sequence ${requiredKey.toUpperCase()}. Moving to next.`;
+            speak(`Correct`);
+            currentTutorExIndex++;
+            setTimeout(() => loadTutorExercise(currentTutorExIndex), 1000);
+        } else if (!requiredKey.startsWith(typedValue)) {
+            tutorInput.value = '';
+            tutorStatus.innerText = `❌ Mistake. Start over. Required sequence: ${requiredKey.toUpperCase()}`;
+            speak(`Mistake Start over Required sequence is ${requiredKey}`);
+        }
+    }
+});
+
+tutorBtn.addEventListener('click', ()=>{
+    if(tutorBtn.innerText === 'Stop Tutor') {
+        stopTutor();
+    } else {
+        startTutor();
+    }
+});
+
+
+/* ==================== Typing WPM Test (New Tool) ==================== */
+const wpmText = "The quick brown fox jumps over the lazy dog this is a test to check your typing speed and accuracy please type the words as fast as you can to get your words per minute score practice every day to increase your proficiency and efficiency in all data entry tasks";
+let wpmStartTime;
+let wpmWordIndex = 0;
+let wpmWords = [];
+let wpmErrors = 0;
+let correctCharacters = 0; 
+let fullTypedCharacters = 0; // Total characters typed including spaces and errors
+
+const wpmInput = document.getElementById('wpmInput');
+const wpmTextDiv = document.getElementById('wpmText');
+const wpmResultsDiv = document.getElementById('wpmResults');
+const wpmStartBtn = document.getElementById('wpmStartBtn');
+
+function calculateWPM() {
+    if (!wpmStartTime) return { wpm: 0, accuracy: 0 };
+
+    const timeElapsedSeconds = (new Date().getTime() - wpmStartTime) / 1000;
+    const minutes = timeElapsedSeconds / 60;
+    
+    // Gross WPM: (Total typed characters / 5) / Minutes
+    const grossWPM = Math.round((fullTypedCharacters / 5) / minutes);
+    
+    // Net WPM: ((Correct Characters / 5) - Errors) / Minutes
+    // Using correct characters typed
+    const netWPM = Math.round((correctCharacters / 5) / minutes);
+    
+    // Accuracy calculation (Correct Chars / Total Chars Typed)
+    const accuracy = fullTypedCharacters > 0 ? ((correctCharacters / fullTypedCharacters) * 100).toFixed(1) : 0;
+    
+    return { wpm: netWPM, errors: wpmErrors, time: Math.floor(timeElapsedSeconds), accuracy: accuracy };
+}
+
+function resetWPMTest() {
+    wpmWords = wpmText.split(' ');
+    wpmWordIndex = 0;
+    wpmErrors = 0;
+    correctCharacters = 0; 
+    fullTypedCharacters = 0; 
+    wpmStartTime = null;
+    wpmInput.value = '';
+    wpmInput.disabled = false;
+    wpmStartBtn.innerText = 'Restart WPM Test';
+    wpmResultsDiv.innerText = 'WPM: 0 | Errors: 0 | Time: 0s';
+    
+    wpmTextDiv.innerHTML = `<span id="wpmCurrentWord" style="background-color: yellow; padding: 2px;">${wpmWords[0]}</span> ${wpmWords.slice(1).join(' ')}`;
+    wpmInput.focus();
+    speak("WPM test started Type the highlighted word");
+}
+
+function updateWPMDisplay() {
+    const results = calculateWPM();
+    wpmResultsDiv.innerText = `WPM: ${results.wpm} | Errors: ${results.errors} | Time: ${results.time}s | Acc: ${results.accuracy}%`;
+}
+
+function checkWPMInput(e) {
+    if (!wpmStartTime) { wpmStartTime = new Date().getTime(); }
+    
+    const typedValue = wpmInput.value;
+    const currentWord = wpmWords[wpmWordIndex];
+    
+    fullTypedCharacters = wpmWords.slice(0, wpmWordIndex).join(' ').length + (wpmWordIndex > 0 ? wpmWordIndex : 0); // Correct chars from previous words
+    fullTypedCharacters += typedValue.length; // Current typed characters
+
+    // Check for word completion (space pressed after correct word)
+    if (typedValue.endsWith(' ') && typedValue.trim() === currentWord) {
+        
+        // Count correct characters for the completed word
+        correctCharacters += currentWord.length + 1; // +1 for space
+
+        wpmWordIndex++;
+        wpmInput.value = '';
+        
+        if (wpmWordIndex < wpmWords.length) {
+            // Highlight next word
+            const typedPart = `<span style="color: green">${wpmWords.slice(0, wpmWordIndex).join(' ')}</span>`;
+            const after = wpmWords.slice(wpmWordIndex + 1).join(' ');
+            
+            wpmTextDiv.innerHTML = `${typedPart} <span id="wpmCurrentWord" style="background-color: yellow; padding: 2px;"> ${wpmWords[wpmWordIndex]}</span> ${after}`;
+            
+            speak(wpmWords[wpmWordIndex]);
+        } else {
+            finishWPMTest();
+        }
+    } else {
+        // Live feedback for current word
+        const typedTrimmed = typedValue.trim();
+        const currentWordSpan = document.getElementById('wpmCurrentWord');
+        
+        let localCorrectChars = 0;
+        let html = '';
+
+        for (let i = 0; i < currentWord.length; i++) {
+            const char = currentWord[i];
+            const typedChar = typedTrimmed[i];
+            if (i < typedTrimmed.length) {
+                if (char === typedChar) {
+                    html += `<span style="color: green;">${char}</span>`;
+                    localCorrectChars++;
+                } else {
+                    html += `<span style="color: red;">${char}</span>`;
+                    // Error detection (only count once per mistake for WPM calc)
+                    if(e.inputType === 'insertText' && i === typedTrimmed.length - 1) {
+                         wpmErrors++;
+                    }
+                }
+            } else {
+                html += char;
+            }
+        }
+        
+        if (currentWordSpan) {
+             currentWordSpan.innerHTML = html;
+        }
+
+        // Update overall correct character count for net WPM
+        correctCharacters = wpmWords.slice(0, wpmWordIndex).reduce((sum, word) => sum + word.length + 1, 0);
+        correctCharacters += localCorrectChars;
+    }
+    
+    updateWPMDisplay();
+}
+
+function finishWPMTest() {
+    const results = calculateWPM();
+    
+    wpmInput.disabled = true;
+    wpmInput.oninput = null;
+    wpmTextDiv.innerHTML = `<span style="color: green">${wpmWords.join(' ')}</span>`;
+
+    const finalResults = `Test Finished! WPM: ${results.wpm}. Errors: ${results.errors}. Time: ${results.time}s. Accuracy: ${results.accuracy}%.`;
+    wpmResultsDiv.innerText = finalResults;
+    speak(`Test finished Your words per minute is ${results.wpm} with ${results.accuracy} percent accuracy`);
+    wpmStartTime = null;
+}
+
+wpmStartBtn.addEventListener('click', resetWPMTest);
+wpmInput.addEventListener('input', checkWPMInput);
+
+
+/* ==================== QR Code Generator (New Tool) ==================== */
+document.getElementById('qrGenerateBtn').addEventListener('click', ()=>{
+    const text = document.getElementById('qrInput').value.trim();
+    const qrOutput = document.getElementById('qrOutput');
+    
+    if(!text){
+        qrOutput.innerHTML = 'Enter text to generate QR code';
+        speak('Enter text to generate QR code');
+        return;
+    }
+    
+    const encodedText = encodeURIComponent(text);
+    // Google Charts API for QR code (size 200x200)
+    const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encodedText}`;
+    
+    qrOutput.innerHTML = `<p>QR Code generated:</p><img src="${qrUrl}" alt="QR Code for ${text}" style="width:200px;height:200px;"><p><a href="${qrUrl}" target="_blank">View Image</a></p>`;
+    speak('QR Code generated successfully');
+});
+
+
+/* ==================== Text to Speech (New Tool) ==================== */
+document.getElementById('ttsSpeakBtn').addEventListener('click', ()=>{
+    const text = document.getElementById('ttsInput').value;
+    if(text){
+        // Using lang='en-IN' and default rate 
+        speak(text, 'en-IN', 1.0);
+    } else {
+        speak('Please enter text to speak');
+    }
+});
+
+
+/* ==================== Translator (New Tool) ==================== */
+document.getElementById('translateBtn').addEventListener('click', ()=>{
+    const text = document.getElementById('translateInput').value.trim();
+    if(!text){
+        document.getElementById('translateOutput').innerText = 'Enter text to translate';
+        speak('Enter text to translate');
+        return;
+    }
+    
+    const sourceLang = document.getElementById('translateSource').value;
+    const targetLang = document.getElementById('translateTarget').value;
+    
+    // Open Google Translate in a new window/tab
+    const translateUrl = `https://translate.google.com/?sl=${sourceLang}&tl=${targetLang}&text=${encodeURIComponent(text)}&op=translate`;
+    window.open(translateUrl, '_blank');
+    
+    document.getElementById('translateOutput').innerText = 'Opening translation result in a new tab...';
+    speak('Opening translation result in a new tab');
+});
+
 
 /* ==================== OCR & PDF ==================== */
 if(typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -405,7 +748,6 @@ async function displayPdfPage(pageNum){
     const txt = await page.getTextContent();
     const pageText = txt.items.map(i=>i.str).join(' ');
     
-    // Improved PDF text cleaning (still removing punctuation)
     const cleanedText = pageText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
     
     docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (cleanedText || `Page ${pageNum} seems empty`);
@@ -425,11 +767,9 @@ processBtn.addEventListener('click', async ()=>{
   if(!f){ docOutput.innerText = 'Select a file first'; return; }
   docOutput.innerText = 'Processing (this may take a few seconds)';
   
-  // PDF
   if(f.type === 'application/pdf'){
     try{
       const ab = await f.arrayBuffer();
-      // Using maxImageSize of 1024 to potentially improve performance on large PDFs, though accuracy improvement is primarily library-dependent
       pdfDoc = await pdfjsLib.getDocument({data:ab, maxImageSize: 1024}).promise; 
       totalPages = pdfDoc.numPages;
       pdfControls.style.display = 'inline-flex';
@@ -441,20 +781,16 @@ processBtn.addEventListener('click', async ()=>{
     }
     return;
   }
-  // Image -> OCR
   if(f.type.startsWith('image/')){
     if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded'; return; }
     try{
-      // Tesseract Configuration for Accuracy
       const worker = Tesseract.createWorker({ 
           logger: m => console.log(m),
-          // Adding hints to improve recognition for English/Indian context
           preserveInterwordSpaces: true 
       });
       await worker.load();
       await worker.loadLanguage('eng+hin+guj');
       await worker.initialize('eng+hin+guj');
-      // Setting OEM (OCR Engine Mode) to 1 for better accuracy (LSTM only)
       await worker.setParameters({
         tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
         tessedit_pageseg_mode: Tesseract.PSM.AUTO 
@@ -463,7 +799,6 @@ processBtn.addEventListener('click', async ()=>{
       const { data: { text } } = await worker.recognize(f);
       await worker.terminate();
       
-      // Remove punctuation from OCR output
       const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); 
       docOutput.innerText = cleanedText || 'No text recognized';
       autoReadOCR(cleanedText || '');
@@ -545,19 +880,17 @@ locBtn.addEventListener('click', ()=>{
   locOut.innerText = 'Locating...';
   if(!navigator.geolocation){ locOut.innerText = 'Geolocation not supported by this browser'; return; }
   
-  // High accuracy and timeout settings for better performance
   const options = {
     enableHighAccuracy: true,
-    timeout: 10000, // 10 seconds
+    timeout: 10000, 
     maximumAge: 0
   };
   
   navigator.geolocation.getCurrentPosition(pos=>{
     const lat = pos.coords.latitude.toFixed(6);
     const lon = pos.coords.longitude.toFixed(6);
-    // Fixed the Google Maps URL to the correct format
-    const maps = `https://maps.google.com/?q=${lat},${lon}`;
-    locOut.innerHTML = `Lat ${lat} Lon ${lon} — <a href="${maps}" target="_blank">Open in Google Maps</a>`;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+    locOut.innerHTML = `Lat ${lat} Lon ${lon} — <a href="${mapsUrl}" target="_blank">Open in Google Maps</a>`;
     speak(`Location found Latitude ${lat} Longitude ${lon}`);
   }, err=>{
     let msg = 'An unknown error occurred';
@@ -614,10 +947,11 @@ hcPlay.addEventListener('click', ()=>{
 
     if (hcState === 'batting') {
         if (playerRun === computerRun) {
-            hcStatus.innerText = `Out You played ${playerRun} Computer bowled ${computerRun} Your total score is ${hcScore} Now computer is batting You are bowling Computer needs ${hcScore + 1} to win`;
             hcTarget = hcScore + 1;
+            hcScore = 0; 
             hcState = 'bowling';
-            speak(`Out Your score is ${hcScore} Computer needs ${hcTarget} to win You are bowling Enter a number 1 to 6`);
+            hcStatus.innerText = `Out You played ${playerRun} Computer bowled ${computerRun} Your total score is ${hcTarget - 1} Now computer is batting You are bowling Computer needs ${hcTarget} to win`;
+            speak(`Out Your score is ${hcTarget - 1} Computer needs ${hcTarget} to win You are bowling Enter a number 1 to 6`);
         } else {
             hcScore += playerRun;
             hcStatus.innerText = `You scored ${playerRun} Computer bowled ${computerRun} Total score ${hcScore}`;
@@ -625,17 +959,28 @@ hcPlay.addEventListener('click', ()=>{
         }
     } else if (hcState === 'bowling') {
         if (playerRun === computerRun) {
-            hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} You won by ${hcTarget - 1 - hcScore} runs`;
-            speak(`Out Computer score ${hcScore} You won`);
+            const runDiff = Math.abs(hcTarget - 1 - hcScore);
+            
+            if (hcScore < hcTarget - 1) {
+                hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} You won by ${runDiff} runs`;
+                speak(`Out Computer score ${hcScore} You won by ${runDiff} runs`);
+            } else {
+                // Should only happen if hcScore == hcTarget - 1 (tie) or hcScore > hcTarget - 1 (already won, but we catch win first)
+                // Correct logic for out: if computer score is less than target, you win.
+                hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} It was a tie. Game over.`;
+                speak(`It was a tie. Game over.`);
+            }
+
             hcState = 'finished';
+
         } else {
             hcScore += computerRun;
             if (hcScore >= hcTarget) {
-                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Target was ${hcTarget - 1} Computer won`;
+                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Target was ${hcTarget} Computer won`;
                 speak(`Computer won with score ${hcScore}`);
                 hcState = 'finished';
             } else {
-                const required = hcTarget - hcScore - 1;
+                const required = hcTarget - hcScore;
                 hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Computer needs ${required} more runs to win`;
                 speak(`Computer scored ${computerRun} Needs ${required} more runs`);
             }
