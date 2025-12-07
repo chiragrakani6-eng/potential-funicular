@@ -122,12 +122,15 @@
           <h2>Azabat-Style Typing Tutor (11 Exercises)</h2>
           <p class="small">Live WPM and Error tracking added for a professional training experience.</p>
           <div id="tutorPanel">
-            <div id="tutorStatus" class="typing-box">Press Start Tutor to begin</div>
+            <div id="tutorStatus" class="typing-box">Press Load Exercise or Start Tutor to begin</div>
             <div id="tutorStats" class="tutor-stats">WPM: 0 | Errors: 0 | Time: 0s</div>
-            <p id="tutorTextDisplay" style="white-space: pre-wrap;">Welcome to the Typing Tutor. Press Start to begin Exercise 1.</p>
+            <p id="tutorTextDisplay" style="white-space: pre-wrap;">Welcome to the Typing Tutor. Use the menu below to select an exercise.</p>
             <input id="tutorInput" type="text" placeholder="Start typing the sequence/words shown above" aria-label="Typing Tutor Input" disabled>
           </div>
           <div class="typing-controls">
+            <select id="tutorExSelect" aria-label="Select Typing Exercise" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; min-width: 200px;">
+              </select>
+            <button id="loadExBtn" class="btn btn-alt" style="min-width: 150px;">Load Selected Exercise</button>
             <button id="tutorBtn" class="btn">▶ Start Tutor</button>
           </div>
         </article>
@@ -589,59 +592,59 @@ const numberKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
 // Updated Exercises Array (Total 11)
 const tutorExercises = [
     // Phase 1: Home Row Drills
-    { type: 'drill', name: 'Exercise 1: Home Row Drill', 
+    { type: 'drill', name: 'Home Row Drill', 
       instruction: 'Home Row Keys. Type the sequence 6 times: a s d f g h j k l ; ...', 
       sequence: createDrill([...homeKeys], 6) }, 
 
     // Phase 2: Bottom Row Drills
-    { type: 'drill', name: 'Exercise 2: Bottom Row Drill', 
+    { type: 'drill', name: 'Bottom Row Drill', 
       instruction: 'Bottom Row Keys. Type the sequence 6 times: z x c v b n m , . / ...',
       sequence: createDrill([...bottomKeys], 6) }, 
 
     // Phase 3: Upper Row Drills
-    { type: 'drill', name: 'Exercise 3: Upper Row Drill', 
+    { type: 'drill', name: 'Upper Row Drill', 
       instruction: 'Upper Row Keys. Type the sequence 6 times: q w e r t y u i o p [ ] \\ ...',
       sequence: createDrill([...upperKeys], 6) },
 
     // Phase 4: Number Row Drills
-    { type: 'drill', name: 'Exercise 4: Number Row Drill', 
+    { type: 'drill', name: 'Number Row Drill', 
       instruction: 'Number Row Keys. Type the sequence 6 times: 1 2 3 4 5 6 7 8 9 0 - = ...',
       sequence: createDrill([...numberKeys], 6) },
       
     // Phase 5: Random Key Drill (New mode: single-key input)
-    { type: 'random_key', name: 'Exercise 5: All Three Rows Random Key (25 Keys)', 
+    { type: 'random_key', name: 'All Three Rows Random Key (25 Keys)', 
       instruction: 'Listen for the spoken key and press it. (25 random keys)',
       sequence: [...homeKeys, ...bottomKeys, ...upperKeys].filter(k => k.length === 1).join(' ') // Key pool
     },
       
     // Phase 6: Home Row Words
-    { type: 'word', name: 'Exercise 6: Home Row Words', 
-      instruction: 'Home Row Words (like: dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had)',
+    { type: 'word', name: 'Home Row Words', 
+      instruction: 'Words using only Home Row Keys.', 
       sequence: 'dad fad sad had has hash dash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ' },
 
     // Phase 7: Bottom Row Words
-    { type: 'word', name: 'Exercise 7: Bottom Row Words', 
-      instruction: 'Bottom Row Words (like: zebra zip wax box cvbnm base calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box)', 
+    { type: 'word', name: 'Bottom Row Words', 
+      instruction: 'Words using only Bottom Row Keys.', 
       sequence: 'zebra zip wax box calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box ' },
 
     // Phase 8: Upper Row Words
-    { type: 'word', name: 'Exercise 8: Upper Row Words', 
-      instruction: 'Upper Row Words (like: quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route)',
+    { type: 'word', name: 'Upper Row Words', 
+      instruction: 'Words using only Upper Row Keys.', 
       sequence: 'quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route ' },
 
     // Phase 9: Home + Bottom Row Words
-    { type: 'word', name: 'Exercise 9: Home & Bottom Row Words (Mixed)', 
-      instruction: 'Home and Bottom Row Words (like: bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base)',
+    { type: 'word', name: 'Home & Bottom Row Words (Mixed)', 
+      instruction: 'Words using Home and Bottom Row Keys.', 
       sequence: 'bad case sad man face slab bag lads have vast mix mass glad base calm has can save lab sad man all add and max axe base ' },
     
     // Phase 10: Home + Upper Row Words
-    { type: 'word', name: 'Exercise 10: Home & Upper Row Words (Mixed)', 
-      instruction: 'Home and Upper Row Words (like: eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low)',
+    { type: 'word', name: 'Home & Upper Row Words (Mixed)', 
+      instruction: 'Words using Home and Upper Row Keys.', 
       sequence: 'eight sad lady put ask you flow fire wire oil all hope truth youth glass father had was top try saw pop out as if get joy lad low ' },
 
     // Phase 11: All Rows Words (Comprehensive Mix)
-    { type: 'word', name: 'Exercise 11: All Rows Mix Words (Comprehensive)', 
-      instruction: 'All Rows Words (like: quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen)',
+    { type: 'word', name: 'All Rows Mix Words (Comprehensive)', 
+      instruction: 'Comprehensive practice using all key rows.',
       sequence: 'quality pizza seven jump quite brown lazy next quick fox six zero one two three four five nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen ' }
 ];
 
@@ -659,6 +662,8 @@ const tutorInput = document.getElementById('tutorInput');
 const tutorBtn = document.getElementById('tutorBtn');
 const tutorTextDisplay = document.getElementById('tutorTextDisplay');
 const tutorStats = document.getElementById('tutorStats');
+const tutorExSelect = document.getElementById('tutorExSelect'); // New
+const loadExBtn = document.getElementById('loadExBtn'); // New
 
 
 // Global state for random key mode
@@ -668,6 +673,21 @@ let randomKeyIndex = 0;
 const RANDOM_KEY_TOTAL = 25; // Limiting the random keys to 25
 
 // --- Tutor Utility Functions ---
+
+// Helper to convert key for better speech pronunciation (Space fix helper)
+function getSpeakableChar(char) {
+    if (char === ' ') return 'SPACE';
+    if (char === ';') return 'SEMI-COLON';
+    if (char === ',') return 'COMMA';
+    if (char === '.') return 'DOT';
+    if (char === '/') return 'SLASH';
+    if (char === '[') return 'LEFT BRACKET';
+    if (char === ']') return 'RIGHT BRACKET';
+    if (char === '\\') return 'BACKSLASH';
+    if (char === '-') return 'HYPHEN';
+    if (char === '=') return 'EQUALS';
+    return char;
+}
 
 function calculateTutorStats() {
     if (!tutorStartTime) return { wpm: 0, errors: 0, time: 0 };
@@ -690,19 +710,6 @@ function startTutorTimer() {
 function stopTutorTimer() {
     if (tutorTimerInterval) clearInterval(tutorTimerInterval);
     tutorTimerInterval = null;
-}
-
-// Helper to convert key for better speech pronunciation
-function getSpeakableChar(char) {
-    if (char === ' ') return 'SPACE';
-    if (char === ';') return 'SEMI-COLON';
-    if (char === ',') return 'COMMA';
-    if (char === '.') return 'DOT';
-    if (char === '/') return 'SLASH';
-    if (char === '[') return 'LEFT BRACKET';
-    if (char === ']') return 'RIGHT BRACKET';
-    if (char === '\\') return 'BACKSLASH';
-    return char;
 }
 
 // --- Logic for Random Key Mode (Exercise 5) ---
@@ -743,11 +750,11 @@ function updateRandomKeyDisplay() {
         const displayKey = getSpeakableChar(randomKeySequence[i]);
         
         if (i < randomKeyIndex) {
-            displayHtml += `<span class="highlight-typed-tutor-correct">${displayKey}</span>`;
+            displayHtml += `<span class="highlight-typed-tutor-correct">${displayKey.replace('SPACE', '_')}</span>`;
         } else if (i === randomKeyIndex) {
-            displayHtml += `<span class="highlight-current-tutor">${displayKey}</span>`;
+            displayHtml += `<span class="highlight-current-tutor">${displayKey.replace('SPACE', '_')}</span>`;
         } else {
-            displayHtml += displayKey;
+            displayHtml += displayKey.replace('SPACE', '_');
         }
         displayHtml += ' ';
     }
@@ -765,23 +772,13 @@ function updateTutorTextDisplay() {
     
     for (let i = 0; i < sequence.length; i++) {
         const requiredChar = sequence[i];
-        const typedChar = currentInput[i];
-
+        
         if (i < tutorCurrentIndex) {
             // Already typed and confirmed correct
             displayHtml += `<span class="highlight-typed-tutor-correct">${requiredChar}</span>`;
         } else if (i === tutorCurrentIndex) {
             // Current required character - highlighted
             displayHtml += `<span class="highlight-current-tutor">${requiredChar}</span>`;
-        } else if (i < currentInput.length) {
-            // User typed ahead - mark as error if it doesn't match
-            if (requiredChar !== typedChar) {
-                // If it's an error on the current index, the input value is already truncated back, 
-                // so this section mostly handles typing *beyond* the current required char if the logic was flawed (which it is now fixed to prevent)
-                displayHtml += requiredChar; 
-            } else {
-                 displayHtml += requiredChar;
-            }
         } else {
             // Remaining sequence
             displayHtml += requiredChar;
@@ -793,7 +790,7 @@ function updateTutorTextDisplay() {
 
 function startTutor() {
     isTutorActive = true;
-    currentTutorExIndex = 0;
+    currentTutorExIndex = parseInt(tutorExSelect.value, 10); // Use selected index
     tutorInput.value = '';
     tutorInput.disabled = false;
     tutorBtn.innerText = 'Stop Tutor';
@@ -807,7 +804,7 @@ function stopTutor() {
     tutorInput.disabled = true;
     tutorBtn.innerText = '▶ Start Tutor';
     tutorStatus.innerText = 'Tutor Stopped. Press Start Tutor to resume.';
-    tutorTextDisplay.innerText = 'Welcome to the Typing Tutor. Press Start to begin Exercise 1.';
+    tutorTextDisplay.innerText = 'Select an exercise from the menu and press Load Selected Exercise.';
     tutorStats.innerText = 'WPM: 0 | Errors: 0 | Time: 0s (Stopped)';
     speak('Tutor stopped.');
 }
@@ -832,7 +829,7 @@ function loadTutorExercise(index) {
     totalCorrectChars = 0;
     stopTutorTimer();
     
-    tutorStatus.innerText = `${exercise.name}: ${exercise.instruction}`;
+    tutorStatus.innerText = `Exercise ${index + 1}: ${exercise.name} | ${exercise.instruction}`;
 
     if (exercise.type === 'random_key') {
         startRandomKeyMode(exercise.sequence);
@@ -847,9 +844,16 @@ function loadTutorExercise(index) {
         speak(`Starting Exercise ${index + 1}. ${exercise.name}. ${exercise.instruction}`, 'en-US', 0.85);
         setTimeout(() => {
             const firstSegment = tutorCurrentSequence.trim().split(' ')[0] || tutorCurrentSequence[0];
-            speak(`The first segment is ${getSpeakableChar(firstSegment)}`, 'en-US', 1.0);
+            speak(`The first key is ${getSpeakableChar(firstSegment)}`, 'en-US', 1.0);
         }, 5000);
     }
+}
+
+// Function to populate the dropdown menu
+function populateTutorMenu() {
+    tutorExSelect.innerHTML = tutorExercises.map((ex, index) => 
+        `<option value="${index}">Ex ${index + 1}: ${ex.name}</option>`
+    ).join('');
 }
 
 // --- Key Event Listeners ---
@@ -878,6 +882,8 @@ tutorInput.addEventListener('keydown', (e) => {
             speak(`Correct! Exercise complete.`, 'en-US');
             stopTutorTimer();
             currentTutorExIndex++;
+            // Re-load the menu item for the next exercise to be selected automatically
+            tutorExSelect.value = currentTutorExIndex < tutorExercises.length ? currentTutorExIndex.toString() : '0';
             setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
             return;
         }
@@ -939,35 +945,41 @@ tutorInput.addEventListener('input', (e) => {
             stopTutorTimer();
             calculateTutorStats();
             currentTutorExIndex++;
+            // Re-load the menu item for the next exercise to be selected automatically
+            tutorExSelect.value = currentTutorExIndex < tutorExercises.length ? currentTutorExIndex.toString() : '0';
             setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
             return;
         }
 
-        // Speak the next key/word cue
+        // --- FIX FOR SPACE AUDIO START ---
         const nextChar = tutorCurrentSequence[tutorCurrentIndex];
-        let nextSpeak = getSpeakableChar(nextChar);
+        let nextSpeak = getSpeakableChar(nextChar); 
         
         if (nextChar === ' ') {
-            // If the next is a space, speak the next word/key after the space
+            // FIX: Announce the space as requested
+            speak('Space', 'en-US', 1.2);
+            nextSpeak = 'SPACE'; // for status text
+            
+            // Queue the next word announcement after the 'Space' announcement for cue
             const nextSegmentMatch = tutorCurrentSequence.substring(tutorCurrentIndex + 1).match(/\S+/);
             if (nextSegmentMatch) {
-                nextSpeak = nextSegmentMatch[0];
-                speak(nextSpeak, 'en-US', 1.2); 
-            } else {
-                 speak('Space', 'en-US', 1.2); 
+                 setTimeout(() => speak(nextSegmentMatch[0], 'en-US', 1.2), 500);
+                 nextSpeak += ` (Next word cue: ${nextSegmentMatch[0]})`;
             }
         } else {
-             // Speak the next key (handled by getSpeakableChar for special keys)
+             // Speak the next key/char (handled by getSpeakableChar for special keys)
             speak(nextSpeak, 'en-US', 1.2);
         }
         
         tutorStatus.innerText = `✅ Correct. Next: ${nextSpeak}`;
+        // --- FIX FOR SPACE AUDIO END ---
     }
     
     updateTutorTextDisplay();
     calculateTutorStats();
 });
 
+// Event handler for Start/Stop button
 tutorBtn.addEventListener('click', ()=>{
     if(tutorBtn.innerText === 'Stop Tutor') {
         stopTutor();
@@ -976,8 +988,41 @@ tutorBtn.addEventListener('click', ()=>{
     }
 });
 
+// Event handler for loading a specific exercise from the menu
+loadExBtn.addEventListener('click', () => {
+    if (isTutorActive) stopTutor(); // Stop any active tutor session first
+    
+    currentTutorExIndex = parseInt(tutorExSelect.value, 10);
+    const exercise = tutorExercises[currentTutorExIndex];
+    
+    // Set up the state and UI for starting
+    tutorCurrentSequence = exercise.sequence;
+    tutorCurrentIndex = 0;
+    tutorErrors = 0;
+    totalCorrectChars = 0;
+    
+    tutorStatus.innerText = `Ready to start: Exercise ${currentTutorExIndex + 1}: ${exercise.name}. Press Start Tutor to begin.`;
+    tutorInput.value = '';
+    tutorInput.disabled = true; 
+    tutorBtn.innerText = '▶ Start Tutor';
+    tutorStats.innerText = 'WPM: 0 | Errors: 0 | Time: 0s';
+
+    // Preview the text
+    if (exercise.type === 'random_key') {
+         tutorTextDisplay.innerText = `${exercise.instruction}\n\nKeys: ${exercise.sequence.split(' ').slice(0, 15).join(', ')}...`;
+    } else {
+         tutorTextDisplay.innerText = exercise.sequence;
+    }
+
+    speak(`Loaded exercise ${currentTutorExIndex + 1}: ${exercise.name}. Press Start Tutor when ready.`);
+});
+
+
 function initializeTypingTutor() {
-    // Initialization done by attaching event listeners above
+    // Initialize the menu
+    populateTutorMenu();
+    // Default load the first exercise display without starting
+    loadExBtn.click();
 }
 
 
