@@ -3,20 +3,22 @@
 
 
 
+
 <!doctype html>
 <html lang="en">
-<head>
-<meta name="google-site-verification" content="3eaXJGv-ZqmwYM_BjDHmI2YNI1l4AnqP8VIJcru710s" />  <meta charset="utf-8"/>
+<head><meta name="google-site-verification" content="3eaXJGv-ZqmwYM_BjDHmI2YNI1l4AnqP8VIJcru710s" />
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Chirag Rakani Accessible Tools & Games Hub</title>
+  <title>Chirag Rakani Accessible Tools Hub</title>
   <meta name="description" content="Accessible tools by Chirag Rakani typing OCR PDF/Image games location & social links">
   <meta name="theme-color" content="#2c3e50">
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    :root{--bg:#f4f7fb;--card:#fff;--accent:#2c3e50;--accent2:#27ae60;--muted:#666}
+    :root{--bg:#f4f7fb;--card:#fff;--accent:#2c3e50;--accent2:#27ae60;--muted:#666;--error:#c0392b}
     *{box-sizing:border-box}
     body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#111}
     header{background:var(--accent);color:#fff;padding:14px 16px}
@@ -27,20 +29,28 @@
     h2{margin:0 0 8px 0}
     h3{margin:8px 0 6px 0}
     .small{font-size:0.95rem;color:var(--muted)}
-    .btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+    .btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer;min-width:120px;margin-right:8px}
     .btn-alt{background:#3b82f6}
-    .output{background:#fafafa;padding:12px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap}
+    .btn-danger{background:var(--error)}
+    .output{background:#fafafa;padding:12px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap;overflow:auto}
     .typing-controls{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
     input[type="text"], input[type="number"], textarea, select{padding:10px;border-radius:6px;border:1px solid #ddd;width:100%}
     footer{padding:14px;text-align:center;color:var(--muted)}
     a.social{color:var(--accent);text-decoration:none;margin-right:8px}
-    .danger{background:#c0392b}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+    
     /* Typing specific styles */
     .typing-box{padding:10px;border:1px solid #eee;border-radius:6px;background:#fbfff6;margin-bottom:8px}
     #wpmText, #tutorTextDisplay{line-height:1.6;font-size:1.1rem;margin-bottom:8px;white-space: pre-wrap;}
-    .highlight-current-tutor{background-color: yellow; padding: 2px 0; border-radius: 2px;}
+    .highlight-current-tutor{background-color: #ffda6a; padding: 2px 0; border-radius: 2px;}
     .highlight-typed-tutor-correct{color: green; font-weight: bold;}
-    .highlight-typed-tutor-error{color: red; background-color: #fdd; font-weight: bold; padding: 1px 0;}
+    .highlight-typed-tutor-error{color: var(--error); background-color: #fdd; font-weight: bold; padding: 1px 0;}
+    .tutor-stats{font-weight: 600; margin-top: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee;}
+    #qrOutput img {border: 1px solid #ddd; padding: 5px; background: #fff;}
+
+    /* Auth screen styles */
+    .auth-card{max-width: 400px; margin: 100px auto; padding: 25px; text-align: center;}
+    .auth-card button{margin: 8px 0; width: 100%;}
   </style>
 </head>
 <body>
@@ -48,19 +58,46 @@
     <div style="display:flex;gap:12px;align-items:center">
       <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
       <div>
-        <h1 style="font-size:1.05rem;margin:0">Chirag's Accessible Tools & Games Hub</h1>
-        <div class="small">Typing practice OCR PDF/Image Games Location Social</div>
+        <h1 style="font-size:1.05rem;margin:0">Chirag Rakani Accessible Tools & Games Hub</h1>
+        <div class="small">Typing, OCR, PDF/Image Reading, Games, and Utilities</div>
       </div>
     </div>
   </header>
 
-  <main class="container">
+  <section id="authScreen" class="container auth-card">
+    <h2>Sign Up / Log In to Access Tools</h2>
+    <p class="small">Please sign up or log in to use the typing tutor, OCR, and other utilities.</p>
+    
+    <button class="btn btn-alt" onclick="handleLoginSuccess('Phone')">📞 Sign up with Phone</button>
+    <button class="btn btn-alt" onclick="handleLoginSuccess('Google')">🌐 Sign up with Google</button>
+    <button class="btn btn-alt" onclick="handleLoginSuccess('Microsoft')">🏢 Sign up with Microsoft Account</button>
+    <div id="authStatus" class="small" style="margin-top: 10px;" aria-live="polite">Simulated login. Click any button to continue.</div>
+  </section>
+
+  <section id="vipCheckScreen" class="container auth-card" style="display:none;">
+    <h2>Accessibility Check</h2>
+    <p>This tool is designed with high accessibility standards. To better tailor your experience, please confirm:</p>
+    <h3>Are you visually impaired?</h3>
+    <div style="text-align: left; margin: 20px 0;">
+        <label style="display: block; margin: 10px 0; font-size: 1.1rem;">
+            <input type="radio" name="vip-status" value="yes" id="vipYes"> Yes, I am visually impaired.
+        </label>
+        <label style="display: block; margin: 10px 0; font-size: 1.1rem;">
+            <input type="radio" name="vip-status" value="no" id="vipNo"> No, I am not visually impaired.
+        </label>
+    </div>
+    <button class="btn" onclick="handleVIPCheck()">Confirm and Proceed</button>
+    <div id="vipStatus" class="small" style="margin-top: 10px;" aria-live="polite"></div>
+  </section>
+
+
+  <main id="appContainer" class="container" style="display:none;">
     <div class="grid">
       <aside class="card">
         <h2>About Me</h2>
         
-        <p class="small">
-            **Chirag Rakani Gharana Kutch Gujarat** I am a highly motivated and detail-oriented individual with a strong passion for communication and problem-solving Seeking a role in chat support data entry or any typing-related position where I can utilize my exceptional typing skills and customer interaction experience to contribute to organizational success I completed my 12th Grade at Blind School Bhuj I am dedicated to creating accessible apps and games for the visually impaired and I am also an author with books available on Amazon.
+        <p class="small" style="font-weight: bold;">
+            Hello! I'm **Chirag Rakani** from **Gharana, Kutch, Gujarat**. Driven by a passion for equal access to technology, I specialize in **developing intuitive and accessible tools and applications** specifically designed for the **visually impaired community**. My goal is to empower users through high-quality, efficient software like this ultimate typing tutor, advanced OCR reader, and utility hub.
         </p>
         
 
@@ -81,9 +118,11 @@
 
       <section>
         <article class="card" id="typing-tutor-card">
-          <h2>Typing Tutor (Key Placement & Words)</h2>
+          <h2>Azabat-Style Typing Tutor (11 Exercises)</h2>
+          <p class="small">Live WPM and Error tracking added for a professional training experience.</p>
           <div id="tutorPanel">
             <div id="tutorStatus" class="typing-box">Press Start Tutor to begin</div>
+            <div id="tutorStats" class="tutor-stats">WPM: 0 | Errors: 0 | Time: 0s</div>
             <p id="tutorTextDisplay" style="white-space: pre-wrap;">Welcome to the Typing Tutor. Press Start to begin Exercise 1.</p>
             <input id="tutorInput" type="text" placeholder="Start typing the sequence/words shown above" aria-label="Typing Tutor Input" disabled>
           </div>
@@ -92,8 +131,10 @@
           </div>
         </article>
         
+        <hr/>
+        
         <article class="card" style="margin-top:12px" id="wpm-card">
-          <h2>Typing WPM Test</h2>
+          <h2>Typing WPM Test (Paragraphs)</h2>
           <p class="small">Type the highlighted text as fast and accurately as possible to calculate your WPM score.</p>
           
           <div id="wpmText" class="typing-box">Click Start WPM Test to load the paragraph</div>
@@ -101,46 +142,85 @@
           
           <div class="typing-controls">
             <button id="wpmStartBtn" class="btn">▶ Start WPM Test</button>
-            <div id="wpmResults" style="font-weight:600;margin-left:8px">WPM: 0 | Errors: 0 | Time: 0s</div>
+            <div id="wpmResults" style="font-weight:600;margin-left:8px">WPM: 0 | Errors: 0 | Time: 0s | Acc: 0%</div>
           </div>
         </article>
 
+        <hr/>
+        
         <article class="card" style="margin-top:12px" id="typing-card">
           <h2>Typing Practice Endless Spelling</h2>
-          <p class="small">If you get a word correct on the first try → it automatically moves to the next word If you type it wrongly once you must type it correctly 3 times to move on Use F2 to repeat spelling letter by letter and Double F2 to repeat the full word</p>
+          <p class="small">**Accessibility Focus:** F2 key repeats spelling or full word (Double F2). Get it wrong once, and you must type it correctly 3 times to proceed.</p>
 
           <div id="practiceWord" class="typing-box">Loading practice word</div>
 
           <input id="practiceInput" type="text" placeholder="Type the word here" aria-label="Type the word here">
 
           <div class="typing-controls">
-            <button id="nextWordBtn" class="btn">🔄 Next</button>
+            <button id="nextWordBtn" class="btn">🔄 Next Word</button>
             <button id="listenBtn" class="btn">🔊 Listen Word</button>
-            <button id="spellBtn" class="btn btn-alt">🔡 Spell Letter by Letter</button>
+            <button id="spellBtn" class="btn btn-alt">🔡 Spell Word (F2)</button>
             <div id="spellFeedback" aria-live="assertive" style="font-weight:600;margin-left:8px"></div>
           </div>
         </article>
         
+        <hr/>
+        
         <article class="card" style="margin-top:12px">
-          <h2>QR Code Generator</h2>
-          <p class="small">Enter any text or URL to generate a scannable QR Code.</p>
-          <input id="qrInput" type="text" placeholder="Enter text or URL" aria-label="QR Code Input">
-          <div id="qrOutput" style="margin-top:8px"></div>
-          <button id="qrGenerateBtn" class="btn">Generate QR</button>
+          <h2>Document Reader (Perfected OCR & PDF Reading)</h2>
+          <p class="small">Upload an **Image** or **PDF**. OCR supports English, Hindi, and Gujarati. <span style="color:var(--error);font-weight:bold;">NOTE: Microsoft Publisher (.pub) files cannot be read directly in the browser; please convert them to PDF or Image first.</span></p>
+
+          <input id="fileInput" type="file" accept="image/*, .pdf" style="margin-top:8px">
+          <div style="margin-top:8px" class="typing-controls">
+            <button id="processBtn" class="btn">📁 Process File</button>
+            <div id="pdf-controls" style="display:none;align-items:center">
+              <label style="display:flex;align-items:center;gap:6px">Page:
+                <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;padding:8px">
+              </label>
+              <button id="goPageBtn" class="btn">Go</button>
+              <span id="pageInfo" class="small" style="margin-left:8px"></span>
+            </div>
+          </div>
+
+          <h3 style="margin-top:12px">Result Text:</h3>
+          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Extracted text will appear here</div>
+
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <label><input id="autoLang" type="checkbox" checked> Auto Read Result</label>
+            <label style="margin-left:6px">Force Lang:
+              <select id="forceLang" style="padding:8px">
+                <option value="">Auto</option>
+                <option value="en-IN">English</option>
+                <option value="hi-IN">Hindi</option>
+                <option value="gu-IN">Gujarati</option>
+              </select>
+            </label>
+            <button id="readDoc" class="btn">🔊 Read Text</button>
+            <button id="stopRead" class="btn btn-danger">⏹ Stop Read</button>
+            <div id="readStatus" class="small" style="margin-left:8px"></div>
+          </div>
         </article>
 
+        <hr/>
+        
         <article class="card" style="margin-top:12px">
-          <h2>Text to Speech</h2>
+          <h2>Utility Tools</h2>
+
+          <h3>QR Code Generator</h3>
+          <p class="small">Enter any text or URL to generate a scannable QR Code.</p>
+          <input id="qrInput" type="text" placeholder="Enter text or URL" aria-label="QR Code Input">
+          <div id="qrOutput" style="margin-top:8px; min-height: 50px;"></div>
+          <button id="qrGenerateBtn" class="btn">Generate QR</button>
+          
+          <h3 style="margin-top:12px">Text to Speech</h3>
           <p class="small">Enter text and press Speak to hear it read aloud.</p>
           <textarea id="ttsInput" placeholder="Enter text to speak" rows="3"></textarea>
           <div class="typing-controls">
             <button id="ttsSpeakBtn" class="btn">🔊 Speak</button>
           </div>
-        </article>
-        
-        <article class="card" style="margin-top:12px">
-          <h2>Translator (External Link)</h2>
-          <p class="small">This uses Google Translate to open the translation in a new tab.</p>
+          
+          <h3 style="margin-top:12px">Translator (External Link)</h3>
+          <p class="small">Opens Google Translate in a new tab.</p>
           <textarea id="translateInput" placeholder="Enter text to translate" rows="3"></textarea>
           <div class="typing-controls">
             <div style="display:flex;gap:8px;width:100%">
@@ -158,95 +238,58 @@
             </div>
             <button id="translateBtn" class="btn">Open Translation</button>
           </div>
-          <div id="translateOutput" class="small" style="margin-top:8px"></div>
-        </article>
 
-        <article class="card" style="margin-top:12px">
-          <h2>Document Reader Image / PDF</h2>
-          <p class="small">Upload an image or PDF For PDF use the page box to jump to any page number and press Go</p>
-
-          <input id="fileInput" type="file" accept="image/*, .pdf" style="margin-top:8px">
-          <div style="margin-top:8px" class="typing-controls">
-            <button id="processBtn" class="btn">📁 Process</button>
-            <div id="pdf-controls" style="display:none;align-items:center">
-              <label style="display:flex;align-items:center;gap:6px">Page:
-                <input id="pageNumberInput" type="number" min="1" value="1" style="width:80px;padding:8px">
-              </label>
-              <button id="goPageBtn" class="btn">Go</button>
-              <span id="pageInfo" class="small" style="margin-left:8px"></span>
-            </div>
-          </div>
-
-          <h3 style="margin-top:12px">Result:</h3>
-          <div id="doc-output" class="output" tabindex="0" aria-live="polite">Text will appear here</div>
-
-          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-            <label><input id="autoLang" type="checkbox" checked> Auto-detect language</label>
-            <label style="margin-left:6px">Force:
-              <select id="forceLang" style="padding:8px">
-                <option value="">Auto</option>
-                <option value="en-IN">English</option>
-                <option value="hi-IN">Hindi</option>
-                <option value="gu-IN">Gujarati</option>
-              </select>
-            </label>
-            <button id="readDoc" class="btn">🔊 Read</button>
-            <button id="stopRead" class="btn danger">⏹ Stop</button>
-            <div id="readStatus" class="small" style="margin-left:8px"></div>
-          </div>
-        </article>
-
-        <article class="card" style="margin-top:12px">
-          <h2>Where Am I Location</h2>
-          <p class="small">Tap the button and allow browser location permission</p>
+          <h3 style="margin-top:12px">Where Am I Location</h3>
+          <p class="small">Tap the button and allow browser location permission.</p>
           <div style="display:flex;gap:8px;align-items:center">
             <button id="locBtn" class="btn">📍 Get Current Location</button>
             <div id="locationOutput" class="small" style="margin-left:8px"></div>
           </div>
         </article>
 
+        <hr/>
+        
         <article class="card" style="margin-top:12px">
-          <h2>Games</h2>
+          <h2>Accessible Games</h2>
+          <p class="small">Simple games for fun and relaxation.</p>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess Lichess</button>
-
-            <div>
-              <button id="handBtn" class="btn">🏏 Hand Cricket</button>
-              <div id="handPanel" style="display:none;margin-top:8px">
-                <div id="hcStatus" class="small">Ready</div>
-                <input id="hcInput" type="number" min="0" max="6" placeholder="0-6" style="width:90px;margin-top:6px">
-                <div style="margin-top:8px">
-                  <button id="hcPlay" class="btn">Play</button>
-                  <button id="hcReset" class="btn" style="background:#777">Reset</button>
+            <button class="btn" onclick="window.open('https://lichess.org','_blank')">♟️ Play Chess Lichess (External)</button>
+            
+            <details style="margin-top: 8px;">
+                <summary style="font-weight: bold; cursor: pointer; padding: 5px; background: #f0f0f0; border-radius: 5px;">🏏 Hand Cricket</summary>
+                <div id="handPanel" style="padding-top: 10px;">
+                    <div id="hcStatus" class="small">Ready</div>
+                    <input id="hcInput" type="number" min="0" max="6" placeholder="1-6" style="width:90px;margin-top:6px">
+                    <div style="margin-top:8px">
+                    <button id="hcPlay" class="btn">Play</button>
+                    <button id="hcReset" class="btn" style="background:#777">Reset</button>
+                    </div>
                 </div>
-              </div>
-            </div>
+            </details>
 
-            <div>
-              <button id="snlBtn" class="btn">🎲 Snakes & Ladders</button>
-              <div id="snlPanel" style="display:none;margin-top:8px">
-                <div id="snlStatus" class="small">Ready</div>
-                <div style="margin-top:8px">
-                  <button id="snlRoll" class="btn">Roll</button>
-                  <button id="snlReset" class="btn" style="background:#777">Reset</button>
-                  <div id="snlDice" class="small" style="display:inline-block;margin-left:12px">-</div>
+            <details style="margin-top: 8px;">
+                <summary style="font-weight: bold; cursor: pointer; padding: 5px; background: #f0f0f0; border-radius: 5px;">🎲 Snakes & Ladders (Simplified)</summary>
+                <div id="snlPanel" style="padding-top: 10px;">
+                    <div id="snlStatus" class="small">Ready</div>
+                    <div style="margin-top:8px">
+                    <button id="snlRoll" class="btn">Roll Dice</button>
+                    <button id="snlReset" class="btn" style="background:#777">Reset</button>
+                    <div id="snlDice" class="small" style="display:inline-block;margin-left:12px;font-size: 1.1rem; font-weight: bold;">-</div>
+                    </div>
                 </div>
-                <div id="snlBoard" style="margin-top:8px"></div>
-              </div>
-            </div>
+            </details>
 
-            <div>
-              <button id="ludoBtn" class="btn">🎯 Ludo Race</button>
-              <div id="ludoPanel" style="display:none;margin-top:8px">
-                <div id="ludoStatus" class="small">Ready</div>
-                <div style="margin-top:8px">
-                  <button id="ludoRoll" class="btn">Roll</button>
-                  <button id="ludoReset" class="btn" style="background:#777">Reset</button>
+            <details style="margin-top: 8px;">
+                <summary style="font-weight: bold; cursor: pointer; padding: 5px; background: #f0f0f0; border-radius: 5px;">🎯 Ludo Race (1 Player vs 3 AI)</summary>
+                <div id="ludoPanel" style="padding-top: 10px;">
+                    <div id="ludoStatus" class="small">Ready</div>
+                    <div style="margin-top:8px">
+                    <button id="ludoRoll" class="btn">Your Roll</button>
+                    <button id="ludoReset" class="btn" style="background:#777">Reset</button>
+                    </div>
+                    <div id="ludoScores" class="small" style="margin-top:8px; font-weight: bold;"></div>
                 </div>
-                <div id="ludoScores" class="small" style="margin-top:8px"></div>
-              </div>
-            </div>
-
+            </details>
           </div>
         </article>
 
@@ -259,6 +302,71 @@
   <div id="ann" class="sr-only" aria-live="assertive"></div>
 
 <script>
+/* ==================== GLOBAL AUTHENTICATION LOGIC ==================== */
+function showScreen(screenId) {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('vipCheckScreen').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'none';
+    
+    if (screenId) {
+        document.getElementById(screenId).style.display = 'block';
+    }
+}
+
+function handleLoginSuccess(method) {
+    const status = document.getElementById('authStatus');
+    status.innerText = `Successfully signed up with ${method}. Proceeding to accessibility check...`;
+    speak(`Successfully signed up with ${method}. Proceeding to accessibility check.`);
+    
+    setTimeout(() => {
+        showScreen('vipCheckScreen');
+    }, 1500);
+}
+
+function handleVIPCheck() {
+    const vipYes = document.getElementById('vipYes').checked;
+    const vipNo = document.getElementById('vipNo').checked;
+    const status = document.getElementById('vipStatus');
+
+    if (!vipYes && !vipNo) {
+        status.innerText = 'Please select Yes or No to confirm.';
+        speak('Please select Yes or No to confirm.');
+        return;
+    }
+
+    const message = vipYes ? 
+        'Thank you! The application will optimize for screen reader and keyboard-only navigation.' : 
+        'Preference recorded. Welcome to the application!';
+
+    status.innerText = message;
+    speak(message);
+    
+    // Simulate setting a preference and unlocking the app
+    localStorage.setItem('isVisuallyImpaired', vipYes ? 'true' : 'false');
+
+    setTimeout(() => {
+        showScreen('appContainer');
+        speak('Application unlocked. Welcome to the tools hub.');
+    }, 1500);
+}
+
+// Initial check to determine which screen to show on load
+document.addEventListener('DOMContentLoaded', () => {
+    // If a VIP status is already set (simulating persistent login)
+    if (localStorage.getItem('isVisuallyImpaired') !== null) {
+        showScreen('appContainer');
+        speak('Welcome back to the tools hub.');
+    } else {
+        showScreen('authScreen');
+    }
+    
+    // Initialize typing tutor components after initial setup
+    initializeTypingTutor();
+    initializeWPMTest();
+    initializeEndlessSpelling();
+    initializeGames();
+});
+
 /* ==================== Utility: Speech ==================== */
 function speak(text, lang='en-IN', rate=0.95){
   if(!('speechSynthesis' in window)) return;
@@ -295,20 +403,20 @@ function nextWord(){
   curr = words[Math.floor(Math.random()*words.length)];
   let usage = wordsWithUsage[curr];
 
-  practiceWord.innerText = `🔊 Word ${curr} | 📖 Usage ${usage}`;
-  feedback.innerText = "Word loaded Type the word";
+  practiceWord.innerText = `🔊 Word: ${curr} | 📖 Usage: ${usage}`;
+  feedback.innerText = "Word loaded. Type the word.";
   practiceInput.value = "";
   practiceInput.focus();
 
   speak(`The word is ${curr}`);
-  setTimeout(() => speak(`Use in a sentence ${usage}`, 'en-IN', 0.8), 1500);
+  setTimeout(() => speak(`Usage in a sentence: ${usage}`, 'en-IN', 0.8), 1500);
 }
 
 function spellOut(word){
   if(!word) return;
   const s = word.toUpperCase().split('').join(' ');
   speak("Spelling " + s);
-  feedback.innerText = `Spelling ${word.toUpperCase().split('').join(' · ')}`;
+  feedback.innerText = `Spelling: ${word.toUpperCase().split('').join(' · ')}`;
 }
 
 function onType(e){
@@ -321,7 +429,7 @@ function onType(e){
 
       if (now - lastF2Press < F2_TIMEOUT) {
         speak(curr);
-        feedback.innerText = `🔊 Repeating full word ${curr}`;
+        feedback.innerText = `🔊 Repeating full word: ${curr}`;
         lastF2Press = 0;
       } else {
         spellOut(curr);
@@ -333,43 +441,48 @@ function onType(e){
     if(e.key === 'Enter'){ 
       e.preventDefault();
       
-      if(!curr) { feedback.innerText = "Press Next to start"; speak("Press Next to start"); return; }
+      if(!curr) { feedback.innerText = "Press Next Word to start"; speak("Press Next Word to start"); return; }
       const correctWord = curr.toLowerCase();
       
       if(typed === correctWord){
-          if(!madeWrong) return; 
+          if(!madeWrong) {
+             feedback.innerHTML = '<span style="color:green">✅ Correct! Next word.</span>';
+             speak("Correct. Next word.");
+             setTimeout(nextWord,700);
+             return;
+          } 
 
           streak++;
           practiceInput.value = "";
           
           if(streak >= 3){
-              feedback.innerHTML = '<span style="color:green">🎉 Done 3 correct next word</span>';
-              speak("Excellent Next word");
+              feedback.innerHTML = '<span style="color:green">🎉 Done! 3 correct. Next word.</span>';
+              speak("Excellent! Next word.");
               setTimeout(nextWord,700);
           } else {
-              feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3 Type again</span>`;
-              speak(`Correct ${streak} of 3`);
+              feedback.innerHTML = `<span style="color:green">✅ Correct ${streak}/3. Type again.</span>`;
+              speak(`Correct ${streak} of 3. Type again.`);
           }
       } else {
           madeWrong = true;
           streak = 0;
           practiceInput.value = "";
-          feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+          feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect. Attempts reset. Listen to spelling now.</span>`;
           setTimeout(()=> spellOut(curr), 200);
-          setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
+          setTimeout(()=> speak("Now you must type the correct word three times."), 1000);
       }
       return;
     }
   }
 
   if(e.type !== 'input') return;
-  if(!curr){ feedback.innerText = "Press Next to start"; return; }
+  if(!curr){ feedback.innerText = "Press Next Word to start"; return; }
   
   const correctWord = curr.toLowerCase();
 
   if(!madeWrong && typed === correctWord){
-    feedback.innerHTML = '<span style="color:green">✅ Correct next word</span>';
-    speak("Correct Next word");
+    feedback.innerHTML = '<span style="color:green">✅ Correct! Next word.</span>';
+    speak("Correct. Next word.");
     setTimeout(nextWord, 600);
     return;
   }
@@ -378,34 +491,36 @@ function onType(e){
     madeWrong = true;
     streak = 0;
     practiceInput.value = "";
-    feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect attempts reset Listening spelling now</span>`;
+    feedback.innerHTML = `<span style="color:#c0392b">❌ Incorrect. Attempts reset. Listen to spelling now.</span>`;
     setTimeout(()=> spellOut(curr), 200);
-    setTimeout(()=> speak("Now you must type the correct word three times"), 1000);
+    setTimeout(()=> speak("Now you must type the correct word three times."), 1000);
     return;
   }
   
   if(typed.length > 0) {
-      feedback.innerText = madeWrong ? `Keep typing ${streak}/3 attempts done` : `Keep typing`;
+      feedback.innerText = madeWrong ? `Keep typing (${streak}/3 attempts done)` : `Keep typing`;
   } else {
-      feedback.innerText = madeWrong ? `Start typing The word is ${curr}` : `Type the word`;
+      feedback.innerText = madeWrong ? `Start typing. The word is ${curr}` : `Type the word.`;
   }
 }
 
-// hooks
-nextWordBtn.addEventListener('click', nextWord);
-listenBtn.addEventListener('click', ()=>{ if(curr) speak(curr); else nextWord(); });
-spellBtn.addEventListener('click', ()=> spellOut(curr));
-practiceInput.addEventListener('input', onType);
-practiceInput.addEventListener('keydown', onType);
+function initializeEndlessSpelling() {
+    // hooks
+    nextWordBtn.addEventListener('click', nextWord);
+    listenBtn.addEventListener('click', ()=>{ if(curr) speak(curr); else nextWord(); });
+    spellBtn.addEventListener('click', ()=> spellOut(curr));
+    practiceInput.addEventListener('input', onType);
+    practiceInput.addEventListener('keydown', onType);
+    nextWord(); // Load the first word on initialization
+}
 
-/* ==================== Typing Tutor (Updated Logic for Sequences) ==================== */
+/* ==================== Azabat-Style Typing Tutor ==================== */
 
 // Helper to create the long drill sequence with forward and backward runs
 function createDrill(keys, repetitions = 6) {
-    // Keys are passed as a copy using spread [...] to prevent modification of the original array
     const forward = keys.join(' ');
     const reversed = [...keys].reverse().join(' ');
-    // Creates a pattern like: 'a s d f ... ; ; ... f d s a ' with a space at the end
+    // Adds a space to separate repetitions
     const basicSequence = forward + ' ' + reversed + ' '; 
     return basicSequence.repeat(repetitions);
 }
@@ -416,46 +531,46 @@ const bottomKeys = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'];
 const upperKeys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'];
 const numberKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='];
 
-// Updated Exercises Array
+// Updated Exercises Array (Total 11)
 const tutorExercises = [
     // Phase 1: Home Row Drills
-    { type: 'drill', name: 'Exercise 1: Home Row Drill (6x repetition)', 
+    { type: 'drill', name: 'Exercise 1: Home Row Drill', 
       instruction: 'Home Row Keys. Type the sequence 6 times: a s d f g h j k l ; ...', 
       sequence: createDrill([...homeKeys], 6) }, 
 
     // Phase 2: Bottom Row Drills
-    { type: 'drill', name: 'Exercise 2: Bottom Row Drill (6x repetition)', 
+    { type: 'drill', name: 'Exercise 2: Bottom Row Drill', 
       instruction: 'Bottom Row Keys. Type the sequence 6 times: z x c v b n m , . / ...',
       sequence: createDrill([...bottomKeys], 6) }, 
 
     // Phase 3: Upper Row Drills
-    { type: 'drill', name: 'Exercise 3: Upper Row Drill (6x repetition)', 
+    { type: 'drill', name: 'Exercise 3: Upper Row Drill', 
       instruction: 'Upper Row Keys. Type the sequence 6 times: q w e r t y u i o p [ ] \\ ...',
       sequence: createDrill([...upperKeys], 6) },
 
     // Phase 4: Number Row Drills
-    { type: 'drill', name: 'Exercise 4: Number Row Drill (6x repetition)', 
+    { type: 'drill', name: 'Exercise 4: Number Row Drill', 
       instruction: 'Number Row Keys. Type the sequence 6 times: 1 2 3 4 5 6 7 8 9 0 - = ...',
       sequence: createDrill([...numberKeys], 6) },
       
     // Phase 5: Random Key Drill (New mode: single-key input)
     { type: 'random_key', name: 'Exercise 5: All Three Rows Random Key (25 Keys)', 
       instruction: 'Listen for the spoken key and press it. (25 random keys)',
-      sequence: [...homeKeys, ...bottomKeys, ...upperKeys].join(' ') // Key pool
+      sequence: [...homeKeys, ...bottomKeys, ...upperKeys].filter(k => k.length === 1).join(' ') // Key pool
     },
       
     // Phase 6: Home Row Words
-    { type: 'word', name: 'Exercise 6: Home Row Words (30+ words)', 
+    { type: 'word', name: 'Exercise 6: Home Row Words', 
       instruction: 'Home Row Words (like: dad fad sad hash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had)',
       sequence: 'dad fad sad had has hash dash slash lass adds fall flag gas has lash had salad dash lads dallas all adds gas half dash glad salad fall as dad had ' },
 
     // Phase 7: Bottom Row Words
-    { type: 'word', name: 'Exercise 7: Bottom Row Words (30+ words)', 
+    { type: 'word', name: 'Exercise 7: Bottom Row Words', 
       instruction: 'Bottom Row Words (like: zebra zip wax box cvbnm base calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box)', 
-      sequence: 'zebra zip wax box cvbnm base calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box ' },
+      sequence: 'zebra zip wax box calm mix next man vice zero cut come max vex zx base box man mix zinc cave next max base comma box ' },
 
     // Phase 8: Upper Row Words
-    { type: 'word', name: 'Exercise 8: Upper Row Words (30+ words)', 
+    { type: 'word', name: 'Exercise 8: Upper Row Words', 
       instruction: 'Upper Row Words (like: quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route)',
       sequence: 'quiet wire tree pure type put root your pipe open oil tear trip port power route out top tour true were wet up oil pipe year open tear trip your out port power route ' },
 
@@ -480,11 +595,15 @@ let tutorCurrentSequence = '';
 let tutorCurrentIndex = 0;
 let tutorErrors = 0;
 let isTutorActive = false;
+let tutorStartTime = null;
+let totalCorrectChars = 0;
+let tutorTimerInterval = null;
 
 const tutorStatus = document.getElementById('tutorStatus');
 const tutorInput = document.getElementById('tutorInput');
 const tutorBtn = document.getElementById('tutorBtn');
 const tutorTextDisplay = document.getElementById('tutorTextDisplay');
+const tutorStats = document.getElementById('tutorStats');
 
 
 // Global state for random key mode
@@ -492,6 +611,31 @@ let requiredRandomKey = '';
 let randomKeySequence = [];
 let randomKeyIndex = 0;
 const RANDOM_KEY_TOTAL = 25; // Limiting the random keys to 25
+
+// --- Tutor Utility Functions ---
+
+function calculateTutorStats() {
+    if (!tutorStartTime) return { wpm: 0, errors: 0, time: 0 };
+    const timeElapsedSeconds = (new Date().getTime() - tutorStartTime) / 1000;
+    const minutes = timeElapsedSeconds / 60;
+    
+    // WPM calculation: (Correct Characters / 5) / Minutes
+    const wpm = minutes > 0 ? Math.round((totalCorrectChars / 5) / minutes) : 0;
+    
+    tutorStats.innerText = `WPM: ${wpm} | Errors: ${tutorErrors} | Time: ${Math.floor(timeElapsedSeconds)}s`;
+}
+
+function startTutorTimer() {
+    if (tutorTimerInterval) clearInterval(tutorTimerInterval);
+    tutorStartTime = new Date().getTime();
+    calculateTutorStats(); // Initial update
+    tutorTimerInterval = setInterval(calculateTutorStats, 1000);
+}
+
+function stopTutorTimer() {
+    if (tutorTimerInterval) clearInterval(tutorTimerInterval);
+    tutorTimerInterval = null;
+}
 
 // --- Logic for Random Key Mode (Exercise 5) ---
 
@@ -513,8 +657,12 @@ function startRandomKeyMode(keys) {
     randomKeySequence = generateRandomKeys(keys);
     randomKeyIndex = 0;
     requiredRandomKey = randomKeySequence[0];
-
+    tutorStartTime = null; // Start timer on first keypress
+    totalCorrectChars = 0;
+    tutorErrors = 0;
+    
     updateRandomKeyDisplay();
+    tutorStats.innerText = 'WPM: 0 | Errors: 0 | Time: 0s';
     
     speak(`Random key drill started. Press the key: ${requiredRandomKey}`, 'en-IN', 1.2);
 }
@@ -524,9 +672,8 @@ function updateRandomKeyDisplay() {
     
     let displayHtml = '';
     for(let i=0; i<randomKeySequence.length; i++) {
-        const key = randomKeySequence[i];
-        // For shift keys, show the symbol not the word 'shift'
-        const displayKey = (key === ';') ? ';' : (key === ',') ? ',' : (key === '.') ? '.' : (key === '/') ? '/' : (key === '[') ? '[' : (key === ']') ? ']' : (key === '\\') ? '\\' : key;
+        // Handle special characters for speaking/display
+        const displayKey = randomKeySequence[i].replace(';', 'semicolon').replace(',', 'comma').replace('.', 'dot').replace('/', 'slash').replace('[', 'left bracket').replace(']', 'right bracket').replace('\\', 'backslash');
         
         if (i < randomKeyIndex) {
             displayHtml += `<span class="highlight-typed-tutor-correct">${displayKey}</span>`;
@@ -545,26 +692,36 @@ function updateRandomKeyDisplay() {
 function updateTutorTextDisplay() {
     // Only for 'drill' and 'word' types
     const sequence = tutorCurrentSequence;
-    const typedPart = sequence.substring(0, tutorCurrentIndex);
-    const currentPart = sequence[tutorCurrentIndex] || '';
-    const remainingPart = sequence.substring(tutorCurrentIndex + 1);
+    const currentInput = tutorInput.value;
 
-    let typedHtml = '';
-    for (let i = 0; i < typedPart.length; i++) {
-        // Simple comparison: check if the character in the input matches the required character
-        const charMatches = tutorInput.value.length > i && tutorInput.value[i] === typedPart[i];
-        
-        if (charMatches) {
-            typedHtml += `<span class="highlight-typed-tutor-correct">${typedPart[i]}</span>`;
+    let displayHtml = '';
+    let isError = false;
+
+    for (let i = 0; i < sequence.length; i++) {
+        const requiredChar = sequence[i];
+        const typedChar = currentInput[i];
+
+        if (i < tutorCurrentIndex) {
+            // Already typed and confirmed correct
+            displayHtml += `<span class="highlight-typed-tutor-correct">${requiredChar}</span>`;
+        } else if (i === tutorCurrentIndex) {
+            // Current required character
+            displayHtml += `<span class="highlight-current-tutor">${requiredChar}</span>`;
+        } else if (i < currentInput.length) {
+            // User typed ahead - mark as error if it doesn't match the sequence
+            if (requiredChar !== typedChar && !isError) {
+                isError = true;
+                displayHtml += `<span class="highlight-typed-tutor-error">${requiredChar}</span>`;
+            } else {
+                 displayHtml += requiredChar;
+            }
         } else {
-             // This branch mostly handles the visual if the user types ahead/incorrectly and the input hasn't been reverted yet
-            typedHtml += `<span class="highlight-typed-tutor-error">${typedPart[i]}</span>`;
+            // Remaining sequence
+            displayHtml += requiredChar;
         }
     }
-
-    const currentHtml = `<span class="highlight-current-tutor">${currentPart}</span>`;
     
-    tutorTextDisplay.innerHTML = `${typedHtml}${currentHtml}${remainingPart}`;
+    tutorTextDisplay.innerHTML = displayHtml;
 }
 
 function startTutor() {
@@ -579,21 +736,24 @@ function startTutor() {
 
 function stopTutor() {
     isTutorActive = false;
+    stopTutorTimer();
     tutorInput.disabled = true;
     tutorBtn.innerText = '▶ Start Tutor';
-    tutorStatus.innerText = 'ट्यूटर रुका हुआ है। फिर से शुरू करने के लिए Start Tutor दबाएँ।';
+    tutorStatus.innerText = 'Tutor Stopped. Press Start Tutor to resume.';
     tutorTextDisplay.innerText = 'Welcome to the Typing Tutor. Press Start to begin Exercise 1.';
-    speak('ट्यूटर रुक गया।');
+    tutorStats.innerText = 'WPM: 0 | Errors: 0 | Time: 0s (Stopped)';
+    speak('Tutor stopped.');
 }
 
 function loadTutorExercise(index) {
     if (index >= tutorExercises.length) {
-        tutorStatus.innerText = '🎉 अभ्यास पूरा हुआ! आपने सभी 11 अभ्यास पूरे कर लिए हैं।';
+        tutorStatus.innerText = '🎉 All Exercises Complete! You have finished all 11 exercises.';
         tutorTextDisplay.innerHTML = 'All Exercises Complete!';
-        speak('अभ्यास पूरा हुआ आपने सभी अभ्यास पूरे कर लिए हैं।');
+        speak('All exercises complete. Congratulations!');
         isTutorActive = false;
         tutorInput.disabled = true;
         tutorBtn.innerText = 'Restart Tutor';
+        stopTutorTimer();
         return;
     }
 
@@ -602,6 +762,8 @@ function loadTutorExercise(index) {
     tutorCurrentIndex = 0;
     tutorInput.value = '';
     tutorErrors = 0;
+    totalCorrectChars = 0;
+    stopTutorTimer();
     
     tutorStatus.innerText = `${exercise.name}: ${exercise.instruction}`;
 
@@ -610,42 +772,44 @@ function loadTutorExercise(index) {
     } else {
         tutorInput.disabled = false;
         tutorInput.focus();
+        tutorStartTime = null; // Start timer on first keypress
         updateTutorTextDisplay();
+        tutorStats.innerText = 'WPM: 0 | Errors: 0 | Time: 0s (Start Typing)';
+
         // Speak the main instruction and then the first key/word cue
-        speak(`अभ्यास ${index + 1} शुरू ${exercise.name}। ${exercise.instruction}`, 'hi-IN', 0.85);
+        speak(`Starting Exercise ${index + 1}. ${exercise.name}. ${exercise.instruction}`, 'en-US', 0.85);
         setTimeout(() => {
-            if (exercise.type === 'drill') {
-                const firstChar = tutorCurrentSequence[0];
-                speak(`पहला अक्षर है ${firstChar}`, 'hi-IN', 1.0);
-            } else if (exercise.type === 'word') {
-                const firstWord = tutorCurrentSequence.split(' ')[0];
-                speak(`पहला शब्द है ${firstWord}`, 'en-IN', 1.0);
-            }
+            const firstSegment = tutorCurrentSequence.trim().split(' ')[0] || tutorCurrentSequence[0];
+            speak(`The first segment is ${firstSegment}`, 'en-US', 1.0);
         }, 5000);
     }
 }
 
 // --- Key Event Listeners ---
 
-// 1. Handle Random Key Mode (Exercise 5) using keydown for single-char check
+// 1. Handle Random Key Mode (Exercise 5)
 tutorInput.addEventListener('keydown', (e) => {
     if (!isTutorActive || tutorExercises[currentTutorExIndex].type !== 'random_key') return;
     
+    if (tutorStartTime === null) startTutorTimer();
+
     const typedKey = e.key.toLowerCase();
     
-    // Allow special keys like Shift, Ctrl, Alt, F2, Tab, Escape, Enter to be pressed without consequence
-    if (['shift', 'control', 'alt', 'meta', 'f2', 'tab', 'escape', 'enter'].includes(typedKey)) return;
+    // Ignore function, control, meta keys etc.
+    if (['shift', 'control', 'alt', 'meta', 'f2', 'tab', 'escape', 'enter', 'capslock'].includes(typedKey) || typedKey.startsWith('f')) return;
 
     e.preventDefault(); // Stop the key from being typed into the input field
 
     // Check if the pressed key is the required key
     if (typedKey === requiredRandomKey) {
         randomKeyIndex++;
+        totalCorrectChars++;
         
         if (randomKeyIndex >= randomKeySequence.length) {
             // Exercise complete
-            tutorStatus.innerText = `✅ सही! ${tutorExercises[currentTutorExIndex].name} पूरा हुआ। गलतियाँ: ${tutorErrors}। अगले अभ्यास पर जा रहे हैं।`;
-            speak(`सही! अभ्यास पूरा हुआ।`, 'hi-IN');
+            tutorStatus.innerText = `✅ Correct! ${tutorExercises[currentTutorExIndex].name} finished. Errors: ${tutorErrors}. Moving to next exercise.`;
+            speak(`Correct! Exercise complete.`, 'en-US');
+            stopTutorTimer();
             currentTutorExIndex++;
             setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
             return;
@@ -654,20 +818,23 @@ tutorInput.addEventListener('keydown', (e) => {
         // Advance to next key
         requiredRandomKey = randomKeySequence[randomKeyIndex];
         tutorStatus.innerText = `✅ Good! Next key: ${requiredRandomKey}`;
-        speak(`Good`, 'en-IN', 1.5);
-        setTimeout(() => speak(requiredRandomKey, 'en-IN', 1.5), 500);
+        speak(`Good`, 'en-US', 1.5);
+        setTimeout(() => speak(requiredRandomKey, 'en-US', 1.5), 500);
     } else {
         tutorErrors++;
         tutorStatus.innerText = `❌ Error! You pressed '${typedKey}'. Correct key is: '${requiredRandomKey}'`;
-        speak(`Error press ${requiredRandomKey}`, 'en-IN', 1.5);
+        speak(`Error, press ${requiredRandomKey}`, 'en-US', 1.5);
     }
 
     updateRandomKeyDisplay();
+    calculateTutorStats();
 });
 
 // 2. Handle Drill/Word Modes using input for sequence check
 tutorInput.addEventListener('input', (e) => {
     if (!isTutorActive || tutorExercises[currentTutorExIndex].type === 'random_key') return;
+
+    if (tutorStartTime === null) startTutorTimer();
 
     const typedValue = tutorInput.value;
     const requiredChar = tutorCurrentSequence[tutorCurrentIndex];
@@ -675,26 +842,29 @@ tutorInput.addEventListener('input', (e) => {
     // Error condition: User typed a wrong character
     if (typedValue.length > 0 && typedValue[typedValue.length - 1] !== requiredChar) {
         tutorErrors++;
-        tutorStatus.innerText = `❌ ग़लत! आपने '${typedValue[typedValue.length - 1]}' टाइप किया। सही अक्षर '${requiredChar}' है।`;
+        tutorStatus.innerText = `❌ Wrong! You typed '${typedValue[typedValue.length - 1]}'. The correct character is '${requiredChar}'.`;
         
         // Revert input to the correct position (before the error)
         tutorInput.value = typedValue.substring(0, tutorCurrentIndex);
 
-        speak(`ग़लत! सही अक्षर है ${requiredChar}`, 'hi-IN');
+        speak(`Wrong! Correct character is ${requiredChar}`, 'en-US');
         updateTutorTextDisplay();
+        calculateTutorStats();
         return;
     }
     
     // Correct character typed
     if (typedValue.length === tutorCurrentIndex + 1 && typedValue[tutorCurrentIndex] === requiredChar) {
+        totalCorrectChars++;
         tutorCurrentIndex++;
         
         if (tutorCurrentIndex === tutorCurrentSequence.length) {
             // Exercise complete
-            tutorStatus.innerText = `✅ सही! ${tutorExercises[currentTutorExIndex].name} पूरा हुआ। गलतियाँ: ${tutorErrors}। अगले अभ्यास पर जा रहे हैं।`;
-            speak(`सही! अभ्यास पूरा हुआ।`, 'hi-IN');
+            tutorStatus.innerText = `✅ Correct! ${tutorExercises[currentTutorExIndex].name} finished. Errors: ${tutorErrors}. Moving to next exercise.`;
+            speak(`Correct! Exercise complete.`, 'en-US');
+            stopTutorTimer();
+            calculateTutorStats();
             currentTutorExIndex++;
-            tutorInput.value = ''; // Clear for next exercise
             setTimeout(() => loadTutorExercise(currentTutorExIndex), 1500);
             return;
         }
@@ -706,15 +876,16 @@ tutorInput.addEventListener('input', (e) => {
             const nextSegmentMatch = tutorCurrentSequence.substring(tutorCurrentIndex + 1).match(/\S+/);
             if (nextSegmentMatch) {
                 const nextSegment = nextSegmentMatch[0];
-                speak(nextSegment, 'en-IN', 1.2); 
+                speak(nextSegment, 'en-US', 1.2); 
             }
         } else {
              // Speak the next key only if it's not a space
-            speak(`अगला ${nextChar}`, 'hi-IN', 1.2);
+            speak(nextChar, 'en-US', 1.2);
         }
     }
     
     updateTutorTextDisplay();
+    calculateTutorStats();
 });
 
 tutorBtn.addEventListener('click', ()=>{
@@ -725,6 +896,14 @@ tutorBtn.addEventListener('click', ()=>{
     }
 });
 
+function initializeTypingTutor() {
+    tutorInput.addEventListener('input', (e) => {
+        if (!isTutorActive || tutorExercises[currentTutorExIndex].type === 'random_key') return;
+        // The event listener is attached globally above, but this confirms the flow
+        // The 'input' and 'keydown' handlers cover the logic.
+    });
+}
+
 
 /* ==================== Typing WPM Test (New Tool) ==================== */
 const wpmText = "The quick brown fox jumps over the lazy dog this is a test to check your typing speed and accuracy please type the words as fast as you can to get your words per minute score practice every day to increase your proficiency and efficiency in all data entry tasks";
@@ -732,8 +911,8 @@ let wpmStartTime;
 let wpmWordIndex = 0;
 let wpmWords = [];
 let wpmErrors = 0;
-let correctCharacters = 0; 
-let fullTypedCharacters = 0; 
+let wpmCorrectCharacters = 0; 
+let wpmFullTypedCharacters = 0; 
 
 const wpmInput = document.getElementById('wpmInput');
 const wpmTextDiv = document.getElementById('wpmText');
@@ -741,13 +920,13 @@ const wpmResultsDiv = document.getElementById('wpmResults');
 const wpmStartBtn = document.getElementById('wpmStartBtn');
 
 function calculateWPM() {
-    if (!wpmStartTime) return { wpm: 0, accuracy: 0 };
+    if (!wpmStartTime) return { wpm: 0, accuracy: 0, errors: 0, time: 0 };
 
     const timeElapsedSeconds = (new Date().getTime() - wpmStartTime) / 1000;
     const minutes = timeElapsedSeconds / 60;
     
-    const netWPM = Math.round((correctCharacters / 5) / minutes);
-    const accuracy = fullTypedCharacters > 0 ? ((correctCharacters / fullTypedCharacters) * 100).toFixed(1) : 0;
+    const netWPM = minutes > 0 ? Math.round((wpmCorrectCharacters / 5) / minutes) : 0;
+    const accuracy = wpmFullTypedCharacters > 0 ? ((wpmCorrectCharacters / wpmFullTypedCharacters) * 100).toFixed(1) : 0;
     
     return { wpm: netWPM, errors: wpmErrors, time: Math.floor(timeElapsedSeconds), accuracy: accuracy };
 }
@@ -756,17 +935,17 @@ function resetWPMTest() {
     wpmWords = wpmText.split(' ');
     wpmWordIndex = 0;
     wpmErrors = 0;
-    correctCharacters = 0; 
-    fullTypedCharacters = 0; 
+    wpmCorrectCharacters = 0; 
+    wpmFullTypedCharacters = 0; 
     wpmStartTime = null;
     wpmInput.value = '';
     wpmInput.disabled = false;
     wpmStartBtn.innerText = 'Restart WPM Test';
-    wpmResultsDiv.innerText = 'WPM: 0 | Errors: 0 | Time: 0s';
+    wpmResultsDiv.innerText = 'WPM: 0 | Errors: 0 | Time: 0s | Acc: 0%';
     
     wpmTextDiv.innerHTML = `<span id="wpmCurrentWord" style="background-color: yellow; padding: 2px;">${wpmWords[0]}</span> ${wpmWords.slice(1).join(' ')}`;
     wpmInput.focus();
-    speak("WPM test started Type the highlighted word");
+    speak("WPM test started. Type the highlighted word.");
 }
 
 function updateWPMDisplay() {
@@ -780,22 +959,23 @@ function checkWPMInput(e) {
     const typedValue = wpmInput.value;
     const currentWord = wpmWords[wpmWordIndex];
     
-    fullTypedCharacters = wpmWords.slice(0, wpmWordIndex).join(' ').length + (wpmWordIndex > 0 ? wpmWordIndex : 0); 
-    fullTypedCharacters += typedValue.length; 
-
+    // Total characters for accuracy calculation
+    wpmFullTypedCharacters = wpmWords.slice(0, wpmWordIndex).reduce((sum, word) => sum + word.length + 1, 0); 
+    wpmFullTypedCharacters += typedValue.length; 
+    
     // Check for word completion (space pressed after correct word)
     if (typedValue.endsWith(' ') && typedValue.trim() === currentWord) {
         
-        correctCharacters += currentWord.length + 1; 
+        wpmCorrectCharacters += currentWord.length + 1; // +1 for the space
 
         wpmWordIndex++;
         wpmInput.value = '';
         
         if (wpmWordIndex < wpmWords.length) {
-            const typedPart = `<span style="color: green">${wpmWords.slice(0, wpmWordIndex).join(' ')}</span>`;
+            const typedPart = `<span style="color: green">${wpmWords.slice(0, wpmWordIndex).join(' ')} </span>`;
             const after = wpmWords.slice(wpmWordIndex + 1).join(' ');
             
-            wpmTextDiv.innerHTML = `${typedPart} <span id="wpmCurrentWord" style="background-color: yellow; padding: 2px;"> ${wpmWords[wpmWordIndex]}</span> ${after}`;
+            wpmTextDiv.innerHTML = `${typedPart}<span id="wpmCurrentWord" style="background-color: yellow; padding: 2px;">${wpmWords[wpmWordIndex]}</span> ${after}`;
             
             speak(wpmWords[wpmWordIndex]);
         } else {
@@ -817,7 +997,8 @@ function checkWPMInput(e) {
                     localCorrectChars++;
                 } else {
                     html += `<span style="color: red;">${char}</span>`;
-                    if(e.inputType === 'insertText' && i === typedTrimmed.length - 1) {
+                    // Increment error count only on the first mistake for a character
+                    if(e.inputType === 'insertText' && typedTrimmed.length - 1 === i) {
                          wpmErrors++;
                     }
                 }
@@ -830,8 +1011,9 @@ function checkWPMInput(e) {
              currentWordSpan.innerHTML = html;
         }
 
-        correctCharacters = wpmWords.slice(0, wpmWordIndex).reduce((sum, word) => sum + word.length + 1, 0);
-        correctCharacters += localCorrectChars;
+        // Recalculate total correct characters based on previous words and current word
+        wpmCorrectCharacters = wpmWords.slice(0, wpmWordIndex).reduce((sum, word) => sum + word.length + 1, 0);
+        wpmCorrectCharacters += localCorrectChars;
     }
     
     updateWPMDisplay();
@@ -841,39 +1023,51 @@ function finishWPMTest() {
     const results = calculateWPM();
     
     wpmInput.disabled = true;
-    wpmInput.oninput = null;
+    wpmInput.removeEventListener('input', checkWPMInput);
     wpmTextDiv.innerHTML = `<span style="color: green">${wpmWords.join(' ')}</span>`;
 
     const finalResults = `Test Finished! WPM: ${results.wpm}. Errors: ${results.errors}. Time: ${results.time}s. Accuracy: ${results.accuracy}%.`;
     wpmResultsDiv.innerText = finalResults;
-    speak(`Test finished Your words per minute is ${results.wpm} with ${results.accuracy} percent accuracy`);
+    speak(`Test finished. Your words per minute is ${results.wpm} with ${results.accuracy} percent accuracy.`);
     wpmStartTime = null;
 }
 
-wpmStartBtn.addEventListener('click', resetWPMTest);
-wpmInput.addEventListener('input', checkWPMInput);
+function initializeWPMTest() {
+    wpmStartBtn.addEventListener('click', resetWPMTest);
+    wpmInput.addEventListener('input', checkWPMInput);
+}
 
 
-/* ==================== QR Code Generator (New Tool) ==================== */
+/* ==================== QR Code Generator ==================== */
+const qrOutput = document.getElementById('qrOutput');
+let qrcodeInstance = null; // Store QR code instance
+
 document.getElementById('qrGenerateBtn').addEventListener('click', ()=>{
     const text = document.getElementById('qrInput').value.trim();
-    const qrOutput = document.getElementById('qrOutput');
     
     if(!text){
         qrOutput.innerHTML = 'Enter text to generate QR code';
         speak('Enter text to generate QR code');
         return;
     }
+
+    qrOutput.innerHTML = ''; // Clear previous output
     
-    const encodedText = encodeURIComponent(text);
-    const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encodedText}`;
-    
-    qrOutput.innerHTML = `<p>QR Code generated:</p><img src="${qrUrl}" alt="QR Code for ${text}" style="width:200px;height:200px;"><p><a href="${qrUrl}" target="_blank">View Image</a></p>`;
+    // Create new QR Code
+    qrcodeInstance = new QRCode(qrOutput, {
+        text: text,
+        width: 150,
+        height: 150,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
     speak('QR Code generated successfully');
 });
 
 
-/* ==================== Text to Speech (New Tool) ==================== */
+/* ==================== Text to Speech ==================== */
 document.getElementById('ttsSpeakBtn').addEventListener('click', ()=>{
     const text = document.getElementById('ttsInput').value;
     if(text){
@@ -884,11 +1078,10 @@ document.getElementById('ttsSpeakBtn').addEventListener('click', ()=>{
 });
 
 
-/* ==================== Translator (New Tool) ==================== */
+/* ==================== Translator ==================== */
 document.getElementById('translateBtn').addEventListener('click', ()=>{
     const text = document.getElementById('translateInput').value.trim();
     if(!text){
-        document.getElementById('translateOutput').innerText = 'Enter text to translate';
         speak('Enter text to translate');
         return;
     }
@@ -899,7 +1092,6 @@ document.getElementById('translateBtn').addEventListener('click', ()=>{
     const translateUrl = `https://translate.google.com/?sl=${sourceLang}&tl=${targetLang}&text=${encodeURIComponent(text)}&op=translate`;
     window.open(translateUrl, '_blank');
     
-    document.getElementById('translateOutput').innerText = 'Opening translation result in a new tab...';
     speak('Opening translation result in a new tab');
 });
 
@@ -927,12 +1119,16 @@ async function displayPdfPage(pageNum){
     const txt = await page.getTextContent();
     const pageText = txt.items.map(i=>i.str).join(' ');
     
-    const cleanedText = pageText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    // Simple cleaning
+    const cleanedText = pageText.replace(/\s+/g, ' ').trim();
     
-    docOutput.innerText = `--- PAGE ${pageNum} ---\n\n` + (cleanedText || `Page ${pageNum} seems empty`);
+    docOutput.innerText = `--- PAGE ${pageNum} of ${totalPages} ---\n\n` + (cleanedText || `Page ${pageNum} seems empty`);
     pageInfo.innerText = `Page ${pageNum} of ${totalPages}`;
+    autoReadOCR(cleanedText || '');
   }catch(e){
-    docOutput.innerText = 'Error reading page';
+    docOutput.innerText = 'Error reading page. PDF might be image-based.';
+    console.error("PDF Page Read Error:", e);
+    speak('Error reading page. PDF might be image-based.');
   }
 }
 
@@ -943,32 +1139,45 @@ goPageBtn.addEventListener('click', ()=> {
 
 processBtn.addEventListener('click', async ()=>{
   const f = fileInput.files[0];
-  if(!f){ docOutput.innerText = 'Select a file first'; return; }
-  docOutput.innerText = 'Processing (this may take a few seconds)';
+  if(!f){ docOutput.innerText = 'Select a file first'; speak('Select a file first'); return; }
+  docOutput.innerText = 'Processing file (this may take a few seconds)';
+  speak('Processing file. This may take a few seconds.');
   
+  pdfDoc = null; // Clear previous PDF
+  pdfControls.style.display = 'none';
+
   if(f.type === 'application/pdf'){
     try{
       const ab = await f.arrayBuffer();
-      pdfDoc = await pdfjsLib.getDocument({data:ab, maxImageSize: 1024}).promise; 
+      // Increase maxImageSize for better OCR quality on image-based PDFs
+      pdfDoc = await pdfjsLib.getDocument({data:ab, maxImageSize: 2048}).promise; 
       totalPages = pdfDoc.numPages;
       pdfControls.style.display = 'inline-flex';
       pageNumberInput.max = totalPages;
+      pageNumberInput.value = 1;
       displayPdfPage(1);
     }catch(e){
       console.error(e);
-      docOutput.innerText = 'PDF read error';
+      docOutput.innerText = 'PDF read error. File might be corrupted or password protected.';
+      speak('PDF read error. File might be corrupted.');
     }
     return;
   }
   if(f.type.startsWith('image/')){
     if(typeof Tesseract === 'undefined'){ docOutput.innerText = 'OCR library not loaded'; return; }
     try{
+      docOutput.innerText = 'Starting OCR (Tesseract): Loading worker...';
       const worker = Tesseract.createWorker({ 
-          logger: m => console.log(m),
+          logger: m => {
+            const status = m.status.replace(/_/g, ' ');
+            const progress = m.progress ? ` (${(m.progress * 100).toFixed(0)}%)` : '';
+            docOutput.innerText = `OCR Status: ${status}${progress}`;
+          },
           preserveInterwordSpaces: true 
       });
       await worker.load();
-      await worker.loadLanguage('eng+hin+guj');
+      // Added all requested languages
+      await worker.loadLanguage('eng+hin+guj'); 
       await worker.initialize('eng+hin+guj');
       await worker.setParameters({
         tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
@@ -978,23 +1187,26 @@ processBtn.addEventListener('click', async ()=>{
       const { data: { text } } = await worker.recognize(f);
       await worker.terminate();
       
-      const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""); 
-      docOutput.innerText = cleanedText || 'No text recognized';
+      const cleanedText = text.replace(/\s+/g, ' ').trim();
+      docOutput.innerText = cleanedText || 'No clear text recognized. Try a clearer image.';
       autoReadOCR(cleanedText || '');
     }catch(err){
       console.error(err);
-      docOutput.innerText = 'OCR failed Try a clearer image';
+      docOutput.innerText = 'OCR failed. Try a clearer image or a different language setting.';
+      speak('OCR failed.');
     }
     return;
   }
-  docOutput.innerText = 'Unsupported file type';
+  docOutput.innerText = 'Unsupported file type. Only Image (JPG, PNG) and PDF are supported.';
+  speak('Unsupported file type. Only Image and PDF are supported.');
 });
 
 /* ======== language detection & reading ======== */
 function detectLang(text){
   if(!text) return 'en-IN';
-  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN';
-  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN';
+  if(/[\u0A80-\u0AFF]/.test(text)) return 'gu-IN'; // Check for Gujarati script
+  if(/[\u0900-\u097F]/.test(text)) return 'hi-IN'; // Check for Devanagari (Hindi) script
+  // Fallback to English if predominantly Latin characters
   if(/[A-Za-z]/.test(text)) return 'en-IN';
   return 'en-IN';
 }
@@ -1003,7 +1215,7 @@ function speakLongText(text, lang){
   if(!('speechSynthesis' in window)){ document.getElementById('readStatus').innerText = 'Speech not supported'; return; }
   const forced = document.getElementById('forceLang').value;
   const useLang = forced || lang || detectLang(text);
-  document.getElementById('readStatus').innerText = `Reading ${useLang}`;
+  document.getElementById('readStatus').innerText = `Reading in ${useLang}`;
   
   const cleaned = text.replace(/\s+/g,' ').trim();
   const chunkSize = 300;
@@ -1014,7 +1226,7 @@ function speakLongText(text, lang){
     let cutPoint = i + chunkSize;
     if (cleaned.length > i + chunkSize) {
         let lastSpace = cleaned.lastIndexOf(' ', i + chunkSize);
-        if (lastSpace > i + chunkSize - 50) { 
+        if (lastSpace > i + chunkSize - 50 && lastSpace > i) { 
             cutPoint = lastSpace;
         }
     }
@@ -1028,7 +1240,11 @@ function speakLongText(text, lang){
     u.lang = useLang;
     u.rate = (useLang === 'en-IN')?0.95:0.9;
     u.onend = ()=>{ idx++; setTimeout(playChunk, 200); };
-    u.onerror = ()=>{ idx++; setTimeout(playChunk, 200); };
+    u.onerror = (event)=>{ 
+      console.error('Speech synthesis error:', event.error);
+      idx++; 
+      setTimeout(playChunk, 200); 
+    };
     speechSynthesis.speak(u);
   }
   try{ speechSynthesis.cancel(); }catch(e){}
@@ -1070,252 +1286,125 @@ locBtn.addEventListener('click', ()=>{
     const lon = pos.coords.longitude.toFixed(6);
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
     locOut.innerHTML = `Lat ${lat} Lon ${lon} — <a href="${mapsUrl}" target="_blank">Open in Google Maps</a>`;
-    speak(`Location found Latitude ${lat} Longitude ${lon}`);
+    speak(`Location found. Latitude ${lat} Longitude ${lon}`);
   }, err=>{
     let msg = 'An unknown error occurred';
-    if(err.code === 1) msg = 'Permission denied Please allow location access in browser settings';
-    else if(err.code === 2) msg = 'Position unavailable Unable to determine location';
+    if(err.code === 1) msg = 'Permission denied. Please allow location access in browser settings';
+    else if(err.code === 2) msg = 'Position unavailable. Unable to determine location';
     else if(err.code === 3) msg = 'Request timed out';
     
-    locOut.innerText = `Error ${msg}`;
-    speak(`Location error ${msg}`);
+    locOut.innerText = `Error: ${msg}`;
+    speak(`Location error: ${msg}`);
   }, options);
 });
 
 /* ==================== Games ==================== */
+
 // Hand Cricket Logic
 const hcStatus = document.getElementById('hcStatus');
 const hcInput = document.getElementById('hcInput');
 const hcPlay = document.getElementById('hcPlay');
 const hcReset = document.getElementById('hcReset');
-const handBtn = document.getElementById('handBtn');
-const handPanel = document.getElementById('handPanel');
 
 let hcTarget = 0;
 let hcScore = 0;
 let hcState = 'batting'; // 'batting' or 'bowling'
 
-handBtn.addEventListener('click', ()=>{
-    const isVisible = handPanel.style.display === 'block';
-    handPanel.style.display = isVisible ? 'none' : 'block';
-    if (!isVisible) resetHandCricket();
-});
-
 function resetHandCricket(){
     hcTarget = 0;
     hcScore = 0;
     hcState = 'batting';
-    hcStatus.innerText = 'You are batting Enter a number 1-6 to score';
+    hcStatus.innerText = 'You are batting. Enter a number 1-6 to score.';
     hcInput.value = '';
-    speak('Hand Cricket reset You are batting Enter a number 1 to 6');
+    speak('Hand Cricket reset. You are batting. Enter a number 1 to 6.');
 }
 
-hcReset.addEventListener('click', resetHandCricket);
-
-hcPlay.addEventListener('click', ()=>{
-    if(hcState === 'finished') { speak('Game finished Please reset'); return; }
-    const playerRun = parseInt(hcInput.value);
-    if (isNaN(playerRun) || playerRun < 1 || playerRun > 6) {
-        hcStatus.innerText = 'Invalid input Enter a number between 1 and 6';
-        speak('Invalid input');
-        return;
-    }
-
-    const computerRun = Math.floor(Math.random() * 6) + 1;
-    hcInput.value = '';
-
-    if (hcState === 'batting') {
-        if (playerRun === computerRun) {
-            hcTarget = hcScore + 1;
-            hcScore = 0; 
-            hcState = 'bowling';
-            hcStatus.innerText = `Out You played ${playerRun} Computer bowled ${computerRun} Your total score is ${hcTarget - 1} Now computer is batting You are bowling Computer needs ${hcTarget} to win`;
-            speak(`Out Your score is ${hcTarget - 1} Computer needs ${hcTarget} to win You are bowling Enter a number 1 to 6`);
-        } else {
-            hcScore += playerRun;
-            hcStatus.innerText = `You scored ${playerRun} Computer bowled ${computerRun} Total score ${hcScore}`;
-            speak(`You scored ${playerRun} Total score ${hcScore}`);
+function initializeGames() {
+    // Hand Cricket
+    hcReset.addEventListener('click', resetHandCricket);
+    hcPlay.addEventListener('click', ()=>{
+        if(hcState === 'finished') { speak('Game finished. Please reset to play again.'); return; }
+        const playerRun = parseInt(hcInput.value);
+        if (isNaN(playerRun) || playerRun < 1 || playerRun > 6) {
+            hcStatus.innerText = 'Invalid input. Enter a number between 1 and 6.';
+            speak('Invalid input. Enter a number between 1 and 6.');
+            return;
         }
-    } else if (hcState === 'bowling') {
-        if (playerRun === computerRun) {
-            const runDiff = Math.abs(hcTarget - 1 - hcScore);
-            
-            if (hcScore < hcTarget - 1) {
-                hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} You won by ${runDiff} runs`;
-                speak(`Out Computer score ${hcScore} You won by ${runDiff} runs`);
+
+        const computerRun = Math.floor(Math.random() * 6) + 1;
+        hcInput.value = '';
+        hcInput.focus();
+
+        if (hcState === 'batting') {
+            if (playerRun === computerRun) {
+                hcTarget = hcScore + 1;
+                hcScore = 0; 
+                hcState = 'bowling';
+                hcStatus.innerText = `OUT! You played ${playerRun}, Computer bowled ${computerRun}. Your total score is ${hcTarget - 1}. Now computer is batting. You are bowling. Computer needs ${hcTarget} to win.`;
+                speak(`OUT! Your score is ${hcTarget - 1}. Computer needs ${hcTarget} to win. You are bowling. Enter a number 1 to 6.`);
             } else {
+                hcScore += playerRun;
+                hcStatus.innerText = `You scored ${playerRun}. Computer bowled ${computerRun}. Total score: ${hcScore}.`;
+                speak(`You scored ${playerRun}. Total score ${hcScore}.`);
+            }
+        } else if (hcState === 'bowling') {
+            if (playerRun === computerRun) {
+                const runDiff = Math.abs((hcTarget - 1) - hcScore);
                 
-                hcStatus.innerText = `Out Computer played ${computerRun} You bowled ${playerRun} Computer score ${hcScore} Target was ${hcTarget - 1} It was a tie. Game over.`;
-                speak(`It was a tie. Game over.`);
-            }
+                if (hcScore < hcTarget - 1) {
+                    hcStatus.innerText = `OUT! Computer score ${hcScore}. Target was ${hcTarget - 1}. YOU WON by ${runDiff} runs!`;
+                    speak(`OUT! Computer score ${hcScore}. You won by ${runDiff} runs.`);
+                } else if (hcScore === hcTarget - 1) {
+                     hcStatus.innerText = `OUT! Computer score ${hcScore}. Target was ${hcTarget - 1}. It was a TIE. Game over.`;
+                     speak(`It was a TIE. Game over.`);
+                } else {
+                     hcStatus.innerText = `OUT! Computer score ${hcScore}. Game over.`;
+                     speak(`Game over.`);
+                }
 
-            hcState = 'finished';
-
-        } else {
-            hcScore += computerRun;
-            if (hcScore >= hcTarget) {
-                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Target was ${hcTarget} Computer won`;
-                speak(`Computer won with score ${hcScore}`);
                 hcState = 'finished';
+
             } else {
-                const required = hcTarget - hcScore;
-                hcStatus.innerText = `Computer scored ${computerRun} Total computer score ${hcScore} Computer needs ${required} more runs to win`;
-                speak(`Computer scored ${computerRun} Needs ${required} more runs`);
+                hcScore += computerRun;
+                if (hcScore >= hcTarget) {
+                    hcStatus.innerText = `Computer scored ${computerRun}. Total computer score ${hcScore}. Target was ${hcTarget}. COMPUTER WON!`;
+                    speak(`Computer won with score ${hcScore}.`);
+                    hcState = 'finished';
+                } else {
+                    const required = hcTarget - hcScore;
+                    hcStatus.innerText = `Computer scored ${computerRun}. Total computer score ${hcScore}. Computer needs ${required} more runs to win.`;
+                    speak(`Computer scored ${computerRun}. Needs ${required} more runs.`);
+                }
             }
         }
+    });
+
+    // Snakes & Ladders (Simplified)
+    const snlStatus = document.getElementById('snlStatus');
+    const snlRoll = document.getElementById('snlRoll');
+    const snlReset = document.getElementById('snlReset');
+    const snlDice = document.getElementById('snlDice');
+
+    let snlPosition = 1;
+    const snlJumps = {
+        4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91, // Ladders
+        17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 // Snakes
+    };
+
+    function resetSnakesLadders(){
+        snlPosition = 1;
+        snlStatus.innerText = 'Your position is 1. Roll the dice to begin. First to 100 wins.';
+        snlDice.innerText = '-';
+        speak('Snakes and Ladders reset. Your position is 1.');
     }
-});
+    snlReset.addEventListener('click', resetSnakesLadders);
+    resetSnakesLadders(); // Initial setup
 
-// Snakes & Ladders (Simplified)
-const snlStatus = document.getElementById('snlStatus');
-const snlRoll = document.getElementById('snlRoll');
-const snlReset = document.getElementById('snlReset');
-const snlDice = document.getElementById('snlDice');
-const snlBtn = document.getElementById('snlBtn');
-const snlPanel = document.getElementById('snlPanel');
+    snlRoll.addEventListener('click', ()=>{
+        if(snlPosition >= 100) return;
+        const roll = Math.floor(Math.random() * 6) + 1;
+        snlDice.innerText = roll;
+        
+        let newPosition = snlPosition + roll;
 
-let snlPosition = 1;
-const snlJumps = {
-    4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91, // Ladders
-    17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 // Snakes
-};
-
-snlBtn.addEventListener('click', ()=>{
-    const isVisible = snlPanel.style.display === 'block';
-    snlPanel.style.display = isVisible ? 'none' : 'block';
-    if (!isVisible) resetSnakesLadders();
-});
-
-function resetSnakesLadders(){
-    snlPosition = 1;
-    snlStatus.innerText = 'Your position is 1 Roll the dice to begin First to 100 wins';
-    snlDice.innerText = '-';
-    speak('Snakes and Ladders reset Your position is 1');
-}
-snlReset.addEventListener('click', resetSnakesLadders);
-
-snlRoll.addEventListener('click', ()=>{
-    if(snlPosition >= 100) return;
-    const roll = Math.floor(Math.random() * 6) + 1;
-    snlDice.innerText = roll;
-    
-    let newPosition = snlPosition + roll;
-
-    if (newPosition > 100) {
-        snlStatus.innerText = `You rolled ${roll} but need exactly ${100 - snlPosition} to win You stay at ${snlPosition}`;
-        speak(`You rolled ${roll} but cannot move`);
-        return;
-    }
-    
-    let jumpMsg = '';
-    if (snlJumps[newPosition]) {
-        const finalPosition = snlJumps[newPosition];
-        if (finalPosition > newPosition) {
-            jumpMsg = ` Wow a Ladder from ${newPosition} to ${finalPosition}`;
-        } else {
-            jumpMsg = ` Oh no a Snake from ${newPosition} down to ${finalPosition}`;
-        }
-        newPosition = finalPosition;
-    }
-    
-    snlPosition = newPosition;
-
-    if (snlPosition === 100) {
-        snlStatus.innerText = `🎉 You rolled ${roll} and landed on 100 You win`;
-        speak(`You rolled ${roll} and landed on 100 You win`);
-        return;
-    }
-    
-    snlStatus.innerText = `You rolled ${roll} Your new position is ${snlPosition}${jumpMsg}`;
-    speak(`You rolled ${roll} New position ${snlPosition} ${jumpMsg}`);
-});
-
-// Ludo Race (Simplified one player vs three AI)
-const ludoStatus = document.getElementById('ludoStatus');
-const ludoRoll = document.getElementById('ludoRoll');
-const ludoReset = document.getElementById('ludoReset');
-const ludoScores = document.getElementById('ludoScores');
-const ludoBtn = document.getElementById('ludoBtn');
-const ludoPanel = document.getElementById('ludoPanel');
-
-let ludoPositions = { player: 0, ai1: 0, ai2: 0, ai3: 0 };
-const LUDO_END = 50;
-let ludoTurn = 'player';
-let ludoGameActive = true;
-
-ludoBtn.addEventListener('click', ()=>{
-    const isVisible = ludoPanel.style.display === 'block';
-    ludoPanel.style.display = isVisible ? 'none' : 'block';
-    if (!isVisible) resetLudo();
-});
-
-function resetLudo(){
-    ludoPositions = { player: 0, ai1: 0, ai2: 0, ai3: 0 };
-    ludoTurn = 'player';
-    ludoGameActive = true;
-    ludoStatus.innerText = 'Ludo Race reset First to 50 wins Your turn';
-    updateLudoScores();
-    speak('Ludo Race reset Your turn');
-}
-ludoReset.addEventListener('click', resetLudo);
-
-function updateLudoScores(){
-    ludoScores.innerHTML = `Player ${ludoPositions.player} | AI 1 ${ludoPositions.ai1} | AI 2 ${ludoPositions.ai2} | AI 3 ${ludoPositions.ai3}`;
-}
-
-function checkLudoWin(player){
-    if (ludoPositions[player] >= LUDO_END) {
-        ludoStatus.innerText = `${player.toUpperCase()} wins`;
-        speak(`${player.toUpperCase()} wins`);
-        ludoGameActive = false;
-        return true;
-    }
-    return false;
-}
-
-function rollLudoDice(){
-    return Math.floor(Math.random() * 6) + 1;
-}
-
-function handleAITurn(ai){
-    if(!ludoGameActive) return;
-    const roll = rollLudoDice();
-    ludoPositions[ai] += roll;
-    
-    if (checkLudoWin(ai)) return;
-    
-    ludoStatus.innerText = `It was ${ai.toUpperCase()}'s turn They rolled ${roll} New position ${ludoPositions[ai]} Your turn`;
-    updateLudoScores();
-    speak(`${ai.toUpperCase()} rolled ${roll} Your turn`);
-    
-    if(ludoGameActive) ludoTurn = 'player';
-}
-
-ludoRoll.addEventListener('click', ()=>{
-    if (!ludoGameActive || ludoTurn !== 'player') return;
-
-    const roll = rollLudoDice();
-    ludoPositions.player += roll;
-    
-    if (checkLudoWin('player')) return;
-
-    ludoStatus.innerText = `You rolled ${roll} Your new position is ${ludoPositions.player}`;
-    updateLudoScores();
-    speak(`You rolled ${roll} Your new position is ${ludoPositions.player}`);
-
-    ludoTurn = 'ai1';
-    setTimeout(() => handleAITurn('ai1'), 1500);
-    setTimeout(() => { if(ludoGameActive) handleAITurn('ai2'); }, 3000);
-    setTimeout(() => { if(ludoGameActive) handleAITurn('ai3'); }, 4500);
-});
-
-// Initial setup on load
-document.addEventListener('DOMContentLoaded', () => {
-    nextWord(); 
-    resetHandCricket();
-    resetSnakesLadders();
-    resetLudo();
-});
-</script>
-</body>
-</html>
+        if (newPosition > 100) {
