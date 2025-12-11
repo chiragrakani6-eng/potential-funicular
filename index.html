@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <!-- Google verification (placed at top of head as requested) -->
+  <meta name="google-site-verification" content="3eaXJGv-ZqmwYM_BjDHmI2YNI1l4AnqP8VIJcru710s" />
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Chirag Rakani Accessible Tools Hub</title>
+  <meta name="description" content="Accessible tools by Chirag Rakani — typing tutor, OCR, PDF/Image tools, games, location & social links">
+  <meta name="theme-color" content="#2c3e50">
+
+  <!-- external libs (kept for OCR / PDF / QR features) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f4f7fb; --card:#fff; --accent:#2c3e50; --accent2:#27ae60; --muted:#666; --accent-cta:#3b82f6
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI, Roboto, Arial, sans-serif;background:var(--bg);color:#111;line-height:1.45}
+    header{background:var(--accent);color:#fff;padding:14px 16px}
+    .container{max-width:980px;margin:18px auto;padding:0 14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:900px){.grid{grid-template-columns:320px 1fr}}
+    .card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    h1,h2,h3{margin:0 0 10px 0}
+    .small{font-size:0.95rem;color:var(--muted)}
+    .btn{background:var(--accent2);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer;min-width:120px;margin-right:8px}
+    .btn-alt{background:var(--accent-cta)}
+    .output{background:#fafafa;padding:12px;border-radius:6px;border:1px solid #e6e6e6;min-height:120px;white-space:pre-wrap;overflow:auto}
+    .typing-controls{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+    input[type="text"], input[type="number"], textarea, select{padding:10px;border-radius:6px;border:1px solid #ddd;width:100%}
+    footer{padding:14px;text-align:center;color:var(--muted)}
+    a.social{color:var(--accent);text-decoration:none;margin-right:8px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+
+    /* Hero styles */
+    .hero{display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#ffffff,#f7fbff);padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(44,62,80,0.06)}
+    .hero-row{display:flex;gap:14px;align-items:center}
+    .logo-badge{width:72px;height:72px;border-radius:12px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+    .hero-title{font-size:1.4rem;color:var(--accent);margin:0}
+    .hero-sub{color:var(--muted);margin:0}
+    .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .social-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+
+    /* responsive */
+    @media(min-width:720px){ .hero{flex-direction:row;align-items:center;justify-content:space-between} .hero-col{flex:1}}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:56px;height:56px;border-radius:10px;background:#fff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">CR</div>
+      <div>
+        <h1 style="font-size:1.05rem;margin:0">Chirag Rakani Accessible Tools & Games Hub</h1>
+        <div class="small">Typing, OCR, PDF/Image Reading, Games, and Utilities — accessible for everyone</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="mainContent" role="main">
+    <!-- Attractive Hero / Introduction -->
+    <section class="hero card" aria-labelledby="heroHeading">
+      <div class="hero-row">
+        <div class="logo-badge" aria-hidden="true">CR</div>
+        <div class="hero-col">
+          <h2 id="heroHeading" class="hero-title">नमस्ते — मैं Chirag Rakani</h2>
+          <p class="hero-sub">
+            मैं विजुअली इम्पेयर किए जाने वाले उपयोगकर्ताओं के लिए सरल, तेज़ और भरोसेमंद tools बनाता हूँ।
+            यहाँ आपको टाइपिंग ट्यूटर, OCR-आधारित डॉक्यूमेंट रीडर, इमेज/पीडीएफ टूल्स, उपयोगी यूटिलिटीज और छोटे गेम मिलेंगे —
+            सभी स्क्रीन-रीडर के अनुकूल और मोबाइल-फ्रेंडली।
+          </p>
+
+          <div class="hero-cta" role="region" aria-label="Get started">
+            <button class="btn" onclick="document.getElementById('typing-tutor-card').scrollIntoView({behavior:'smooth'})">शुरू करें — Typing Tutor</button>
+            <button class="btn btn-alt" onclick="document.getElementById('fileInput').focus()">OCR / PDF खोलें</button>
+          </div>
+
+          <div class="social-row" aria-label="Social links">
+            <span class="small" style="margin-right:8px;font-weight:600">Follow / Buy:</span>
+            <!-- Instagram -->
+            <a class="social" href="https://www.instagram.com/koli.chirag?igsh=cGNyaTIyNXQ1NWM2" target="_blank" rel="noopener noreferrer" aria-label="Instagram — Chirag">
+              Instagram
+            </a>
+            <!-- Facebook -->
+            <a class="social" href="https://www.facebook.com/share/1DH4fAcwqU/" target="_blank" rel="noopener noreferrer" aria-label="Facebook — Chirag">
+              Facebook
+            </a>
+            <!-- Amazon Book -->
+            <a class="social" href="https://www.amazon.in/dp/B0FXBS6X6Z/ref=cm_sw_r_as_gl_apa_gl_i_NFFK753K6FK4F891H3MT?linkCode=ml1&tag=chiragrakani9-21&linkId=c26819af71b220eee7166bcb96218d56" target="_blank" rel="noopener noreferrer" aria-label="Buy book on Amazon">
+              Amazon (Buy Book)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rest of site content (kept minimal here — paste your existing cards / sections below) -->
+    <article class="card" id="typing-tutor-card" style="margin-top:18px">
+      <h2>Azabat-Style Typing Tutor (11 Exercises)</h2>
+      <p class="small">Speed improved: Feedback is instant and pressed key is announced. Live WPM and error tracking included.</p>
+      <div id="tutorPanel">
+        <div id="tutorStatus" class="typing-box">Press Load Exercise or Start Tutor to begin</div>
+        <div id="tutorStats" class="tutor-stats">WPM: 0 | Errors: 0 | Time: 0s</div>
+        <p id="tutorTextDisplay" style="white-space: pre-wrap;">Welcome to the Typing Tutor. Use the menu below to select an exercise.</p>
+        <input id="tutorInput" type="text" placeholder="Start typing the sequence/words shown above" aria-label="Typing Tutor Input" disabled>
+      </div>
+      <div class="typing-controls" style="margin-top:10px">
+        <select id="tutorExSelect" aria-label="Select Typing Exercise" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; min-width: 200px;">
+        </select>
+        <button id="loadExBtn" class="btn btn-alt" style="min-width: 150px;">Load Selected Exercise</button>
+        <button id="tutorBtn" class="btn">▶ Start Tutor</button>
+      </div>
+    </article>
+
+    <!-- example: OCR card trigger (existing markup can be used) -->
+    <article class="card" style="margin-top:12px">
+      <h2>Document Reader (OCR & PDF Reading)</h2>
+      <p class="small">Upload an Image or PDF. OCR supports English, Hindi, and Gujarati.</p>
+      <input id="fileInput" type="file" accept="image/*, .pdf" style="margin-top:8px">
+      <div style="margin-top:8px" class="typing-controls">
+        <button id="processBtn" class="btn">📁 Process File</button>
+      </div>
+      <h3 style="margin-top:12px">Result Text:</h3>
+      <div id="doc-output" class="output" tabindex="0" aria-live="polite">Extracted text will appear here</div>
+    </article>
+
+    <footer class="container" style="margin-top:18px;">
+      <div class="small">Built by Chirag Rakani — Accessible Tools & Games Hub. For support: <a href="mailto:chiragrakani6@gmail.com">chiragrakani6@gmail.com</a></div>
+      <div style="margin-top:6px" class="small">Phone: 9737796825</div>
+    </footer>
+  </main>
+
+  <script>
+    // Smooth focus for CTA buttons
+    document.querySelectorAll('.hero-cta button').forEach(btn=>{
+      btn.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+      });
+    });
+
+    // Minimal QR and translate hooks (if you keep the other parts of your original code)
+    document.getElementById('processBtn')?.addEventListener('click', function(){
+      const f = document.getElementById('fileInput').files[0];
+      const out = document.getElementById('doc-output');
+      if(!f){ out.textContent = 'कृपया कोई इमेज या PDF अपलोड करें'; return; }
+      out.textContent = 'Processing file... (OCR will run if implemented)';
+      // existing OCR logic can attach here
+    });
+  </script>
+</body>
+</html>
