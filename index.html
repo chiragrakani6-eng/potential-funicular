@@ -1,77 +1,91 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- Google Verification -->
-<meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE_HERE" />
-
-<title>Chirag Rakani - Introduction</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f2f2f2;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        max-width: 800px;
-        margin: 40px auto;
-        background: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-    }
-    h1 {
-        text-align: center;
-        color: #333;
-    }
-    p {
-        font-size: 18px;
-        line-height: 1.6;
-    }
-    .links {
-        margin-top: 25px;
-        text-align: center;
-    }
-    .links a {
-        display: inline-block;
-        margin: 10px;
-        padding: 12px 20px;
-        font-size: 16px;
-        text-decoration: none;
-        color: #fff;
-        background: #007bff;
-        border-radius: 8px;
-    }
-    .links a:hover {
-        background: #0056b3;
-    }
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chirag Rakani - Accessible Web Developer</title>
+    <style>
+        /* Simple, accessible styling for better readability */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f4f4f4; /* Light background */
+            color: #333; /* Dark text */
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #0056b3;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .links {
+            list-style: none;
+            padding: 0;
+        }
+        .links li {
+            margin-bottom: 10px;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 0;
+            display: inline-block; /* Helps with focus/hover styles */
+        }
+        .links a:hover, .links a:focus {
+            text-decoration: underline;
+            outline: 2px solid #007bff; /* Important for keyboard accessibility */
+            outline-offset: 2px;
+        }
+    </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Chirag Rakani</h1><p>
-        Hello, I'm <b>Chirag Rakani</b> from Jamnagar, Gujarat. I am currently pursuing ITI in
-        <b>Computer Operator and Programming Assistant</b>. I am passionate about technology, typing,
-        data entry, problem-solving, and exploring new digital tools. I enjoy talking to new people and
-        learning something new every day.
-    </p>
+        <h1>Chirag Rakani - Accessible Web Developer</h1>
 
-    <p>
-        I am fluent in <b>English, Hindi, and Gujarati</b>. I am always ready to work on online tasks,
-        typing projects, chat support, and computer-related activities. You can connect with me using the
-        links below.
-    </p>
+        <section aria-labelledby="introduction-heading">
+            <h2 id="introduction-heading" class="sr-only">Introduction</h2>
+            <p role="region" aria-label="Developer Introduction">
+                Hello, my name is **Chirag Rakani**. I am a web developer focused on creating **accessible, user-friendly, and inclusive digital tools**. I specialize in building **multi-tool websites** designed especially for visually impaired users, with strong support for screen readers, keyboard navigation, and simple structured layouts. My goal is to develop practical tools that make technology easier, faster, and more independent for everyone.
+            </p>
+        </section>
 
-    <div class="links">
-        <a href="https://instagram.com/" target="_blank">Instagram</a>
-        <a href="https://facebook.com/" target="_blank">Facebook</a>
-        <a href="https://www.youtube.com/" target="_blank">YouTube</a>
-        <a href="https://www.amazon.in/s?k=books" target="_blank">Amazon Books</a>
-        <a href="https://linkedin.com/in/rakani-chirag-59b6a230b" target="_blank">LinkedIn</a>
+        <section aria-labelledby="social-links-heading">
+            <h2 id="social-links-heading">Connect with Chirag</h2>
+            
+            <ul class="links">
+                <li>
+                    <a href="YOUR_INSTAGRAM_LINK" target="_blank" rel="noopener noreferrer">
+                        Instagram (Opens in new tab)
+                    </a>
+                </li>
+                <li>
+                    <a href="YOUR_FACEBOOK_LINK" target="_blank" rel="noopener noreferrer">
+                        Facebook (Opens in new tab)
+                    </a>
+                </li>
+                <li>
+                    <a href="YOUR_AMAZON_LINK" target="_blank" rel="noopener noreferrer">
+                        Amazon Store/Profile (Opens in new tab)
+                    </a>
+                </li>
+            </ul>
+        </section>
+
     </div>
-</div>
 
 </body>
 </html>
