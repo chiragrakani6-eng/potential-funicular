@@ -488,3 +488,213 @@ select:focus, button:focus, #input-field:focus {
     border-radius: 6px;
     margin-top: 10px;
 }
+// --- 1. CONFIGURATION AND DATA ---
+
+const WORD_LISTS = {
+    basic: [
+        "apple", "banana", "chair", "table", "house", "water", "hello", "world",
+        "quick", "brown", "jumps", "seven", "mother", "father", "sister", "brother",
+        "friend", "school", "pencil", "window", "street", "garden", "cloud", "happy"
+    ],
+    advanced: [
+        "accommodation", "unforeseen", "maintenance", "schedule", "phenomenon",
+        "conjunction", "inauguration", "entrepreneur", "perseverance", "accessible", 
+        "algorithm", "synthesize", "rhythm", "liaison", "acquaintance", 
+        "miscellaneous", "irregardless", "fluorescent", "camouflage", "dilemma"
+    ],
+};
+
+const ERROR_LIMIT_FOR_ADVANCEMENT = 3; // Number of wrong tries before the word is put back in the list
+
+// --- 2. DOM ELEMENTS & STATE ---
+
+const lessonTextEl = document.getElementById('lesson-text');
+const inputField = document.getElementById('input-field');
+const levelSelect = document.getElementById('level-select');
+const restartBtn = document.getElementById('restart-btn');
+const correctCountEl = document.getElementById('correct-count');
+const accuracyEl = document.getElementById('accuracy');
+const totalErrorsEl = document.getElementById('total-errors');
+
+let currentWordList = []; 
+let currentWordIndex = 0;
+let currentWord = "";
+let wordErrorCount = 0; 
+let totalErrors = 0;
+let totalWordsAttempted = 0;
+let totalWordsCorrect = 0;
+
+// --- 3. CORE FUNCTIONS ---
+
+/**
+ * Text-to-Speech (TTS) Function
+ * Uses the Web Speech API to read text.
+ */
+function speak(text) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US'; 
+        window.speechSynthesis.cancel(); 
+        window.speechSynthesis.speak(utterance);
+    } else {
+        console.warn("Text-to-Speech not supported.");
+    }
+}
+
+/**
+ * Shuffles an array (Fisher-Yates algorithm) for randomized lessons.
+ */
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+/**
+ * Gets the next word from the list and pronounces it.
+ */
+function getNextWord(isErrorAdvancement = false) {
+    // If we've reached the end of the shuffled list, reshuffle and continue (never-ending)
+    if (currentWordIndex >= currentWordList.length) {
+        currentWordList = shuffleArray(currentWordList);
+        currentWordIndex = 0;
+        if (!isErrorAdvancement) {
+            speak("End of current list reached. Reshuffling words for continuous practice.");
+        }
+    }
+    
+    currentWord = currentWordList[currentWordIndex];
+    lessonTextEl.textContent = `Type the word: ${'_'.repeat(currentWord.length)}`;
+    inputField.value = ''; 
+    wordErrorCount = 0;
+    inputField.focus();
+    
+    speak(`The word is: ${currentWord}. Please spell it.`);
+}
+
+/**
+ * Updates the statistics shown on the page.
+ */
+function updateStats() {
+    const accuracy = totalWordsAttempted > 0 
+        ? Math.round((totalWordsCorrect / totalWordsAttempted) * 100) 
+        : 100;
+
+    correctCountEl.textContent = totalWordsCorrect;
+    accuracyEl.textContent = `${accuracy}%`; 
+    totalErrorsEl.textContent = totalErrors;
+}
+
+/**
+ * Initializes or restarts the spelling tool.
+ */
+function initializeSpellingTool() {
+    const selectedLevel = levelSelect.value;
+    // Create a fresh, shuffled copy of the selected word list
+    currentWordList = shuffleArray([...WORD_LISTS[selectedLevel]]); 
+    currentWordIndex = 0;
+    totalErrors = 0;
+    totalWordsAttempted = 0;
+    totalWordsCorrect = 0;
+    inputField.disabled = false;
+    
+    updateStats();
+    lessonTextEl.textContent = 'Ready! Press F2 to hear the first word.';
+    inputField.value = '';
+    inputField.focus();
+
+    speak("Spelling tool ready. Press F2 to hear the first word and start the lesson.");
+}
+
+// --- 4. EVENT HANDLERS ---
+
+/**
+ * Main input handler, triggers when the user presses Enter.
+ */
+function handleInput(event) {
+    // Check is only run on Enter key press
+    if (event.key !== 'Enter' || inputField.value.trim() === '') {
+        return;
+    }
+    
+    const inputSpelling = inputField.value.trim().toLowerCase();
+    const correctSpelling = currentWord.toLowerCase();
+
+    // Prevent checks if the tool hasn't provided a word yet
+    if (currentWord === "") {
+        speak("Press F2 to hear the first word and start the lesson.");
+        return;
+    }
+
+    totalWordsAttempted++;
+
+    if (inputSpelling === correctSpelling) {
+        // --- Correct Spelling ---
+        totalWordsCorrect++;
+        lessonTextEl.textContent = `Correct! You spelled: ${currentWord}.`;
+        speak(`Correct! ${currentWord}. Moving to the next word.`);
+        
+        currentWordIndex++;
+        updateStats();
+        setTimeout(getNextWord, 2000); // 2-second pause before the next word
+        
+    } else {
+        // --- Incorrect Spelling ---
+        totalErrors++;
+        wordErrorCount++;
+        updateStats();
+
+        // Check if the error limit is reached for forced advancement
+        if (wordErrorCount >= ERROR_LIMIT_FOR_ADVANCEMENT) {
+            
+            // Advance the list index (to skip this word)
+            currentWordIndex++; 
+            lessonTextEl.textContent = `Wrong ${wordErrorCount} times! The correct spelling was: ${currentWord}. This word will be repeated later.`;
+            speak(`Wrong, ${wordErrorCount} times! The correct spelling was: ${currentWord}. This word will return later for advanced practice.`);
+            
+            // Put the problem word at the end of the list for repeat practice
+            currentWordList.push(currentWord); 
+            
+            // 4-second pause to let the user hear the correct word and feedback
+            setTimeout(() => getNextWord(true), 4000); 
+            
+        } else {
+            // Not yet at the error limit, prompt for another try
+            lessonTextEl.textContent = `Incorrect. Try again. Attempts remaining before advanced practice: ${ERROR_LIMIT_FOR_ADVANCEMENT - wordErrorCount}.`;
+            speak(`Incorrect. Try again. You have made ${wordErrorCount} errors on this word.`);
+        }
+    }
+    
+    inputField.value = ''; // Clear the input field for the next attempt/word
+}
+
+/**
+ * Global keydown handler to catch the F2 key press for repetition.
+ */
+function handleGlobalKey(event) {
+    // Check for F2 key
+    if (event.key === 'F2') {
+        event.preventDefault(); // Stop F2 from doing browser commands
+        
+        if (currentWordList.length === 0 || currentWord === "") {
+            // If the tool is just loaded, start the lesson
+             initializeSpellingTool(); 
+        } else if (currentWord) {
+            // Repeat the word if a word is currently being asked
+            speak(`The word is: ${currentWord}. Please spell it.`);
+        }
+        inputField.focus();
+    }
+}
+
+// --- 5. INITIAL SETUP AND EVENT LISTENERS ---
+
+restartBtn.addEventListener('click', initializeSpellingTool);
+levelSelect.addEventListener('change', initializeSpellingTool);
+inputField.addEventListener('keydown', handleInput);
+document.addEventListener('keydown', handleGlobalKey);
+
+// Initial load
+document.addEventListener('DOMContentLoaded', initializeSpellingTool);
