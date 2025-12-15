@@ -393,3 +393,98 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="spelling_script.js"></script>
 </body>
 </html>
+:root {
+    --primary-color: #007bff;
+    --text-color: #333;
+    --background-color: #f8f9fa;
+    --focus-outline: #0056b3;
+    --error-bg: #f8d7da;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.tutor-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+select, button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: white;
+    color: var(--primary-color);
+}
+
+select:focus, button:focus, #input-field:focus {
+    outline: 3px solid var(--focus-outline);
+    outline-offset: 2px;
+}
+
+#restart-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    margin-bottom: 25px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Lesson Text Area for feedback */
+.lesson-text {
+    border: 2px solid #ccc;
+    padding: 20px;
+    min-height: 50px;
+    font-size: 1.4rem; 
+    line-height: 1.6;
+    margin-bottom: 20px;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+/* Input field style */
+#input-field {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    font-size: 1.5rem;
+    border: 3px solid var(--primary-color);
+    border-radius: 6px;
+    margin-top: 10px;
+}
