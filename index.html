@@ -101,3 +101,45 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Typing Tutor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="tutor-container">
+        <h1>Accessible Typing Tutor</h1>
+
+        <div class="controls">
+            <label for="level-select">Select Level:</label>
+            <select id="level-select" aria-label="Select Typing Difficulty Level">
+                <option value="basic">Basic (Common Words)</option>
+                <option value="advanced">Advanced (Technical Text)</option>
+            </select>
+            <button id="restart-btn">Restart Lesson</button>
+        </div>
+
+        <div class="stats" role="status" aria-live="polite">
+            <p>WPM: <span id="wpm">0</span></p>
+            <p>Accuracy: <span id="accuracy">100%</span></p>
+            <p>Errors: <span id="errors">0</span></p>
+        </div>
+
+        <div id="lesson-text" class="lesson-text" tabindex="0" aria-label="Typing lesson text. Start typing here.">
+            Click Restart to begin a lesson.
+        </div>
+
+        <input type="text" id="input-field" class="hidden-input" aria-hidden="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+    </main>
+    
+    <audio id="correct-sound" src="path/to/correct.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="path/to/incorrect.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
