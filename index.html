@@ -143,3 +143,211 @@
     <script src="script.js"></script>
 </body>
 </html>
+// --- 1. CONFIGURATION AND DATA ---
+
+const LESSONS = {
+    basic: "the quick brown fox jumps over the lazy dog this lesson focuses on common words and basic english grammar to help build typing speed and accuracy for everyday use.",
+    advanced: "Web development specializes in accessible, user-centric, and inclusive digital tools. Building multi-tool interfaces demands expertise in screen reader support, keyboard navigation, and simple, highly structured semantic layouts.",
+};
+
+// --- 2. DOM ELEMENTS & STATE ---
+
+const lessonTextEl = document.getElementById('lesson-text');
+const inputField = document.getElementById('input-field');
+const levelSelect = document.getElementById('level-select');
+const restartBtn = document.getElementById('restart-btn');
+const wpmEl = document.getElementById('wpm');
+const accuracyEl = document.getElementById('accuracy');
+const errorsEl = document.getElementById('errors');
+const correctSound = document.getElementById('correct-sound');
+const incorrectSound = document.getElementById('incorrect-sound');
+
+let currentLessonText = "";
+let currentIndex = 0;
+let errors = 0;
+let totalTypedChars = 0;
+let startTime = null;
+let timerInterval = null;
+
+// NOTE: You MUST replace the audio source paths in index.html to real files.
+// For example, use a very short, high-pitched 'beep' for correct and a low 'buzz' for incorrect.
+function playSound(isCorrect) {
+    const audio = isCorrect ? correctSound : incorrectSound;
+    audio.currentTime = 0; // Rewind to start for quick playback
+    audio.play().catch(e => console.log("Audio playback failed:", e));
+}
+
+// --- 3. CORE FUNCTIONS ---
+
+// Initializes the lesson text by wrapping each character in a span
+function initializeLesson(text) {
+    currentLessonText = text;
+    currentIndex = 0;
+    errors = 0;
+    totalTypedChars = 0;
+    startTime = null;
+    wpmEl.textContent = '0';
+    accuracyEl.textContent = '100%';
+    errorsEl.textContent = '0';
+
+    clearInterval(timerInterval);
+
+    lessonTextEl.innerHTML = ''; // Clear existing text
+    
+    // Create span for each character for styling and tracking
+    text.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.id = `char-${index}`;
+        lessonTextEl.appendChild(span);
+    });
+
+    // Set the first character as the starting point
+    updateCurrentCharHighlight();
+    inputField.value = ''; // Clear hidden input
+    inputField.focus();     // Immediately focus the input field
+}
+
+// Moves the 'current' class to the new index
+function updateCurrentCharHighlight() {
+    // Remove highlight from all spans
+    document.querySelectorAll('.current').forEach(el => el.classList.remove('current'));
+
+    // If the lesson is not finished, highlight the next character
+    if (currentIndex < currentLessonText.length) {
+        const currentCharEl = document.getElementById(`char-${currentIndex}`);
+        if (currentCharEl) {
+            currentCharEl.classList.add('current');
+            // Ensure the next character is visible (simple attempt)
+            currentCharEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+}
+
+// Calculates WPM (Words Per Minute)
+function calculateWPM() {
+    if (!startTime) return 0;
+    
+    // Time elapsed in minutes
+    const timeInMinutes = (Date.now() - startTime) / 60000;
+    // Gross WPM (total typed characters / 5 / time)
+    const grossWPM = (totalTypedChars / 5) / timeInMinutes;
+    // Net WPM (Gross WPM - Errors / time)
+    const netWPM = (grossWPM - (errors / timeInMinutes));
+    
+    return Math.max(0, Math.round(netWPM)); // Ensure WPM is not negative
+}
+
+// Calculates Accuracy Percentage
+function calculateAccuracy() {
+    if (totalTypedChars === 0) return 100;
+    const correctChars = totalTypedChars - errors;
+    return Math.round((correctChars / totalTypedChars) * 100);
+}
+
+// Updates the stats display
+function updateStats() {
+    wpmEl.textContent = calculateWPM();
+    accuracyEl.textContent = `${calculateAccuracy()}%`;
+    errorsEl.textContent = errors;
+}
+
+// Marks the lesson as finished and stops the timer
+function finishLesson() {
+    clearInterval(timerInterval);
+    updateStats(); // Final update
+    lessonTextEl.textContent = `Lesson Complete! Final WPM: ${wpmEl.textContent}, Accuracy: ${accuracyEl.textContent}`;
+    inputField.disabled = true;
+    inputField.blur();
+}
+
+// --- 4. EVENT HANDLERS ---
+
+// Handles keyboard input
+function handleInput(event) {
+    // Start timer on the first key press
+    if (startTime === null) {
+        startTime = Date.now();
+        // Set an interval to update stats every second
+        timerInterval = setInterval(updateStats, 1000);
+    }
+
+    const typedChar = event.key;
+    const expectedChar = currentLessonText[currentIndex];
+    const charEl = document.getElementById(`char-${currentIndex}`);
+
+    // Prevent input on special keys like Ctrl, Alt, Shift, etc.
+    if (typedChar.length > 1 && typedChar !== 'Backspace' && typedChar !== ' ') {
+        return;
+    }
+
+    // Handle Backspace (only allow one step back)
+    if (typedChar === 'Backspace') {
+        if (currentIndex > 0) {
+            currentIndex--;
+            totalTypedChars--;
+            
+            // Cleanup the previous character's state
+            const prevCharEl = document.getElementById(`char-${currentIndex}`);
+            if (prevCharEl.classList.contains('incorrect')) {
+                errors--; // Decrement error only if it was an error
+            }
+            prevCharEl.classList.remove('correct', 'incorrect');
+            
+            updateCurrentCharHighlight();
+        }
+        return;
+    }
+
+    // Check against the expected character
+    if (typedChar === expectedChar) {
+        charEl.classList.add('correct');
+        playSound(true);
+    } else {
+        charEl.classList.add('incorrect');
+        errors++;
+        playSound(false);
+    }
+
+    // Advance the state
+    currentIndex++;
+    totalTypedChars++;
+    updateStats();
+
+    // Check if the lesson is complete
+    if (currentIndex >= currentLessonText.length) {
+        finishLesson();
+    } else {
+        updateCurrentCharHighlight();
+    }
+}
+
+
+// Focus the hidden input when the user clicks the visible text area
+lessonTextEl.addEventListener('click', () => {
+    inputField.focus();
+});
+
+// Restart the lesson when button or level is changed
+function restartLesson() {
+    const level = levelSelect.value;
+    inputField.disabled = false;
+    initializeLesson(LESSONS[level]);
+}
+
+// --- 5. INITIAL SETUP ---
+
+restartBtn.addEventListener('click', restartLesson);
+levelSelect.addEventListener('change', restartLesson);
+inputField.addEventListener('keydown', handleInput);
+
+
+// Load the basic lesson on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Pre-initialize sound elements (needed for some browsers)
+    correctSound.volume = 0.3; // Lower volume for better experience
+    incorrectSound.volume = 0.5;
+
+    // Start with the default selected lesson
+    restartLesson();
+});
