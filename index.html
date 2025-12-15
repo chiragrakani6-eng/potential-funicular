@@ -351,3 +351,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start with the default selected lesson
     restartLesson();
 });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Spelling Tutor</title>
+    <link rel="stylesheet" href="spelling_style.css">
+</head>
+<body>
+
+    <main class="tutor-container">
+        <h1>Accessible Spelling Tutor</h1>
+        <p>Instructions: Press **Enter** to submit your spelling. Press **F2** to repeat the current word.</p>
+
+        <div class="controls">
+            <label for="level-select">Select Level:</label>
+            <select id="level-select" aria-label="Select Spelling Difficulty Level">
+                <option value="basic">Basic Words</option>
+                <option value="advanced">Advanced Words</option>
+            </select>
+            <button id="restart-btn">Start / Restart</button>
+        </div>
+
+        <div class="stats" role="status" aria-live="polite">
+            <p>Words Correct: <span id="correct-count">0</span></p>
+            <p>Accuracy: <span id="accuracy">100%</span></p>
+            <p>Total Errors: <span id="total-errors">0</span></p>
+        </div>
+
+        <div id="lesson-text" class="lesson-text" tabindex="0" aria-label="Current word to spell and feedback area.">
+            Click Start / Restart or press F2 to begin.
+        </div>
+
+        <input type="text" id="input-field" placeholder="Type the word here..." 
+               aria-label="Input field for spelling the word." autocomplete="off" 
+               autocorrect="off" autocapitalize="off" spellcheck="false">
+
+    </main>
+    
+    <script src="spelling_script.js"></script>
+</body>
+</html>
